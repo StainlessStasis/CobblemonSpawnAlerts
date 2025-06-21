@@ -1,0 +1,2 @@
+# CobblemonSpawnAlerts
+Cobblemon spawn alerts
