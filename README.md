@@ -19,7 +19,7 @@ The config is found in your Minecraft instance folder under `config -> cobblemon
 
 ## Custom Alert Messages: Dynamic Replacement
 Custom alert messages currently only have the option to display whether a Pokemon is shiny or not (more to come soon!).<br>
-To include the shiny message in your custom one, add `{shiny}` EXACTLY like that. This will replace `{shiny}` with nothing if it isn't shiny, or `<gold>Shiny </gold>` if it is shiny.<br>
+To include the shiny message in your custom one, add `{shiny}` EXACTLY like that. This will replace `{shiny}` with nothing if it isn't shiny, or `<gold>Shiny </gold>` if it is shiny.<br><br>
 **Example:**<br>
 ```json
 "bidoof": {
@@ -29,3 +29,4 @@ To include the shiny message in your custom one, add `{shiny}` EXACTLY like that
     "customAlertMessage": "<white>A</white> {shiny}<rainbow>Bidoof <green>spawned!"
   }
 ```
+This produces the following messages when Bidoof spawns:
