@@ -46,6 +46,7 @@ I made this mod in one day, so it is quite obviously lacking many features. In n
 * Show Pokemon coordinates (toggleable, show in main message or on hover)
 * Show Pokemon level, IVs, nature, etc. (individually toggleable, show in main message or on hover)
 * Make each part of the message customizable after coordinates and stats are added, also with dynamic replacement support for custom messages
+* Sounds
 
 I may also add the following, but I'm unsure:
 * Xaero's map integration? I feel like coordinates is kind of enough tho
