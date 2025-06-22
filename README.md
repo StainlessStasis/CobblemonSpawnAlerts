@@ -30,4 +30,4 @@ To include the shiny message in your custom one, add `{shiny}` EXACTLY like that
   }
 ```
 This produces the following messages when Bidoof spawns:<br>
-![test](images/bidoof.png)
+![bidoof](images/bidoof.png)
