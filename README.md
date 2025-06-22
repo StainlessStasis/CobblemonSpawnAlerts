@@ -6,7 +6,7 @@ Have you ever been hunting for an ultra-rare, and as you're flying around your e
 
 ## Customizability!
 Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use MiniMessage formatting to easily color or format messages however you like (see the [MiniMessage docs](https://docs.advntr.dev/minimessage/format.html)). <br>The default message looks like this:<br>
-![more_bidoof](images/more_bidoof.png)
+![more bidoof](https://cdn.modrinth.com/data/cached_images/c155665d7d3160c832bd1efeb08d4da50b54be92.png)
 
 ## Works with exiting spawn notifications mod!
 The mod is fully clientside so it does not at all affect the [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) mod by [tmetcalfe89](https://modrinth.com/user/tmetcalfe89). Cobblemon Spawn Notification is a great mod, so if you somehow don't know about it already I highly recommend using it on your server! It is also partly what inspired this mod.
@@ -21,6 +21,9 @@ The config is found in your Minecraft instance folder under `config -> cobblemon
 **alertShiny**: Whether to alert a shiny Pokemon, or if the Pokemon is shiny. If alwaysAlert is set to false, this will ONLY alert that Pokemon's spawn if it is shiny. If alwaysAlert is set to true, then it will simply specify if the spawned Pokemon is shiny.<br>
 **customAlertMessage**: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.
 
+**Reloading the config:**<br>
+You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reloadconfig` to reload it.
+
 ## Custom alert messages: Dynamic Replacement
 Custom alert messages currently only have the option to display whether a Pokemon is shiny or not (more to come soon!).<br>
 To include the shiny message in your custom alert message, add `{shiny}` EXACTLY like that. This will replace `{shiny}` with nothing if it isn't shiny, or `<gold>Shiny </gold>` if it is shiny.<br><br>
@@ -34,7 +37,7 @@ To include the shiny message in your custom alert message, add `{shiny}` EXACTLY
   }
 ```
 This produces the following messages when Bidoof spawns:<br>
-![bidoof](images/bidoof.png)
+![bidoof](https://cdn.modrinth.com/data/cached_images/4e30a43899d98d56405d1b5f023c53d1f35f291f.png)
 
 ## More to come!
 I made this mod in one day, so it is quite obviously lacking many features. In no particular order, I 100% plan to add:
@@ -46,6 +49,7 @@ I made this mod in one day, so it is quite obviously lacking many features. In n
 
 I may also add the following, but I'm unsure:
 * Xaero's map integration? I feel like coordinates is kind of enough tho
+* Customize config in game via command (i do not feel like making a GUI but if its really requested... i could)
 * Gender, for Pokemon like Ralts
 * Support for entire evolution line (can very easily just be copy pasted as a workaround so is it really worth the effort?)
 * Alert to specific type, egg group, or stuff like good IVs? No idea how difficult that would be for egg group
