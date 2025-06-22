@@ -29,4 +29,5 @@ To include the shiny message in your custom one, add `{shiny}` EXACTLY like that
     "customAlertMessage": "<white>A</white> {shiny}<rainbow>Bidoof <green>spawned!"
   }
 ```
-This produces the following messages when Bidoof spawns:
+This produces the following messages when Bidoof spawns:<br>
+!images/bidoof.png
