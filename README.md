@@ -27,4 +27,5 @@ To include the shiny message in your custom one, add `{shiny}` EXACTLY like that
     "alwaysAlert": true,
     "alertShiny": true,
     "customAlertMessage": "<white>A</white> {shiny}<rainbow>Bidoof <green>spawned!"
-  }```
+  }
+```
