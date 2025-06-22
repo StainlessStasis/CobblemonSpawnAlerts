@@ -37,8 +37,20 @@ This produces the following messages when Bidoof spawns:<br>
 ![bidoof](images/bidoof.png)
 
 ## More to come!
-I made this mod in one day, so it is quite obviously lacking many features. In no particular order, I plan to add:
+I made this mod in one day, so it is quite obviously lacking many features. In no particular order, I 100% plan to add:
+* Special customizable messages for legendaries/mythicals/ultra beasts repectively
 * Customizable shiny message
 * Show Pokemon coordinates (toggleable, show in main message or on hover)
 * Show Pokemon level, IVs, nature, etc. (individually toggleable, show in main message or on hover)
-* Make each part of the message customizable after coordinates and stats are added, with dynamic replacement support for custom messages
+* Make each part of the message customizable after coordinates and stats are added, also with dynamic replacement support for custom messages
+
+I may also add the following, but I'm unsure:
+* Xaero's map integration? I feel like coordinates is kind of enough tho
+* Gender, for Pokemon like Ralts
+* Support for entire evolution line (can very easily just be copy pasted as a workaround so is it really worth the effort?)
+* Alert to specific type, egg group, or stuff like good IVs? No idea how difficult that would be for egg group
+
+If you have any other ideas, feel free to share them with me!
+
+## Feedback
+You can contact me on Discord; my username is `stasis_the_shattered`. I don't have a server of my own or anything, so ping me in the Cobblemon server or just DM me. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
