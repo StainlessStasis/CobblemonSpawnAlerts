@@ -1,7 +1,14 @@
 {
   "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
   "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {shiny}<white>{name}</white> {level}has appeared!</green>",
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {shiny}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
-  "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>"
+  "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>",
+  "cobblemon-spawn-alerts.level_hover": "Level: <gray>%s</gray>",
+  "cobblemon-spawn-alerts.ivs": "with IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
+  "cobblemon-spawn-alerts.ivs_hover": "IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
+  "cobblemon-spawn-alerts.nature": "with Nature: %s ",
+  "cobblemon-spawn-alerts.nature_hover": "Nature: <gray>%s</gray> ",
+  "cobblemon-spawn-alerts.coords": " at <gray>(%s, %s, %s)</gray>",
+  "cobblemon-spawn-alerts.coords_hover": "Coordinates: <gray>(%s, %s, %s)</gray>"
 }
