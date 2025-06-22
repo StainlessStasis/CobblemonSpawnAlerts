@@ -4,15 +4,12 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.stainlessstasis.config.Config;
 import io.github.stainlessstasis.config.ConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
-import io.github.stainlessstasis.util.TranslatedMessageUtil;
+import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -73,18 +70,16 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             }
 
             // send the alert
+            String message;
             if (!Objects.equals(config.customAlertMessage, "")) {
-                Component component = ComponentUtil.convertFromAdventure(config.customAlertMessage);
-                player.sendSystemMessage(component);
+                message = MessageUtils.applyDynamicReplacements(config.customAlertMessage, pokemon.getName().getString(), shouldAlertShiny);
+                MessageUtils.sendTranslated(message);
                 return;
             }
 
-            String message = I18n.get(ConfigManager.getDefaultSpawnMessage(), pokemon.getName().getString());
-            if (shouldAlertShiny) {
-                message = message.replace("{shiny}", I18n.get(MOD_ID+".shiny"));
-            } else {
-                message = message.replace("{shiny}", "");
-            }
+            // use the default message if no custom one is provided
+            message = MessageUtils.getTranslated(ConfigManager.getDefaultSpawnMessage());
+            message = MessageUtils.applyDynamicReplacements(message, pokemon.getName().getString(), shouldAlertShiny);
             Component component = ComponentUtil.convertFromAdventure(message);
             player.sendSystemMessage(component);
         }

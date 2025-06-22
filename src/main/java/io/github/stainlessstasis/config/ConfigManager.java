@@ -3,11 +3,9 @@ package io.github.stainlessstasis.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
-import io.github.stainlessstasis.util.TranslatedMessageUtil;
+import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -84,13 +82,13 @@ public class ConfigManager {
             return;
         }
 
-        TranslatedMessageUtil.send(CobblemonSpawnAlertsClient.MOD_ID+".config_reloading");
+        MessageUtils.sendTranslated(CobblemonSpawnAlertsClient.MOD_ID+".config_reloading");
 
         // TODO: add this back if i ever add a way to edit config in game
 //        saveConfig();
         loadConfig();
 
-        TranslatedMessageUtil.send(CobblemonSpawnAlertsClient.MOD_ID+".config_reloaded");
+        MessageUtils.sendTranslated(CobblemonSpawnAlertsClient.MOD_ID+".config_reloaded");
     }
 
     public static String getDefaultSpawnMessage() {
