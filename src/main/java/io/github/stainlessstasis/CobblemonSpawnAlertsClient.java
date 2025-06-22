@@ -82,6 +82,8 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             message = MessageUtils.applyDynamicReplacements(message, pokemon.getName().getString(), shouldAlertShiny);
             Component component = ComponentUtil.convertFromAdventure(message);
             player.sendSystemMessage(component);
+
+            // testing commit
         }
     }
 }
