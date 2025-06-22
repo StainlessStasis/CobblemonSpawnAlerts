@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "cobblemon-spawn-alerts",
+	"version": "${version}",
+	"name": "Cobblemon Spawn Alerts",
+	"description": "Configurable clientside alerts for when a certain pokemon spawns around you",
+	"authors": [
+		"Stasis, the Shattered"
+	],
+	"license": "MIT License",
+	"icon": "assets/cobblemon-spawn-alerts/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"io.github.stainlessstasis.CobblemonSpawnAlerts"
+		],
+		"client": [
+			"io.github.stainlessstasis.CobblemonSpawnAlertsClient"
+		]
+	},
+	"depends": {
+		"minecraft": "1.21.1",
+		"cobblemon": ">=1.6.1"
+	}
+}

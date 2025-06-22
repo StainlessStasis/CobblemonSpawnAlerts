@@ -1,0 +1,6 @@
+{
+  "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
+  "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {shiny}<white>%s</white> has appeared!</green>",
+  "cobblemon-spawn-alerts.shiny": "</green><gold>Shiny </gold><green>"
+}
