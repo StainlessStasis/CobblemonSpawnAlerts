@@ -15,4 +15,16 @@ The config is found in your Minecraft instance folder under `config -> cobblemon
 *enabled*: Enables the spawn message for the Pokemon. If set to false, this setting will override every other config setting for the Pokemon and make its spawn message never display.<br>
 *alwaysAlert*: Whether to always alert the Pokemon's spawn message, assuming enabled is set to true. Setting this to false will only display a spawn message given some other condition is true (e.g. alertShiny).<br>
 *alertShiny*: Whether to alert a shiny Pokemon, or if the Pokemon is shiny. If alwaysAlert is set to false, this will ONLY alert that Pokemon's spawn if it is shiny. If alwaysAlert is set to true, then it will simply specify if the spawned Pokemon is shiny.<br>
-*customAlertMessage*: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format. **NOTE:** This does *not* currently support dynamically updating based on if it's shiny. I will be adding this very soon.
+*customAlertMessage*: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.
+
+## Custom Alert Messages: Dynamic Replacement
+Custom alert messages currently only have the option to display whether a Pokemon is shiny or not (more to come soon!).<br>
+To include the shiny message in your custom one, add `{shiny}` EXACTLY like that. This will replace `{shiny}` with nothing if it isn't shiny, or `<gold>Shiny </gold>` if it is shiny.<br>
+**Example:**<br>
+```json
+"bidoof": {
+    "enabled": true,
+    "alwaysAlert": true,
+    "alertShiny": true,
+    "customAlertMessage": "<white>A</white> {shiny}<rainbow>Bidoof <green>spawned!"
+  }```
