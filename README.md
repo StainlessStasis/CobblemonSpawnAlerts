@@ -52,5 +52,5 @@ I may also add the following, but I'm unsure:
 
 If you have any other ideas, feel free to share them with me!
 
-## Feedback
+## Feedback | Contact me
 You can contact me on Discord; my username is `stasis_the_shattered`. I don't have a server of my own or anything, so ping me in the Cobblemon server or just DM me. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
