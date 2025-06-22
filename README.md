@@ -9,7 +9,7 @@ Each Pokemon can be individually customized exactly to your needs. If you want t
 ![more_bidoof](images/more_bidoof.png)
 
 ## Works with exiting spawn notifications mod!
-The mod is fully clientside so it does not at all affect the [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) mod by [tmetcalfe89](https://modrinth.com/user/tmetcalfe89). Cobblemon Spawn Notification is a great mod, so if you somehow don't know about it I highly recommend using it on your server! It is also partly what inspired this mod.
+The mod is fully clientside so it does not at all affect the [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) mod by [tmetcalfe89](https://modrinth.com/user/tmetcalfe89). Cobblemon Spawn Notification is a great mod, so if you somehow don't know about it already I highly recommend using it on your server! It is also partly what inspired this mod.
 
 ## Config
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`.<br><br>
