@@ -72,14 +72,14 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             // send the alert
             String message;
             if (!Objects.equals(config.customAlertMessage, "")) {
-                message = MessageUtils.applyDynamicReplacements(config.customAlertMessage, pokemon.getName().getString(), shouldAlertShiny);
+                message = MessageUtils.applyDynamicReplacements(config.customAlertMessage, pokemon, config);
                 MessageUtils.sendTranslated(message);
                 return;
             }
 
             // use the default message if no custom one is provided
             message = MessageUtils.getTranslated(ConfigManager.getDefaultSpawnMessage());
-            message = MessageUtils.applyDynamicReplacements(message, pokemon.getName().getString(), shouldAlertShiny);
+            message = MessageUtils.applyDynamicReplacements(message, pokemon, config);
             Component component = ComponentUtil.convertFromAdventure(message);
             player.sendSystemMessage(component);
 

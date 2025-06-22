@@ -1,6 +1,7 @@
 {
   "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
   "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {shiny}<white>{name}</white> has appeared!</green>",
-  "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>"
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {shiny}<white>{name}</white> {level}has appeared!</green>",
+  "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
+  "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>"
 }
