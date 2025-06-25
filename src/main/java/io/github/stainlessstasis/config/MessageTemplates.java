@@ -1,22 +1,51 @@
 package io.github.stainlessstasis.config;
 
-import java.util.HashMap;
-
-public class MessageTemplates extends HashMap<String, String> {
-    public MessageTemplates(boolean isFresh) {
-        if (isFresh) {
-            put("fullSpawnMessage", "cobblemon-spawn-alerts.default_spawn_message");
-            put("shiny", "cobblemon-spawn-alerts.shiny");
-            put("level", "cobblemon-spawn-alerts.level");
-            put("level_hover", "cobblemon-spawn-alerts.level_hover");
-            put("ivs", "cobblemon-spawn-alerts.ivs");
-            put("ivs_hover", "cobblemon-spawn-alerts.ivs_hover");
-            put("nature", "cobblemon-spawn-alerts.nature");
-            put("nature_hover", "cobblemon-spawn-alerts.nature_hover");
-            put("coords", "cobblemon-spawn-alerts.coords");
-            put("coords_hover", "cobblemon-spawn-alerts.coords_hover");
-        }
+public record MessageTemplates (
+        String fullSpawnMessage,
+        String shiny,
+        String shiny_unformatted,
+        String level,
+        String level_hover,
+        String level_unformatted,
+        String ivs,
+        String ivs_hover,
+        String ivs_unformatted,
+        String nature,
+        String nature_hover,
+        String nature_unformatted,
+        String coords,
+        String coords_hover,
+        String coords_unformatted,
+        String legendary,
+        String legendary_unformatted,
+        String mythical,
+        String mythical_unformatted,
+        String ultrabeast,
+        String ultrabeast_unformatted
+) {
+    public static MessageTemplates createDefault() {
+        return new MessageTemplates(
+                "cobblemon-spawn-alerts.default_spawn_message",
+                "cobblemon-spawn-alerts.shiny",
+                "cobblemon-spawn-alerts.shiny_unformatted",
+                "cobblemon-spawn-alerts.level",
+                "cobblemon-spawn-alerts.level_hover",
+                "cobblemon-spawn-alerts.level_unformatted",
+                "cobblemon-spawn-alerts.ivs",
+                "cobblemon-spawn-alerts.ivs_hover",
+                "cobblemon-spawn-alerts.ivs_unformatted",
+                "cobblemon-spawn-alerts.nature",
+                "cobblemon-spawn-alerts.nature_hover",
+                "cobblemon-spawn-alerts.nature_unformatted",
+                "cobblemon-spawn-alerts.coords",
+                "cobblemon-spawn-alerts.coords_hover",
+                "cobblemon-spawn-alerts.coords_unformatted",
+                "cobblemon-spawn-alerts.legendary",
+                "cobblemon-spawn-alerts.legendary_unformatted",
+                "cobblemon-spawn-alerts.mythical",
+                "cobblemon-spawn-alerts.mythical_unformatted",
+                "cobblemon-spawn-alerts.ultrabeast",
+                "cobblemon-spawn-alerts.ultrabeast_unformatted"
+        );
     }
-
-    public MessageTemplates() {}
 }

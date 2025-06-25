@@ -1,13 +1,12 @@
 package io.github.stainlessstasis.util;
 
-import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
-import io.github.stainlessstasis.config.Config;
+import io.github.stainlessstasis.config.MessageTemplates;
+import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.config.ConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
@@ -29,41 +28,62 @@ public class MessageUtils {
         return I18n.get(translationKey, args);
     }
 
-    public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, Config.PokemonSpecificConfig config) {
+    public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, PokemonConfig.PokemonSpecificConfig config) {
         String name = pokemonEntity.getName().getString();
         Pokemon pokemon = pokemonEntity.getPokemon();
+        MessageTemplates messageTemplates = ConfigManager.getMessageTemplates();
         int level = pokemon.getLevel();
         IVs ivs = pokemon.getIvs();
         Nature nature = pokemon.getNature();
 
         message = message.replace("{name}", name);
 
-        boolean isHoverEnabled = config.showInfoAsHover;
+        boolean isHoverEnabled = config.showInfoAsHover();
         String hoverText = "";
 
         // Shiny
-        boolean shouldAlertShiny = config.alertShiny && pokemonEntity.getPokemon().getShiny();
+        boolean shouldAlertShiny = config.alertShiny() && pokemonEntity.getPokemon().getShiny();
         if (shouldAlertShiny) {
-            message = message.replace("{shiny}", I18n.get(ConfigManager.getShinyMessage()));
-        } else {
-            message = message.replace("{shiny}", "");
+            message = message.replace("{shiny}", I18n.get(messageTemplates.shiny()));
+            message = message.replace("{shiny_unformatted}", I18n.get(messageTemplates.shiny_unformatted()));
+            System.out.println("TEMPLATE: "+I18n.get(messageTemplates.shiny_unformatted()));
         }
+        message = message.replace("{shiny}", "");
+        message = message.replace("{shiny_unformatted}", "");
+
+        // Legendary/Mythical/Ultra Beast
+        if (config.showLegendary()) {
+            if (pokemon.isLegendary()) {
+                message = message.replace("{legendary}", I18n.get(messageTemplates.legendary()));
+                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.legendary_unformatted()));
+            } else if (pokemon.isMythical()) {
+                message = message.replace("{legendary}", I18n.get(messageTemplates.mythical()));
+                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.mythical_unformatted()));
+            } else if (pokemon.isUltraBeast()) {
+                message = message.replace("{legendary}", I18n.get(messageTemplates.ultrabeast()));
+                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.ultrabeast_unformatted()));
+            }
+        }
+        message = message.replace("{legendary}", "");
+        message = message.replace("{legendary_unformatted}", "");
 
         // Level
-        if (config.showLevel) {
-            String configMessage = isHoverEnabled ? ConfigManager.getLevelMessageHover() : ConfigManager.getLevelMessage();
+        if (config.showLevel()) {
+            String configMessage = isHoverEnabled ? messageTemplates.level_hover() : messageTemplates.level();
             String levelMessage = I18n.get(configMessage, level);
             if (isHoverEnabled) {
                 hoverText += levelMessage + "\n";
             } else {
                 message = message.replace("{level}", levelMessage);
             }
+            message = message.replace("{level_unformatted}", I18n.get(messageTemplates.level_unformatted(), level));
         }
         message = message.replace("{level}", "");
+        message = message.replace("{level_unformatted}", "");
 
         // IVs
-        if (config.showIVs) {
-            String configMessage = isHoverEnabled ? ConfigManager.getIVsMessageHover() : ConfigManager.getIVsMessage();
+        if (config.showIVs()) {
+            String configMessage = isHoverEnabled ? messageTemplates.ivs_hover() : messageTemplates.ivs();
             String ivsMessage =
                     I18n.get(configMessage,
                     ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
@@ -73,12 +93,16 @@ public class MessageUtils {
             } else {
                 message = message.replace("{ivs}", ivsMessage);
             }
+            message = message.replace("{ivs_unformatted}", I18n.get(messageTemplates.ivs_unformatted(),
+                    ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
+                    ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)));
         }
         message = message.replace("{ivs}", "");
+        message = message.replace("{ivs_unformatted}", "");
 
         // Nature
-        if (config.showNature) {
-            String configMessage = isHoverEnabled ? ConfigManager.getNatureMessageHover() : ConfigManager.getNatureMessage();
+        if (config.showNature()) {
+            String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
             String natureString = nature.getDisplayName().replace("cobblemon.nature.", "");
             natureString = natureString.substring(0, 1).toUpperCase() + natureString.substring(1);
             String natureMessage = I18n.get(configMessage, natureString);
@@ -87,12 +111,14 @@ public class MessageUtils {
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
+            message = message.replace("{nature_unformatted}", I18n.get(messageTemplates.nature_unformatted(), natureString));
         }
         message = message.replace("{nature}", "");
+        message = message.replace("{nature_unformatted}", "");
 
         // Coordinates
-        if (config.showCoordinates) {
-            String configMessage = isHoverEnabled ? ConfigManager.getCoordsMessageHover() : ConfigManager.getCoordsMessage();
+        if (config.showCoordinates()) {
+            String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
             String coordsMessage = I18n.get(configMessage,
                     (int)pokemonEntity.getX(), (int)pokemonEntity.getY(), (int)pokemonEntity.getZ());
             if (isHoverEnabled) {
@@ -100,8 +126,11 @@ public class MessageUtils {
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
+            message = message.replace("{coords_unformatted}", I18n.get(messageTemplates.coords_unformatted(),
+                    (int)pokemonEntity.getX(), (int)pokemonEntity.getY(), (int)pokemonEntity.getZ()));
         }
         message = message.replace("{coords}", "");
+        message = message.replace("{coords_unformatted}", "");
 
         // Hover
         if (isHoverEnabled) {

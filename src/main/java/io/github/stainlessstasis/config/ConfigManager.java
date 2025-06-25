@@ -8,16 +8,19 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path MOD_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(CobblemonSpawnAlertsClient.MOD_ID);
-    private static final File CONFIG_FILE = MOD_CONFIG_DIR.resolve("main.json").toFile();
+    private static final File MAIN_CONFIG_FILE = MOD_CONFIG_DIR.resolve("main.json").toFile();
+    private static final File POKEMON_CONFIG_FILE = MOD_CONFIG_DIR.resolve("pokemon.json").toFile();
     private static final File MESSAGE_TEMPLATES_FILE = MOD_CONFIG_DIR.resolve("message_templates.json").toFile();
-    private static Config config;
+    private static MainConfig mainConfig;
+    private static PokemonConfig pokemonConfig;
     private static MessageTemplates messageTemplates;
     private static boolean isReloading;
 
@@ -31,78 +34,75 @@ public class ConfigManager {
             CobblemonSpawnAlertsClient.LOGGER.error("Failed to create mod config directory: " + MOD_CONFIG_DIR, e);
         }
 
-        loadMessageTemplates();
-        loadMainConfig();
+        messageTemplates = loadConfigFile(MESSAGE_TEMPLATES_FILE, MessageTemplates.class);
+        pokemonConfig = loadConfigFile(POKEMON_CONFIG_FILE, PokemonConfig.class);
+        mainConfig = loadConfigFile(MAIN_CONFIG_FILE, MainConfig.class);
 
         isReloading = false;
     }
 
-    private static void loadMessageTemplates() {
-        if (!MESSAGE_TEMPLATES_FILE.exists()) {
-            CobblemonSpawnAlertsClient.LOGGER.info("No message templates file found, creating a new one.");
-            messageTemplates = new MessageTemplates(true);
-            saveMessageTemplates();
-            return;
-        }
+    private static <T> T loadConfigFile(File file, Class<T> config) {
+        String fileName = file.getName();
 
-        try (FileReader reader = new FileReader(MESSAGE_TEMPLATES_FILE)) {
-            messageTemplates = GSON.fromJson(reader, MessageTemplates.class);
-            if (messageTemplates == null) {
-                CobblemonSpawnAlertsClient.LOGGER.warn("Message templates file was empty or corrupted, loading default.");
-                messageTemplates = new MessageTemplates(true);
-                saveMessageTemplates();
+        if (!file.exists()) {
+            CobblemonSpawnAlertsClient.LOGGER.info("No config file `"+fileName+"` found, creating a new one.");
+            try {
+                Method method = config.getMethod("createDefault");
+                T newConfig = (T) method.invoke(null);
+                saveConfigFile(file, newConfig);
+                return newConfig;
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                CobblemonSpawnAlertsClient.LOGGER.error("Failed to create new config file for `"+fileName+"`: "+e);
+                return null;
             }
-            CobblemonSpawnAlertsClient.LOGGER.info("Message templates loaded successfully.");
-        } catch (IOException e) {
-            CobblemonSpawnAlertsClient.LOGGER.error("Failed to load message templates file: " + e.getMessage());
-            messageTemplates = new MessageTemplates(true);
-            saveMessageTemplates();
-        }
-    }
-
-    private static void loadMainConfig() {
-        if (!CONFIG_FILE.exists()) {
-            CobblemonSpawnAlertsClient.LOGGER.info("No config file found, creating a new one.");
-            config = new Config(true);
-            saveMainConfig();
-            return;
         }
 
-        try (FileReader reader = new FileReader(CONFIG_FILE)) {
-            config = GSON.fromJson(reader, Config.class);
-            if (config == null) {
-                CobblemonSpawnAlertsClient.LOGGER.warn("Config file was empty or corrupted, loading default.");
-                config = new Config(true);
-                saveMainConfig();
+        try (FileReader reader = new FileReader(file)) {
+            T newConfig;
+            newConfig = GSON.fromJson(reader, config);
+            if (newConfig == null) {
+                CobblemonSpawnAlertsClient.LOGGER.warn("File `"+fileName+"` was empty or corrupted, loading default.");
+                try {
+                    Method method = config.getMethod("createDefault");
+                    newConfig = (T) method.invoke(null);
+                    saveConfigFile(file, newConfig);
+                    return newConfig;
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    CobblemonSpawnAlertsClient.LOGGER.error("Failed to create default config file for `"+fileName+"`: "+e);
+                    return null;
+                }
+            } else {
+                CobblemonSpawnAlertsClient.LOGGER.info("Config file `"+fileName+"` loaded successfully.");
+                saveConfigFile(file, newConfig);
+                return newConfig;
             }
-            CobblemonSpawnAlertsClient.LOGGER.info("Config loaded successfully.");
         } catch (IOException e) {
-            CobblemonSpawnAlertsClient.LOGGER.error("Failed to load config file: " + e.getMessage());
-            config = new Config(true);
-            saveMainConfig();
+            CobblemonSpawnAlertsClient.LOGGER.error("Failed to load config file `"+fileName+"`: " + e.getMessage());
+            return null;
         }
     }
 
-    public static void saveMessageTemplates() {
-        try (FileWriter writer = new FileWriter(MESSAGE_TEMPLATES_FILE)) {
-            GSON.toJson(messageTemplates, writer);
-            CobblemonSpawnAlertsClient.LOGGER.info("Message templates saved successfully.");
-        } catch (IOException e) {
-            CobblemonSpawnAlertsClient.LOGGER.error("Failed to save message templates file: " + e.getMessage());
-        }
-    }
+    public static <T> void saveConfigFile(File file, T config) {
+        String fileName = file.getName();
 
-    public static void saveMainConfig() {
-        try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
+        try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(config, writer);
-            CobblemonSpawnAlertsClient.LOGGER.info("Config saved successfully.");
+            CobblemonSpawnAlertsClient.LOGGER.info("Config file `"+fileName+"` saved successfully.");
         } catch (IOException e) {
-            CobblemonSpawnAlertsClient.LOGGER.error("Failed to save config file: " + e.getMessage());
+            CobblemonSpawnAlertsClient.LOGGER.error("Failed to save config file `"+fileName+"`: " + e.getMessage());
         }
     }
 
-    public static Config getConfig() {
-        return config;
+    public static MainConfig getMainConfig() {
+        return mainConfig;
+    }
+
+    public static PokemonConfig getPokemonConfig() {
+        return pokemonConfig;
+    }
+
+    public static MessageTemplates getMessageTemplates() {
+        return messageTemplates;
     }
 
     public static void reload() {
@@ -117,45 +117,5 @@ public class ConfigManager {
 
     public static boolean isReloading() {
         return isReloading;
-    }
-
-    public static String getDefaultSpawnMessage() {
-        return messageTemplates.get("fullSpawnMessage");
-    }
-
-    public static String getShinyMessage() {
-        return messageTemplates.get("shiny");
-    }
-
-    public static String getLevelMessage() {
-        return messageTemplates.get("level");
-    }
-
-    public static String getLevelMessageHover() {
-        return messageTemplates.get("level_hover");
-    }
-
-    public static String getIVsMessage() {
-        return messageTemplates.get("ivs");
-    }
-
-    public static String getIVsMessageHover() {
-        return messageTemplates.get("ivs_hover");
-    }
-
-    public static String getNatureMessage() {
-        return messageTemplates.get("nature");
-    }
-
-    public static String getNatureMessageHover() {
-        return messageTemplates.get("nature_hover");
-    }
-
-    public static String getCoordsMessage() {
-        return messageTemplates.get("coords");
-    }
-
-    public static String getCoordsMessageHover() {
-        return messageTemplates.get("coords_hover");
     }
 }
