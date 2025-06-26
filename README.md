@@ -167,10 +167,11 @@ Creating a custom alert message:<br>
 The biggest limiation with this mod being purely clientside is that you will *not* receive alerts for spawns if your client is not loading the entity. This is why I highly suggest using this mod in conjunction with [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) if you are on a server.<br><br>Also, for technical reasons, any mod that adds UNIQUE Pokemon (meaning, unofficial Pokemon not in any of the Pokemon games) will not be displayed as legndary/mythical/ultra beast. Here's the full details for those who care: The client is only told what it *needs* to be told to function properly, and this includes a Pokemon's rarity. To get around this, I had to hard code a list of Pokemon that fit their respective rarity. A mod could theoretically add it's own "Fakemons", which would be tagged with a rarity on the server side, but this tag is not reflected on the client.
 
 ## More to come!
-I just started making this mod, so it is quite obviously lacking many features. In no particular order, I 100% plan to add:
+I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
 * Sounds
 * Gender, for catching Pokemon like Ralts
 * Abilities/HA
+* Paradox Pokemon
 * Dynamic replacement to provide lowercase or uppercase name (currently only Capitalized is available)
 * Individually customizable hoverable stats
 
@@ -183,4 +184,4 @@ I may also add the following, but I'm unsure:
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. I don't have a server of my own or anything, so ping me in the Cobblemon server or just DM me. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the Cobblemon discord in #content-zone_help and search for Cobblemon Spawn Alerts. Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
