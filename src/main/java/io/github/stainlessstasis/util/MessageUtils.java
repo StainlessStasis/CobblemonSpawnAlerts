@@ -46,7 +46,6 @@ public class MessageUtils {
         if (shouldAlertShiny) {
             message = message.replace("{shiny}", I18n.get(messageTemplates.shiny()));
             message = message.replace("{shiny_unformatted}", I18n.get(messageTemplates.shiny_unformatted()));
-            System.out.println("TEMPLATE: "+I18n.get(messageTemplates.shiny_unformatted()));
         }
         message = message.replace("{shiny}", "");
         message = message.replace("{shiny_unformatted}", "");

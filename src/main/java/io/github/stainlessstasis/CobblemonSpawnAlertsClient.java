@@ -82,19 +82,15 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             return;
         }
 
-        System.out.println("POKEMON SPAWNED: "+pokemonEntity.getPokemon().getSpecies().getName());
         // pokemon is owned by someone so no alert
         if (pokemonEntity.getOwnerUUID() != null) {
-            System.out.println("POKEMON IS OWNED BY SOMEONE ELSE");
             return;
         }
         // other shit
         if (!(Minecraft.getInstance().player instanceof Player player)) {
-            System.out.println("MINECRAFT INSTANCE IS INVALID");
             return;
         }
         if (ConfigManager.isReloading()) {
-            System.out.println("CONFIG IS RELOADING");
             return;
         }
 
@@ -102,7 +98,6 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         PokemonConfig.PokemonSpecificConfig pokemonConfig;
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = pokemon.getSpecies().getName().toLowerCase();
-        System.out.println("POKEMON NAME: "+pokemonName);
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
         boolean isInConfig = false;
@@ -111,10 +106,8 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                 instanceof PokemonConfig.PokemonSpecificConfig _config) {
             pokemonConfig = _config;
             isInConfig = true;
-            System.out.println("POKEMON IS IN CONFIG");
         } else {
             pokemonConfig = PokemonConfig.PokemonSpecificConfig.createDefault();
-            System.out.println("POKEMON IS NOT IN CONFIG; CREATING DEFAULT");
         }
 
         boolean shouldAlertShiny = pokemon.getShiny() && ((pokemonConfig.alertShiny() && isInConfig) || config.alertAllShinies());
