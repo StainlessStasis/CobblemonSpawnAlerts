@@ -1,17 +1,8 @@
 package io.github.stainlessstasis.util;
 
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
-import com.cobblemon.mod.common.pokemon.Species;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class LegendaryUtil {
-    // Generation 1
-    // Assuming Terapagos is Legendary
     private static final Set<String> LEGENDARIES = Set.of("articuno", "zapdos", "moltres", "mewtwo",
             "raikou", "entei", "suicune", "lugia", "ho-oh",
             "regirock", "regice", "registeel", "latias", "latios", "kyogre", "groudon", "rayquaza",
@@ -38,12 +29,6 @@ public class LegendaryUtil {
             "nihilego", "buzzwole", "pheromosa", "xurkitree", "celesteela", "kartana",
             "guzzlord", "blacephalon", "stakataka", "poipole", "naganadel"
     );
-
-
-    // This method should be called once, after Cobblemon has initialized its data.
-    // A good place is usually within your main client mod class's onInitializeClient() method.
-    public static void initializePokemonSets() {
-    }
 
     public static boolean isLegendary(String name) {
         return LEGENDARIES.contains(name);
