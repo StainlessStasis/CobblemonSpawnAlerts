@@ -4,6 +4,9 @@ A highly customizable, purely clientside mod for Cobblemon 1.6.1 to alert you wh
 ## No more staring at the minimap!
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
 
+## Complete the Pokedex!
+By simply editing the config, you can be alerted whenever an unregistered or uncaught Pokemon spawns near you!
+
 ## Customizability!
 Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use MiniMessage formatting to easily color or format messages however you like (see the [MiniMessage docs](https://docs.advntr.dev/minimessage/format.html)). <br>The default message looks like this:<br>
 ![more bidoof](https://cdn.modrinth.com/data/cached_images/c155665d7d3160c832bd1efeb08d4da50b54be92.png)<br>
@@ -161,12 +164,14 @@ Creating a custom alert message:<br>
 ![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
 
 ## Limitations<br>
-The biggest limiation with this mod being purely clientside is that you will *not* receive alerts for spawns if your client is not loading the entity. This is why I highly suggest using this mod in conjunction with [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) if you are on a server.<br>
+The biggest limiation with this mod being purely clientside is that you will *not* receive alerts for spawns if your client is not loading the entity. This is why I highly suggest using this mod in conjunction with [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) if you are on a server.<br><br>Also, for technical reasons, any mod that adds UNIQUE Pokemon (meaning, unofficial Pokemon not in any of the Pokemon games) will not be displayed as legndary/mythical/ultra beast. Here's the full details for those who care: The client is only told what it *needs* to be told to function properly, and this includes a Pokemon's rarity. To get around this, I had to hard code a list of Pokemon that fit their respective rarity. A mod could theoretically add it's own "Fakemons", which would be tagged with a rarity on the server side, but this tag is not reflected on the client.
 
 ## More to come!
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I 100% plan to add:
 * Sounds
 * Gender, for catching Pokemon like Ralts
+* Abilities/HA
+* Dynamic replacement to provide lowercase or uppercase name (currently only Capitalized is available)
 * Individually customizable hoverable stats
 
 I may also add the following, but I'm unsure:
