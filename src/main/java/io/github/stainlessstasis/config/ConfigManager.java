@@ -5,8 +5,11 @@ import com.google.gson.GsonBuilder;
 import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 
+import java.awt.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -116,5 +119,9 @@ public class ConfigManager {
 
     public static boolean isReloading() {
         return isReloading;
+    }
+
+    public static void openDirectory() {
+        Util.getPlatform().openPath(MOD_CONFIG_DIR);
     }
 }

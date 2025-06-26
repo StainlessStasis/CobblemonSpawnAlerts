@@ -58,7 +58,15 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             })));
         });
 
-        LegendaryUtil.initializePokemonSets();
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(
+                    ClientCommandManager.literal("cobblemonspawnalerts")
+                            .then(ClientCommandManager.literal("openconfig")
+                                    .executes(context -> {
+                                        ConfigManager.openDirectory();
+                                        return 1;
+                                    })));
+        });
     }
 
     private void onClientStop(Minecraft minecraft) {
@@ -110,7 +118,7 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         }
 
         boolean shouldAlertShiny = pokemon.getShiny() && ((pokemonConfig.alertShiny() && isInConfig) || config.alertAllShinies());
-        // the reason i have to do this is because for some fucking reason isLegendary and stuff just dont work on the client
+        // the reason i have to do this is because for some fucking reason isLegendary and stuff just dont work on the client when on a server
         boolean shouldAlertLegend = LegendaryUtil.isLegendary(pokemonName) && config.alertAllLegendaries();
         boolean shouldAlertMythical = LegendaryUtil.isMythical(pokemonName) && config.alertAllMythicals();
         boolean shouldAlertUltra = LegendaryUtil.isUltraBeast(pokemonName) && config.alertAllUltraBeasts();
@@ -125,12 +133,6 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             }
         }
 
-        System.out.println("shouldAlertShiny: "+shouldAlertShiny);
-        System.out.println("shouldAlertLegend: "+shouldAlertLegend);
-        System.out.println("shouldAlertMythical: "+shouldAlertMythical);
-        System.out.println("shouldAlertUltra: "+shouldAlertUltra);
-        System.out.println("shouldAlertNotInDex: "+shouldAlertNotInDex);
-        System.out.println("shouldAlertUncaught: "+shouldAlertUncaught);
         boolean shouldAlert_ =
                 (pokemonConfig.alwaysAlert() && isInConfig)
                 || shouldAlertShiny
@@ -139,15 +141,11 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                 || shouldAlertUltra
                 || shouldAlertNotInDex
                 || shouldAlertUncaught;
-        System.out.println("shouldAlert_: "+shouldAlert_);
         boolean shouldAlert = !alreadyAlerted.contains(pokemonEntity.getUUID()) && shouldAlert_;
-        System.out.println("FINAL SHOULD ALERT: "+shouldAlert);
         if (!pokemonConfig.enabled() || !shouldAlert) {
-            System.out.println("Config not enabled or should not alert");
             return;
         }
 
-        System.out.println("SHOULD ALERT!!!");
         alreadyAlerted.add(pokemonEntity.getUUID());
 
         // send the custom alert if one exits
