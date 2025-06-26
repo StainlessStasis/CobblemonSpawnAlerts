@@ -28,7 +28,7 @@ public record PokemonConfig (Map<String, PokemonSpecificConfig> pokemonConfigs){
         defaults.put("bidoof", new PokemonSpecificConfig(
                 false, true, true, true, true,
                 false, false, false, false,
-                "<hover:show_text:\"<green>This is a hover message!\"><blue>This is an <rainbow>example</rainbow> of how you can use <gradient:blue:green>MiniMessage formatting</gradient> to make <u><b>custom alert messages</b></u>!</hover>"
+                ""
                 ));
         return new PokemonConfig(defaults);
     }

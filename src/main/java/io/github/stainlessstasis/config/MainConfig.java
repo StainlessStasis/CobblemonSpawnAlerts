@@ -4,9 +4,11 @@ public record MainConfig (
     boolean alertAllShinies,
     boolean alertAllLegendaries,
     boolean alertAllMythicals,
-    boolean alertAllUltraBeasts
+    boolean alertAllUltraBeasts,
+    boolean alertAllNotInDex,
+    boolean alertAllUncaught
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(true, true, true, true);
+        return new MainConfig(true, true, true, true, false, false);
     }
 }

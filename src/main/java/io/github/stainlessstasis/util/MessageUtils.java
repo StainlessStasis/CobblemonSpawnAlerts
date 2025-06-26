@@ -29,14 +29,14 @@ public class MessageUtils {
     }
 
     public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, PokemonConfig.PokemonSpecificConfig config) {
-        String name = pokemonEntity.getName().getString();
         Pokemon pokemon = pokemonEntity.getPokemon();
+        String pokemonName = pokemon.getSpecies().getName();
         MessageTemplates messageTemplates = ConfigManager.getMessageTemplates();
         int level = pokemon.getLevel();
         IVs ivs = pokemon.getIvs();
         Nature nature = pokemon.getNature();
 
-        message = message.replace("{name}", name);
+        message = message.replace("{name}", pokemonName);
 
         boolean isHoverEnabled = config.showInfoAsHover();
         String hoverText = "";
@@ -53,13 +53,13 @@ public class MessageUtils {
 
         // Legendary/Mythical/Ultra Beast
         if (config.showLegendary()) {
-            if (pokemon.isLegendary()) {
+            if (LegendaryUtil.isLegendary(pokemonName.toLowerCase())) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.legendary()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.legendary_unformatted()));
-            } else if (pokemon.isMythical()) {
+            } else if (LegendaryUtil.isMythical(pokemonName.toLowerCase())) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.mythical()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.mythical_unformatted()));
-            } else if (pokemon.isUltraBeast()) {
+            } else if (LegendaryUtil.isUltraBeast(pokemonName.toLowerCase())) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.ultrabeast()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.ultrabeast_unformatted()));
             }

@@ -27,7 +27,6 @@ public class ConfigManager {
     public static void loadConfig() {
         isReloading = true;
 
-        // Create config directory
         try {
             Files.createDirectories(MOD_CONFIG_DIR);
         } catch (IOException e) {
