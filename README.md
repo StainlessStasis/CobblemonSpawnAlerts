@@ -1,6 +1,9 @@
 # Cobblemon Spawn Alerts
 A highly customizable, purely clientside mod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns
 
+## IMPORTANT:<br>
+**IVs and Nature currently do NOT work. They will display, but they are incorrect! Will be fixed soon.**
+
 ## No more staring at the minimap!
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
 
@@ -9,7 +12,7 @@ By simply editing the config, you can be alerted whenever an unregistered or unc
 
 ## Customizability!
 Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use MiniMessage formatting to easily color or format messages however you like (see the [MiniMessage docs](https://docs.advntr.dev/minimessage/format.html)). <br>The default message looks like this:<br>
-![more bidoof](https://cdn.modrinth.com/data/cached_images/c155665d7d3160c832bd1efeb08d4da50b54be92.png)<br>
+![Default message](https://cdn.modrinth.com/data/cached_images/4b5500d73cb2c2d1a630cc5c1bee5b220bdb9eb7.png)<br>
 But can be modified to look like this, or however you want!
 ![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
 
@@ -34,15 +37,16 @@ You can edit the config while the game is running, and simply use the command `/
 ## Config - Pokemon
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
 
-`pokemon.json` is where the bulk of the config is at. By default, Bidoof will be included (but not enabled) to provide a foundation for making your own config. You can copy the formatting and change the name of the Pokemon to add a new spawn message for any other Pokemon.<br>
+`pokemon.json` is where the bulk of the config is at. By default, the config will come with a default set of options that will be applied to any alert for a Pokemon that is not added to the config. **DO NOT DELETE OR RENAME THIS.** You can freely edit its contents, but leave the name as it is *exactly*. Also, Bidoof will be included (but not enabled) to provide a foundation for making your own config. You can copy the formatting and change the name of the Pokemon to add a new spawn message for any other Pokemon.<br>
 ### Config Parameters:<br>
 **enabled**: Enables the spawn message for the Pokemon. If set to false, this setting will override every other config setting for the Pokemon and make its spawn message never display.<br>
 **alwaysAlert**: Whether to always alert the Pokemon's spawn message, assuming enabled is set to true. Setting this to false will only display a spawn message given some other condition is true (e.g. alertShiny).<br>
 **alertShiny**: Whether to alert a shiny Pokemon, or if the Pokemon is shiny. If alwaysAlert is set to false, this will ONLY alert that Pokemon's spawn if it is shiny. If alwaysAlert is set to true, then it will simply specify if the spawned Pokemon is shiny.<br>
-**showLegendary**: Shows whether the Pokemon is legendary, mythical, or ultra beast.<br>
+**showLegendary**: Shows whether the Pokemon is legendary, mythical, paradox, or ultra beast.<br>
 **showLevel**: Shows the Pokemon's level.<br>
-**showIVs**: Lists the Pokemon's IVs in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.<br>
-**showNature**: Shows the Pokemon's nature.<br>
+**showIVs**: (Currently only works in singleplayer) Lists the Pokemon's IVs in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.<br>
+**showNature**: (Currently only works in singleplayer) Shows the Pokemon's nature.<br>
+**showGender**: Shows the Pokemon's gender.<br>
 **showCoordinates**: Shows the Pokemon's coordinates (x/y/z).<br>
 **showInfoAsHover**: Shows certain info only when the message is hovered over instead of in the main message. This includes: level, IVs, nature, and coordinates. These are not currently individually configurable to be hovered, so it either shows all the enabled stats in the hover, or all in the main message. I will be adding this feature soon though!<br>
 **customAlertMessage**: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.<br>
@@ -58,12 +62,13 @@ Show all stats in message:<br>
     "showLevel": true,
     "showIVs": true,
     "showNature": true,
+    "showGender": true,
     "showCoordinates": true,
     "showInfoAsHover": false,
     "customAlertMessage": ""
   },
 ```
-![Stats in the main message](https://cdn.modrinth.com/data/cached_images/820a65412160b51140b426453f71fbd4230ea577.png)
+![Stats in main message](https://cdn.modrinth.com/data/cached_images/450637c1ebf32f2558eb5ca4d87e6c479813e22f.png)<br>
 Show all stats in hover:<br>
 ```json
 "bidoof": {
@@ -74,12 +79,13 @@ Show all stats in hover:<br>
     "showLevel": true,
     "showIVs": true,
     "showNature": true,
+    "showGender": true,
     "showCoordinates": true,
     "showInfoAsHover": true,
     "customAlertMessage": ""
   },
 ```
-![Hoverable stats](https://cdn.modrinth.com/data/cached_images/19d913c455e3b368f38b7a56673e24617a454bb0.png)
+![Hoverable stats](https://cdn.modrinth.com/data/cached_images/3073f3109ff8c95f418e8c999108e6d4abc59441.png)
 
 ## Config - Templates
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
@@ -92,7 +98,10 @@ The default values for the templates are found in your Minecraft instance's lang
 {
   "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
   "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
+  "cobblemon-spawn-alerts.config_load_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to load properly while loading `%s`.</red>",
+  "cobblemon-spawn-alerts.config_save_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to save properly while saving `%s`.</red>",
+
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
   "cobblemon-spawn-alerts.shiny_unformatted": "Shiny ",
   "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>",
@@ -101,9 +110,15 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.ivs": "with IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_hover": "IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_unformatted": "(%s/%s/%s/%s/%s/%s)",
-  "cobblemon-spawn-alerts.nature": "with Nature: %s ",
+  "cobblemon-spawn-alerts.nature": "with Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_hover": "Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_unformatted": "%s",
+  "cobblemon-spawn-alerts.gender": "%s ",
+  "cobblemon-spawn-alerts.gender_hover": "Gender: %s",
+  "cobblemon-spawn-alerts.gender_unformatted": "%s",
+  "cobblemon-spawn-alerts.male": "<aqua>♂ Male</aqua>",
+  "cobblemon-spawn-alerts.female": "<light_purple>♀ Female</light_purple>",
+  "cobblemon-spawn-alerts.genderless": "<gray>Genderless</gray>",
   "cobblemon-spawn-alerts.coords": " at <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_hover": "Coordinates: <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_unformatted": "(%s, %s, %s)",
@@ -112,7 +127,9 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.mythical": "<light_purple>Mythical </light_purple>",
   "cobblemon-spawn-alerts.mythical_unformatted": "Mythical",
   "cobblemon-spawn-alerts.ultrabeast": "<light_purple>Ultra Beast </light_purple>",
-  "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast"
+  "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast",
+  "cobblemon-spawn-alerts.paradox": "<light_purple>Paradox </light_purple>",
+  "cobblemon-spawn-alerts.paradox_unformatted": "Paradox"
 }
 ```
 <br>
@@ -136,11 +153,12 @@ Change the default spawn message for all Pokemon:
 ## Custom Alert Messages
 Custom alert messages can utilize dynamic replacement to include info about the Pokemon.
 Currently, the available dynamic replacements are:
-* **{name}**: Inserts the Pokemon's name
+* **{name} / {name_lower} / {name_upper}**: Inserts the Pokemon's name
 * **{shiny} / {shiny_unformatted}**: Inserts a shiny message if the Pokemon is shiny and `alertShiny` is enabled
 * **{level} / {level_unformatted}**: Inserts the Pokemon's level if `showLevel` is enabled
 * **{ivs} / {ivs_unformatted}**: Inserts the Pokemon's IVs if `showIVs` is enabled
-* **{nature / {nature_unformatted}}**: Inserts the Pokemon's nature if `showNature` is enabled
+* **{nature / {nature_unformatted}**: Inserts the Pokemon's nature if `showNature` is enabled
+* **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender if `showGender` is enabled
 * **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates if `showCoordinates` is enabled
 * **{legendary} / {legendary_unformatted}**: Inserts the Pokemon's rarity (legendary/mythical/ultra beast) if `showLegendary` is enabled
 <br><br>
@@ -155,6 +173,7 @@ Creating a custom alert message:<br>
     "showLevel": true,
     "showIVs": false,
     "showNature": false,
+    "showGender": false,
     "showCoordinates": true,
     "showInfoAsHover": false,
     "customAlertMessage": "<blue>My beautiful boy {shiny}<gradient:blue:green><b>BIDOOF</b></gradient> {level}spawned{coords}!</blue>"
@@ -164,18 +183,17 @@ Creating a custom alert message:<br>
 ![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
 
 ## Limitations<br>
-The biggest limitation with this mod is that it only mostly works in singleplayer. The only features that work in multiplayer are the name of the Pokemon, its level, its shiny status, and its rarity.<br><br>
+**IVs and Nature currently do NOT work. They will disp*ay, but they are incorrect!**<br><br>
+The biggest limitation with this mod is that it only mostly works in singleplayer. The only features that work in multiplayer are the name of the Pokemon, its level, gender, shiny status, and rarity.<br><br>
 Also, you wil *not* receive alerts for spawns if your client is not loading the entity. This is why I highly suggest using this mod in conjunction with [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) if you are on a server.<br><br>
 Lastly, for technical reasons, any mod that adds UNIQUE Pokemon (meaning, unofficial Pokemon not in any of the Pokemon games) will not be displayed as legndary/mythical/ultra beast. Here's the full details for those who care: The client is only told what it *needs* to be told to function properly, and this includes a Pokemon's rarity. To get around this, I had to hard code a list of Pokemon that fit their respective rarity. A mod could theoretically add it's own "Fakemons", which would be tagged with a rarity on the server side, but this tag is not reflected on the client.
 
 ## More to come!
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
-* Optional serverside mod to allow IVs, nature, etc. to work on other clients with the mod installed
+* Optional serverside mod to allow IVs, nature, etc. to work on other clients with the mod installed (also to fix IVs and Nature)
 * Sounds
-* Gender, for catching Pokemon like Ralts
 * Abilities
-* Paradox Pokemon
-* Dynamic replacement to provide lowercase or uppercase name (currently only Capitalized is available)
+* EVs
 * Individually customizable hoverable stats
 
 I may also add the following, but I'm unsure:
