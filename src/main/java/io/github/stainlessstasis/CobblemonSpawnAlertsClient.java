@@ -2,14 +2,18 @@ package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
-import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
+import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.IVs;
+import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.config.ConfigManager;
+import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.util.ComponentUtil;
 import io.github.stainlessstasis.util.RarityUtil;
 import io.github.stainlessstasis.util.MessageUtils;
@@ -18,14 +22,13 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
 import java.util.HashSet;
@@ -33,18 +36,24 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CobblemonSpawnAlertsClient implements ClientModInitializer {
-    public static final String MOD_ID = "cobblemon-spawn-alerts";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
 
     @Override
     public void onInitializeClient() {
-        LOGGER.info("CobblemonSpawnAlerts initializing");
+        CobblemonSpawnAlerts.LOGGER.info("CobblemonSpawnAlerts initializing");
         ConfigManager.loadConfig();
         ClientEntityEvents.ENTITY_LOAD.register(this::onEntityLoaded);
         ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
         ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
 
+        // Packets
+        ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                handlePokemonDataPacket(payload.pokemonUUID(), payload.ivs(), payload.nature());
+            });
+        });
+
+        // Commands
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             dispatcher.register(
                     ClientCommandManager.literal("cobblemonspawnalerts")
@@ -112,7 +121,7 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             pokemonConfig = _config;
         } else {
             pokemonConfig = PokemonConfig.PokemonSpecificConfig.createDefault();
-            LOGGER.warn("No default config found in `pokemon.json`, creating a new one.");
+            CobblemonSpawnAlerts.LOGGER.warn("No default config found in `pokemon.json`, creating a new one.");
         }
 
         if (!pokemonConfig.enabled()) {
@@ -175,5 +184,9 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         message = MessageUtils.applyDynamicReplacements(message, pokemonEntity, pokemonConfig);
         Component component = ComponentUtil.convertFromAdventure(message);
         player.sendSystemMessage(component);
+    }
+
+    private void handlePokemonDataPacket(UUID pokemonUUID, IVs ivs, Nature nature) {
+        System.out.println("POKEMON DATA: "+pokemonUUID+" "+ivs.get(Stats.HP)+" "+nature.getDisplayName());
     }
 }

@@ -3,7 +3,7 @@
 	"id": "cobblemon-spawn-alerts",
 	"version": "${version}",
 	"name": "Cobblemon Spawn Alerts",
-	"description": "Configurable clientside alerts for when a certain pokemon spawns around you",
+	"description": "A highly customizable, purely clientside mod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns",
 	"authors": [
 		"Stasis, the Shattered"
 	],
