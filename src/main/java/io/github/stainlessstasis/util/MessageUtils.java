@@ -6,10 +6,10 @@ import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
+import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
-import io.github.stainlessstasis.config.ConfigManager;
+import io.github.stainlessstasis.config.ClientConfigManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -30,10 +30,16 @@ public class MessageUtils {
         return I18n.get(translationKey, args);
     }
 
+    public static Component getMiniMessageTranslated(String translationKey, Object... args) {
+        String translated = I18n.get(translationKey, args);
+        Component component = ComponentUtil.convertFromAdventure(translated);
+        return component;
+    }
+
     public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, PokemonConfig.PokemonSpecificConfig config) {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = pokemon.getSpecies().getName();
-        MessageTemplates messageTemplates = ConfigManager.getMessageTemplates();
+        MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.configManager.getMessageTemplates();
         int level = pokemon.getLevel();
         IVs ivs = pokemon.getIvs();
         Nature nature = pokemon.getNature();

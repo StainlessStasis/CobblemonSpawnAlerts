@@ -2,7 +2,6 @@ package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
-import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
@@ -12,56 +11,53 @@ import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.PokemonConfig;
-import io.github.stainlessstasis.config.ConfigManager;
+import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.util.ComponentUtil;
 import io.github.stainlessstasis.util.RarityUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.UUID;
 
+@Environment(EnvType.CLIENT)
 public class CobblemonSpawnAlertsClient implements ClientModInitializer {
-    private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
+//    private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
+    public static final ClientConfigManager configManager = new ClientConfigManager();
 
     @Override
     public void onInitializeClient() {
-        CobblemonSpawnAlerts.LOGGER.info("CobblemonSpawnAlerts initializing");
-        ConfigManager.loadConfig();
-        ClientEntityEvents.ENTITY_LOAD.register(this::onEntityLoaded);
-        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
-        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
+        CobblemonSpawnAlerts.LOGGER.info("CobblemonSpawnAlerts client initializing");
+        configManager.loadConfig();
+//        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
+//        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
 
         // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
             context.client().execute(() -> {
-                handlePokemonDataPacket(payload.pokemonUUID(), payload.ivs(), payload.nature());
+                handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.nature());
             });
         });
 
         // Commands
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(
-                    ClientCommandManager.literal("cobblemonspawnalerts")
+            dispatcher.register(ClientCommandManager.literal("cobblemonspawnalerts")
                     .then(ClientCommandManager.literal("reload")
-                    .executes(context -> {
-                ConfigManager.reload();
-                return 1;
-            })));
+                        .executes(context -> {
+                            configManager.reload();
+                            return 1;
+            }))
+                    .then(ClientCommandManager.literal("reload-server")
+                            .executes(context -> {return 1;})));
         });
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
@@ -69,24 +65,37 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                     ClientCommandManager.literal("cobblemonspawnalerts")
                             .then(ClientCommandManager.literal("openconfig")
                                     .executes(context -> {
-                                        ConfigManager.openDirectory();
+                                        ClientConfigManager.openDirectory();
                                         return 1;
                                     })));
         });
     }
 
-    private void onClientStop(Minecraft minecraft) {
-        alreadyAlerted.clear();
-    }
+//    private void onClientStop(Minecraft minecraft) {
+//        alreadyAlerted.clear();
+//    }
+//
+//    private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
+//        alreadyAlerted.clear();
+//    }
 
-    private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
-        alreadyAlerted.clear();
-    }
+    private void handlePokemonDataPacket(int pokemonNetworkID, IVs ivs, Nature nature) {
+        // -PACKET HANDLING-
 
-    private void onEntityLoaded(Entity entity, ClientLevel world) {
-        if (!(entity instanceof PokemonEntity pokemonEntity)) {
+        if (!(Minecraft.getInstance().level instanceof ClientLevel level)) {
             return;
         }
+        if (!(level.getEntity(pokemonNetworkID) instanceof PokemonEntity pokemonEntity)) {
+            return;
+        }
+
+        System.out.println("POKEMON DATA: "+pokemonNetworkID+" "+ivs.get(Stats.HP)+" "+nature.getDisplayName());
+        Pokemon pokemon = pokemonEntity.getPokemon();
+        pokemon.setIvs$common(ivs);
+        pokemon.setNature(nature);
+
+
+        // -ALERT MESSAGE-
 
         // pokemon is owned by someone so no alert
         if (pokemonEntity.getOwnerUUID() != null) {
@@ -96,27 +105,26 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         if (!(Minecraft.getInstance().player instanceof Player player)) {
             return;
         }
-        if (ConfigManager.isReloading()) {
+        if (configManager.isReloading()) {
             return;
         }
-        if (alreadyAlerted.contains(pokemonEntity.getUUID())) {
-            return;
-        }
+//        if (alreadyAlerted.contains(pokemonEntity.getUUID())) {
+//            return;
+//        }
 
-        MainConfig config = ConfigManager.getMainConfig();
+        MainConfig config = configManager.getMainConfig();
         PokemonConfig.PokemonSpecificConfig pokemonConfig;
-        Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = pokemon.getSpecies().getName().toLowerCase();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
         boolean isInConfig = false;
         // get the pokemon in the config
-        if (ConfigManager.getPokemonConfig().pokemonConfigs().get(pokemonName)
+        if (configManager.getPokemonConfig().pokemonConfigs().get(pokemonName)
                 instanceof PokemonConfig.PokemonSpecificConfig _config) {
             pokemonConfig = _config;
             isInConfig = true;
         }
-        else if (ConfigManager.getPokemonConfig().pokemonConfigs().get("default (You can modify anything BELOW this, but dont delete it!)")
+        else if (configManager.getPokemonConfig().pokemonConfigs().get("default (You can modify anything BELOW this, but dont delete it!)")
                 instanceof PokemonConfig.PokemonSpecificConfig _config) {
             pokemonConfig = _config;
         } else {
@@ -151,13 +159,13 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                         pokemon.getShiny() && config.alertAllShinies();
         boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
         boolean shouldAlertNotInConfig =
-                    shouldAlertShiny
-                    || shouldAlertLegend
-                    || shouldAlertMythical
-                    || shouldAlertUltra
-                    || shouldAlertParadox
-                    || shouldAlertNotInDex
-                    || shouldAlertUncaught;
+                shouldAlertShiny
+                        || shouldAlertLegend
+                        || shouldAlertMythical
+                        || shouldAlertUltra
+                        || shouldAlertParadox
+                        || shouldAlertNotInDex
+                        || shouldAlertUncaught;
 
         if (isInConfig) {
             if (!shouldAlertInConfig) {
@@ -169,7 +177,7 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             }
         }
 
-        alreadyAlerted.add(pokemonEntity.getUUID());
+//        alreadyAlerted.add(pokemonEntity.getUUID());
 
         // send the custom alert if one exits
         String message;
@@ -180,13 +188,9 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         }
 
         // use the default message if no custom one is provided
-        message = MessageUtils.getTranslated(ConfigManager.getMessageTemplates().fullSpawnMessage());
+        message = MessageUtils.getTranslated(configManager.getMessageTemplates().fullSpawnMessage());
         message = MessageUtils.applyDynamicReplacements(message, pokemonEntity, pokemonConfig);
         Component component = ComponentUtil.convertFromAdventure(message);
         player.sendSystemMessage(component);
-    }
-
-    private void handlePokemonDataPacket(UUID pokemonUUID, IVs ivs, Nature nature) {
-        System.out.println("POKEMON DATA: "+pokemonUUID+" "+ivs.get(Stats.HP)+" "+nature.getDisplayName());
     }
 }

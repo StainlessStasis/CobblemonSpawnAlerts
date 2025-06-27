@@ -19,6 +19,7 @@ loom {
 	mixin {
 		defaultRefmapName.set("mixins.${project.name}.refmap.json")
 	}
+	accessWidenerPath = file("src/main/resources/cobblemon-spawn-alerts.accesswidener")
 }
 
 repositories {

@@ -10,6 +10,10 @@
 	"license": "MIT License",
 	"icon": "assets/cobblemon-spawn-alerts/icon.png",
 	"environment": "*",
+	"mixins": [
+		"cobblemon-spawn-alerts.mixins.json"
+	],
+	"accessWidener": "cobblemon-spawn-alerts.accesswidener",
 	"entrypoints": {
 		"main": [
 			"io.github.stainlessstasis.CobblemonSpawnAlerts"
