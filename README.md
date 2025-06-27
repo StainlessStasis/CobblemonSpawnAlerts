@@ -170,7 +170,6 @@ The biggest limiation with this mod being purely clientside is that you will *no
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
 * Sounds
 * Gender, for catching Pokemon like Ralts
-* Abilities/HA
 * Paradox Pokemon
 * Dynamic replacement to provide lowercase or uppercase name (currently only Capitalized is available)
 * Individually customizable hoverable stats
