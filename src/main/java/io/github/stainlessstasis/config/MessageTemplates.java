@@ -13,6 +13,12 @@ public record MessageTemplates (
         String nature,
         String nature_hover,
         String nature_unformatted,
+        String gender,
+        String gender_hover,
+        String gender_unformatted,
+        String male,
+        String female,
+        String genderless,
         String coords,
         String coords_hover,
         String coords_unformatted,
@@ -21,7 +27,9 @@ public record MessageTemplates (
         String mythical,
         String mythical_unformatted,
         String ultrabeast,
-        String ultrabeast_unformatted
+        String ultrabeast_unformatted,
+        String paradox,
+        String paradox_unformatted
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
@@ -37,6 +45,12 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.nature",
                 "cobblemon-spawn-alerts.nature_hover",
                 "cobblemon-spawn-alerts.nature_unformatted",
+                "cobblemon-spawn-alerts.gender",
+                "cobblemon-spawn-alerts.gender_hover",
+                "cobblemon-spawn-alerts.gender_unformatted",
+                "cobblemon-spawn-alerts.male",
+                "cobblemon-spawn-alerts.female",
+                "cobblemon-spawn-alerts.genderless",
                 "cobblemon-spawn-alerts.coords",
                 "cobblemon-spawn-alerts.coords_hover",
                 "cobblemon-spawn-alerts.coords_unformatted",
@@ -45,7 +59,9 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.mythical",
                 "cobblemon-spawn-alerts.mythical_unformatted",
                 "cobblemon-spawn-alerts.ultrabeast",
-                "cobblemon-spawn-alerts.ultrabeast_unformatted"
+                "cobblemon-spawn-alerts.ultrabeast_unformatted",
+                "cobblemon-spawn-alerts.paradox",
+                "cobblemon-spawn-alerts.paradox_unformatted"
         );
     }
 }

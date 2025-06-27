@@ -2,9 +2,11 @@ package io.github.stainlessstasis.util;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.config.ConfigManager;
@@ -35,8 +37,11 @@ public class MessageUtils {
         int level = pokemon.getLevel();
         IVs ivs = pokemon.getIvs();
         Nature nature = pokemon.getNature();
+        Gender gender = pokemon.getGender();
 
         message = message.replace("{name}", pokemonName);
+        message = message.replace("{name_lower}", pokemonName.toLowerCase());
+        message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
         boolean isHoverEnabled = config.showInfoAsHover();
         String hoverText = "";
@@ -52,15 +57,19 @@ public class MessageUtils {
 
         // Legendary/Mythical/Ultra Beast
         if (config.showLegendary()) {
-            if (LegendaryUtil.isLegendary(pokemonName.toLowerCase())) {
+            String nameLower = pokemonName.toLowerCase();
+            if (RarityUtil.isLegendary(nameLower)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.legendary()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.legendary_unformatted()));
-            } else if (LegendaryUtil.isMythical(pokemonName.toLowerCase())) {
+            } else if (RarityUtil.isMythical(nameLower)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.mythical()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.mythical_unformatted()));
-            } else if (LegendaryUtil.isUltraBeast(pokemonName.toLowerCase())) {
+            } else if (RarityUtil.isUltraBeast(nameLower)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.ultrabeast()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.ultrabeast_unformatted()));
+            } else if (RarityUtil.isParadox(pokemonName.toLowerCase())) {
+                message = message.replace("{legendary}", I18n.get(messageTemplates.paradox()));
+                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.paradox_unformatted()));
             }
         }
         message = message.replace("{legendary}", "");
@@ -114,6 +123,27 @@ public class MessageUtils {
         }
         message = message.replace("{nature}", "");
         message = message.replace("{nature_unformatted}", "");
+
+        // Gender
+        if (config.showGender()) {
+            String genderString = switch (gender) {
+                case MALE -> messageTemplates.male();
+                case FEMALE -> messageTemplates.female();
+                case GENDERLESS -> messageTemplates.genderless();
+            };
+            genderString = I18n.get(genderString);
+            String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
+            String genderMessage = I18n.get(configMessage, genderString);
+            if (isHoverEnabled) {
+                hoverText += genderMessage + "\n";
+            } else {
+                message = message.replace("{gender}", genderMessage);
+            }
+            message = message.replace("{gender_unformatted}",
+                    I18n.get(messageTemplates.gender_unformatted(), gender.toString().charAt(0) + gender.toString().toLowerCase().substring(1)));
+        }
+        message = message.replace("{gender}", "");
+        message = message.replace("{gender_unformatted}", "");
 
         // Coordinates
         if (config.showCoordinates()) {

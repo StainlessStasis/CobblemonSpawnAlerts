@@ -5,10 +5,11 @@ public record MainConfig (
     boolean alertAllLegendaries,
     boolean alertAllMythicals,
     boolean alertAllUltraBeasts,
+    boolean alertAllParadox,
     boolean alertAllNotInDex,
     boolean alertAllUncaught
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(true, true, true, true, false, false);
+        return new MainConfig(true, true, true, true, true,false, false);
     }
 }

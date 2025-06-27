@@ -2,7 +2,7 @@ package io.github.stainlessstasis.util;
 
 import java.util.Set;
 
-public class LegendaryUtil {
+public class RarityUtil {
     private static final Set<String> LEGENDARIES = Set.of("articuno", "zapdos", "moltres", "mewtwo",
             "raikou", "entei", "suicune", "lugia", "ho-oh",
             "regirock", "regice", "registeel", "latias", "latios", "kyogre", "groudon", "rayquaza",
@@ -30,6 +30,14 @@ public class LegendaryUtil {
             "guzzlord", "blacephalon", "stakataka", "poipole", "naganadel"
     );
 
+    // i know koraidon and miraidon are technically also paradox, but since they're legendaries i do not care
+    private static final Set<String> PARADOX = Set.of(
+            "great tusk", "scream tail", "brute bonnet", "flutter mane", "slither wing",
+            "sandy shocks", "roaring moon", "walking wake", "gouging fire", "raging bolt",
+            "iron treads", "iron bundle", "iron hands", "iron jugulis", "iron moth",
+            "iron thorns", "iron valiant", "iron leaves", "iron boulder", "iron crown"
+    );
+
     public static boolean isLegendary(String name) {
         return LEGENDARIES.contains(name);
     }
@@ -41,4 +49,6 @@ public class LegendaryUtil {
     public static boolean isUltraBeast(String name) {
         return ULTRA_BEASTS.contains(name);
     }
+
+    public static boolean isParadox(String name) {return PARADOX.contains(name);}
 }

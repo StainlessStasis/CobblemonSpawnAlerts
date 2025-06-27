@@ -2,24 +2,20 @@ package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
-import com.cobblemon.mod.common.api.pokedex.entry.PokedexEntry;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.cobblemon.mod.common.pokemon.Species;
 import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.config.ConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
-import io.github.stainlessstasis.util.LegendaryUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientWorldEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -93,6 +89,9 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         if (ConfigManager.isReloading()) {
             return;
         }
+        if (alreadyAlerted.contains(pokemonEntity.getUUID())) {
+            return;
+        }
 
         MainConfig config = ConfigManager.getMainConfig();
         PokemonConfig.PokemonSpecificConfig pokemonConfig;
@@ -110,11 +109,15 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             pokemonConfig = PokemonConfig.PokemonSpecificConfig.createDefault();
         }
 
-        boolean shouldAlertShiny = pokemon.getShiny() && ((pokemonConfig.alertShiny() && isInConfig) || config.alertAllShinies());
+        if (!pokemonConfig.enabled()) {
+            return;
+        }
+
         // the reason i have to do this is because for some fucking reason isLegendary and stuff just dont work on the client when on a server
-        boolean shouldAlertLegend = LegendaryUtil.isLegendary(pokemonName) && config.alertAllLegendaries();
-        boolean shouldAlertMythical = LegendaryUtil.isMythical(pokemonName) && config.alertAllMythicals();
-        boolean shouldAlertUltra = LegendaryUtil.isUltraBeast(pokemonName) && config.alertAllUltraBeasts();
+        boolean shouldAlertLegend = RarityUtil.isLegendary(pokemonName) && config.alertAllLegendaries();
+        boolean shouldAlertMythical = RarityUtil.isMythical(pokemonName) && config.alertAllMythicals();
+        boolean shouldAlertUltra = RarityUtil.isUltraBeast(pokemonName) && config.alertAllUltraBeasts();
+        boolean shouldAlertParadox = RarityUtil.isParadox(pokemonName) && config.alertAllParadox();
 
         boolean shouldAlertNotInDex = config.alertAllNotInDex();
         boolean shouldAlertUncaught = config.alertAllUncaught();
@@ -126,17 +129,29 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             }
         }
 
-        boolean shouldAlert_ =
-                (pokemonConfig.alwaysAlert() && isInConfig)
-                || shouldAlertShiny
-                || shouldAlertLegend
-                || shouldAlertMythical
-                || shouldAlertUltra
-                || shouldAlertNotInDex
-                || shouldAlertUncaught;
-        boolean shouldAlert = !alreadyAlerted.contains(pokemonEntity.getUUID()) && shouldAlert_;
-        if (!pokemonConfig.enabled() || !shouldAlert) {
-            return;
+        boolean shouldAlertShiny =
+                isInConfig ?
+                        pokemon.getShiny() && pokemonConfig.alertShiny() || config.alertAllShinies()
+                        :
+                        pokemon.getShiny() && config.alertAllShinies();
+        boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
+        boolean shouldAlertNotInConfig =
+                    shouldAlertShiny
+                    || shouldAlertLegend
+                    || shouldAlertMythical
+                    || shouldAlertUltra
+                    || shouldAlertParadox
+                    || shouldAlertNotInDex
+                    || shouldAlertUncaught;
+
+        if (isInConfig) {
+            if (!shouldAlertInConfig) {
+                return;
+            }
+        } else {
+            if (!shouldAlertNotInConfig) {
+                return;
+            }
         }
 
         alreadyAlerted.add(pokemonEntity.getUUID());

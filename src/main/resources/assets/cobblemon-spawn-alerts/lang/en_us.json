@@ -1,7 +1,8 @@
 {
   "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
   "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
+
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
   "cobblemon-spawn-alerts.shiny_unformatted": "Shiny ",
   "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>",
@@ -10,9 +11,15 @@
   "cobblemon-spawn-alerts.ivs": "with IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_hover": "IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_unformatted": "(%s/%s/%s/%s/%s/%s)",
-  "cobblemon-spawn-alerts.nature": "with Nature: %s ",
+  "cobblemon-spawn-alerts.nature": "with Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_hover": "Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_unformatted": "%s",
+  "cobblemon-spawn-alerts.gender": "%s ",
+  "cobblemon-spawn-alerts.gender_hover": "Gender: %s",
+  "cobblemon-spawn-alerts.gender_unformatted": "%s",
+  "cobblemon-spawn-alerts.male": "<aqua>♂ Male</aqua>",
+  "cobblemon-spawn-alerts.female": "<light_purple>♀ Female</light_purple>",
+  "cobblemon-spawn-alerts.genderless": "<gray>Genderless</gray>",
   "cobblemon-spawn-alerts.coords": " at <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_hover": "Coordinates: <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_unformatted": "(%s, %s, %s)",
@@ -21,5 +28,7 @@
   "cobblemon-spawn-alerts.mythical": "<light_purple>Mythical </light_purple>",
   "cobblemon-spawn-alerts.mythical_unformatted": "Mythical",
   "cobblemon-spawn-alerts.ultrabeast": "<light_purple>Ultra Beast </light_purple>",
-  "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast"
+  "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast",
+  "cobblemon-spawn-alerts.paradox": "<light_purple>Paradox </light_purple>",
+  "cobblemon-spawn-alerts.paradox_unformatted": "Paradox"
 }
