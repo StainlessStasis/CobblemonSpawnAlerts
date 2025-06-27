@@ -2,6 +2,7 @@ package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
+import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -105,8 +106,13 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                 instanceof PokemonConfig.PokemonSpecificConfig _config) {
             pokemonConfig = _config;
             isInConfig = true;
+        }
+        else if (ConfigManager.getPokemonConfig().pokemonConfigs().get("default (You can modify anything BELOW this, but dont delete it!)")
+                instanceof PokemonConfig.PokemonSpecificConfig _config) {
+            pokemonConfig = _config;
         } else {
             pokemonConfig = PokemonConfig.PokemonSpecificConfig.createDefault();
+            LOGGER.warn("No default config found in `pokemon.json`, creating a new one.");
         }
 
         if (!pokemonConfig.enabled()) {

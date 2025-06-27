@@ -5,9 +5,12 @@ import com.google.gson.GsonBuilder;
 import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.loader.api.FabricLoader;
+import net.kyori.adventure.sound.Sound;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 
 import java.awt.*;
 import java.io.*;
@@ -15,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -34,12 +39,31 @@ public class ConfigManager {
             Files.createDirectories(MOD_CONFIG_DIR);
         } catch (IOException e) {
             CobblemonSpawnAlertsClient.LOGGER.error("Failed to create mod config directory: " + MOD_CONFIG_DIR, e);
+            failedLoad(MOD_CONFIG_DIR);
+            return;
         }
 
         messageTemplates = loadConfigFile(MESSAGE_TEMPLATES_FILE, MessageTemplates.class);
+        if (messageTemplates == null) {
+            failedLoad(MESSAGE_TEMPLATES_FILE.toPath());
+            return;
+        }
         pokemonConfig = loadConfigFile(POKEMON_CONFIG_FILE, PokemonConfig.class);
+        if (pokemonConfig == null) {
+            failedLoad(POKEMON_CONFIG_FILE.toPath());
+            return;
+        }
         mainConfig = loadConfigFile(MAIN_CONFIG_FILE, MainConfig.class);
+        if (mainConfig == null) {
+            failedLoad(MAIN_CONFIG_FILE.toPath());
+            return;
+        }
 
+        isReloading = false;
+    }
+
+    private static void failedLoad(Path path) {
+        MessageUtils.sendTranslated("cobblemon-spawn-alerts.config_load_failed", path);
         isReloading = false;
     }
 
@@ -84,7 +108,7 @@ public class ConfigManager {
         }
     }
 
-    public static <T> void saveConfigFile(File file, T config) {
+    private static <T> void saveConfigFile(File file, T config) {
         String fileName = file.getName();
 
         try (FileWriter writer = new FileWriter(file)) {
@@ -92,6 +116,8 @@ public class ConfigManager {
             CobblemonSpawnAlertsClient.LOGGER.info("Config file `"+fileName+"` saved successfully.");
         } catch (IOException e) {
             CobblemonSpawnAlertsClient.LOGGER.error("Failed to save config file `"+fileName+"`: " + e.getMessage());
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.config_save_failed", file.toPath());
+            isReloading = false;
         }
     }
 

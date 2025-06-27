@@ -26,6 +26,7 @@ public record PokemonConfig (Map<String, PokemonSpecificConfig> pokemonConfigs){
 
     public static PokemonConfig createDefault() {
         Map<String, PokemonSpecificConfig> defaults = new HashMap<>();
+        defaults.put("default (You can modify anything BELOW this, but dont delete it!)", PokemonSpecificConfig.createDefault());
         defaults.put("bidoof", new PokemonSpecificConfig(
                 false, true, true, true, true,
                 false, false, false, false, false,
