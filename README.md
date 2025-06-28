@@ -1,5 +1,5 @@
 # Cobblemon Spawn Alerts
-A highly customizable, purely clientside mod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns
+A highly customizable Cobblemon sidemod to alert you when a certain Pokemon spawns
 
 ## IMPORTANT:<br>
 **Some Pokemon info, like IVs or Nature, may not display properly if you are on a server!** Servers can optionally install this mod to broadcast this info to clients if they desire, also with a config of its own. If a server does not have this mod installed, then things will not display correctly.
