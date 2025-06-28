@@ -2,7 +2,7 @@
 A highly customizable, purely clientside mod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns
 
 ## IMPORTANT:<br>
-**IVs and Nature currently do NOT work. They will display, but they are incorrect! Will be fixed soon.**
+**Some Pokemon info, like IVs or Nature, may not display properly if you are on a server!** Servers can optionally install this mod to broadcast this info to clients if they desire, also with a config of its own. If a server does not have this mod installed, then things will not display correctly.
 
 ## No more staring at the minimap!
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
@@ -19,22 +19,35 @@ But can be modified to look like this, or however you want!
 ## Works with exiting spawn notifications mod!
 The mod does not at all affect the [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) mod by [tmetcalfe89](https://modrinth.com/user/tmetcalfe89). Cobblemon Spawn Notification is a great mod, so if you somehow don't know about it already I highly recommend using it on your server! It is also partly what inspired this mod.
 
-## Config - Main
+## Config - Main (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
 This file is called `main.json`
 
-### Config Parameters:<br>
+### Config Settings:<br>
 **alertAllShinies**: Alerts you when any shiny spawns, unless `alertShiny` is disabled in its config, or its config is disabled.<br>
 **alertAllLegendaries**: Alerts you when any legendary spawns, unless its config is disabled.<br>
 **alertAllMythicals**: Alerts you when any mythical spawns, unless its config is disabled.<br>
 **alertAllUltraBeasts**: Alerts you when any ultra beast spawns, unless its config is disabled.<br>
+**alertALlParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
 **alertAllNotInDex**: Alerts you when any Pokemon which is not already registered in your Pokedex spawns, unless its config is disabled.<br>
 **alertAllUncaught**: Alerts you when any Pokemon which you have not caught spawns, unless its config is disabled.<br>
 
 ### Reloading the Config:<br>
 You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reload` to reload it. Leaving/entering a world will **NOT** reload the config. The command must be run to take effect.<br>
 
-## Config - Pokemon
+## Config - Server
+The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
+This file is called `server.json`
+
+### Config Settings:<br>
+**broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
+**broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
+**Note:** Disabling these on your client instance will also stop things from displaying properly in singleplayer... so don't do that (unless you want to)
+
+### Reloading the Config:<br>
+You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
+
+## Config - Pokemon (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
 
 `pokemon.json` is where the bulk of the config is at. By default, the config will come with a default set of options that will be applied to any alert for a Pokemon that is not added to the config. **DO NOT DELETE OR RENAME THIS.** You can freely edit its contents, but leave the name as it is *exactly*. Also, Bidoof will be included (but not enabled) to provide a foundation for making your own config. You can copy the formatting and change the name of the Pokemon to add a new spawn message for any other Pokemon.<br>
@@ -87,7 +100,7 @@ Show all stats in hover:<br>
 ```
 ![Hoverable stats](https://cdn.modrinth.com/data/cached_images/3073f3109ff8c95f418e8c999108e6d4abc59441.png)
 
-## Config - Templates
+## Config - Templates (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
 
 `message_templates.json` is where you can find and edit the default messages, and message parts. These apply to EVERY spawn, with the exception of `fullSpawnMessage`, which is only used when a custom spawn message is not provided. These templates are what replace the dynamic replacement placeholders.<br>
@@ -96,8 +109,9 @@ The config is found in your Minecraft instance folder under `config -> cobblemon
 The default values for the templates are found in your Minecraft instance's language file for the mod. The defaults for en_us.json (the only currently added language) are:<br>
 ```json
 {
-  "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
-  "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
+  "cobblemon-spawn-alerts.client_config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloading...</white>",
+  "cobblemon-spawn-alerts.client_config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloaded!</white>",
+  "cobblemon-spawn-alerts.client_config_reload_failed": "<green>[CobblemonSpawnAlerts] </green><red>Client config reload failed.</red>",
   "cobblemon-spawn-alerts.config_load_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to load properly while loading `%s`.</red>",
   "cobblemon-spawn-alerts.config_save_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to save properly while saving `%s`.</red>",
 
@@ -183,14 +197,11 @@ Creating a custom alert message:<br>
 ![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
 
 ## Limitations<br>
-**IVs and Nature currently do NOT work. They will disp*ay, but they are incorrect!**<br><br>
-The biggest limitation with this mod is that it only mostly works in singleplayer. The only features that work in multiplayer are the name of the Pokemon, its level, gender, shiny status, and rarity.<br><br>
-Also, you wil *not* receive alerts for spawns if your client is not loading the entity. This is why I highly suggest using this mod in conjunction with [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification) if you are on a server.<br><br>
-Lastly, for technical reasons, any mod that adds UNIQUE Pokemon (meaning, unofficial Pokemon not in any of the Pokemon games) will not be displayed as legndary/mythical/ultra beast. Here's the full details for those who care: The client is only told what it *needs* to be told to function properly, and this includes a Pokemon's rarity. To get around this, I had to hard code a list of Pokemon that fit their respective rarity. A mod could theoretically add it's own "Fakemons", which would be tagged with a rarity on the server side, but this tag is not reflected on the client.
+If a server does not have this mod installed, then some things (e.g. IVs, Nature) will not display correctly.
 
 ## More to come!
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
-* Optional serverside mod to allow IVs, nature, etc. to work on other clients with the mod installed (also to fix IVs and Nature)
+* Serverside global alerts
 * Sounds
 * Abilities
 * EVs
