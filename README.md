@@ -196,9 +196,6 @@ Creating a custom alert message:<br>
 **Note:** This can also be done by modifying the `fullSpawnMessage` template if you want it to apply to all Pokemon.
 ![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
 
-## Limitations<br>
-If a server does not have this mod installed, then some things (e.g. IVs, Nature) will not display correctly.
-
 ## More to come!
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
 * Serverside global alerts
