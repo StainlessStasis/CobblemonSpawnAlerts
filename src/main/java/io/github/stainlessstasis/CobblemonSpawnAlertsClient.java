@@ -20,6 +20,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -27,22 +29,27 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.UUID;
 
 @Environment(EnvType.CLIENT)
 public class CobblemonSpawnAlertsClient implements ClientModInitializer {
-//    private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
+    private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
     public static final ClientConfigManager configManager = new ClientConfigManager();
+    private static boolean doesServerHaveMod = false;
 
     @Override
     public void onInitializeClient() {
         CobblemonSpawnAlerts.LOGGER.info("CobblemonSpawnAlerts client initializing");
         configManager.loadConfig();
-//        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
-//        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
+        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
+        ClientEntityEvents.ENTITY_LOAD.register(this::onEntityLoad);
 
         // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
@@ -78,17 +85,23 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         }
     }
 
-//    private void onClientStop(Minecraft minecraft) {
-//        alreadyAlerted.clear();
-//    }
-//
-//    private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
-//        alreadyAlerted.clear();
-//    }
+    private void onClientStop(Minecraft minecraft) {
+        alreadyAlerted.clear();
+    }
+
+    private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
+        alreadyAlerted.clear();
+    }
+
+    private void onEntityLoad(Entity entity, ClientLevel clientLevel) {
+        if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
+            alert(pe);
+        }
+    }
 
     private void handlePokemonDataPacket(int pokemonNetworkID, IVs ivs, Nature nature) {
-        // -PACKET HANDLING-
-
+        // TODO: make a better solution for this
+        doesServerHaveMod = true;
         if (!(Minecraft.getInstance().level instanceof ClientLevel level)) {
             return;
         }
@@ -99,9 +112,10 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         Pokemon pokemon = pokemonEntity.getPokemon();
         pokemon.setIvs$common(ivs);
         pokemon.setNature(nature);
+        alert(pokemonEntity);
+    }
 
-        // -ALERT MESSAGE-
-
+    private void alert(PokemonEntity pokemonEntity) {
         // pokemon is owned by someone so no alert
         if (pokemonEntity.getOwnerUUID() != null) {
             return;
@@ -113,10 +127,11 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         if (configManager.isReloading()) {
             return;
         }
-//        if (alreadyAlerted.contains(pokemonEntity.getUUID())) {
-//            return;
-//        }
+        if (alreadyAlerted.contains(pokemonEntity.getUUID())) {
+            return;
+        }
 
+        Pokemon pokemon = pokemonEntity.getPokemon();
         MainConfig config = configManager.getMainConfig();
         PokemonConfig.PokemonSpecificConfig pokemonConfig;
         String pokemonName = pokemon.getSpecies().getName().toLowerCase();
@@ -182,7 +197,7 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             }
         }
 
-//        alreadyAlerted.add(pokemonEntity.getUUID());
+        alreadyAlerted.add(pokemonEntity.getUUID());
 
         // send the custom alert if one exits
         String message;

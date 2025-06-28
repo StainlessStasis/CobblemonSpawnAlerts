@@ -52,7 +52,7 @@ public abstract class AbstractConfigManager {
 
     public <T> T loadConfigFile(File file, Class<T> config) {
         String fileName = file.getName();
-        T finalConfig = null;
+        T finalConfig;
 
         try {
             Method createDefaultMethod = config.getMethod("createDefault");
