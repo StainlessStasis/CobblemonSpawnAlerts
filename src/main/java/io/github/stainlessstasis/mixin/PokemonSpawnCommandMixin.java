@@ -7,12 +7,9 @@ import com.cobblemon.mod.common.api.spawning.context.AreaSpawningContext;
 import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawner;
 import com.cobblemon.mod.common.command.SpawnPokemon;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import kotlin.Unit;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -27,10 +24,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.cobblemon.mod.common.util.LocalizationUtilsKt.commandLang;
-
-
-@Mixin(value = SpawnPokemon.class, remap = false)
+@Mixin(value = SpawnPokemon.class, remap = true)
 public class PokemonSpawnCommandMixin {
     @Unique
     private UUID playerUUID;
@@ -48,7 +42,8 @@ public class PokemonSpawnCommandMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"
-            )
+            ),
+            remap = true
     )
     private boolean onAddFreshEntity(ServerLevel world, Entity entity) {
         if (playerUUID == null) {

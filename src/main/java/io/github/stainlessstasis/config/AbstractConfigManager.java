@@ -1,7 +1,6 @@
 package io.github.stainlessstasis.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import io.github.stainlessstasis.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.api.EnvType;
@@ -30,18 +29,21 @@ public abstract class AbstractConfigManager {
         try {
             Files.createDirectories(MOD_CONFIG_DIR);
         } catch (IOException e) {
-            CobblemonSpawnAlerts.LOGGER.error("Failed to create mod config directory: " + MOD_CONFIG_DIR, e);
+            CobblemonSpawnAlerts.LOGGER.error("Failed to create mod config directory `"+MOD_CONFIG_DIR+"`. Error: ", e);
             failedLoad(MOD_CONFIG_DIR);
             return false;
         }
 
-        onConfigLoad();
+        if (!onConfigLoad()) {
+            return false;
+        }
+
 
         isReloading = false;
         return true;
     }
 
-    abstract void onConfigLoad();
+    abstract boolean onConfigLoad();
 
     public void failedLoad(Path path) {
         MessageUtils.sendTranslated("cobblemon-spawn-alerts.config_load_failed", path);
@@ -50,43 +52,53 @@ public abstract class AbstractConfigManager {
 
     public <T> T loadConfigFile(File file, Class<T> config) {
         String fileName = file.getName();
+        T finalConfig = null;
 
-        if (!file.exists()) {
-            CobblemonSpawnAlerts.LOGGER.info("No config file `"+fileName+"` found, creating a new one.");
-            try {
-                Method method = config.getMethod("createDefault");
-                T newConfig = (T) method.invoke(null);
-                saveConfigFile(file, newConfig);
-                return newConfig;
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                CobblemonSpawnAlerts.LOGGER.error("Failed to create new config file for `"+fileName+"`: "+e);
-                return null;
+        try {
+            Method createDefaultMethod = config.getMethod("createDefault");
+            T defaultConfig = (T) createDefaultMethod.invoke(null);
+
+            if (!file.exists()) {
+                CobblemonSpawnAlerts.LOGGER.info("No config file `"+fileName+"` found, creating a new one with default settings.");
+                saveConfigFile(file, defaultConfig);
+                return defaultConfig;
             }
-        }
 
+        JsonObject userConfigJson = null;
         try (FileReader reader = new FileReader(file)) {
-            T newConfig;
-            newConfig = GSON.fromJson(reader, config);
-            if (newConfig == null) {
-                CobblemonSpawnAlerts.LOGGER.warn("File `"+fileName+"` was empty or corrupted, loading default.");
-                try {
-                    Method method = config.getMethod("createDefault");
-                    newConfig = (T) method.invoke(null);
-                    saveConfigFile(file, newConfig);
-                    return newConfig;
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    CobblemonSpawnAlerts.LOGGER.error("Failed to create default config file for `"+fileName+"`: "+e);
-                    return null;
-                }
+            JsonElement json = JsonParser.parseReader(reader);
+            if (json.isJsonObject()) {
+                userConfigJson = json.getAsJsonObject();
             } else {
-                CobblemonSpawnAlerts.LOGGER.info("Config file `"+fileName+"` loaded successfully.");
-                saveConfigFile(file, newConfig);
-                return newConfig;
+                CobblemonSpawnAlerts.LOGGER.warn("Config file `"+fileName+"` is not a valid JSON object. Overwriting with default.");
             }
+        } catch (JsonSyntaxException e) {
+            CobblemonSpawnAlerts.LOGGER.error("Config file `"+fileName+"` is corrupted or malformed JSON. Error: " + e.getMessage());
+            return null;
         } catch (IOException e) {
-            CobblemonSpawnAlerts.LOGGER.error("Failed to load config file `"+fileName+"`: " + e.getMessage());
+            CobblemonSpawnAlerts.LOGGER.error("Failed to read config file `"+fileName+"`. Error: " + e.getMessage());
             return null;
         }
+
+        JsonObject mergedJson = GSON.toJsonTree(defaultConfig).getAsJsonObject();
+
+        if (userConfigJson != null) {
+            for (String key : userConfigJson.keySet()) {
+                mergedJson.add(key, userConfigJson.get(key));
+            }
+        }
+
+        finalConfig = GSON.fromJson(mergedJson, config);
+
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            CobblemonSpawnAlerts.LOGGER.error("Something went VERY wrong while trying to load `"+fileName+"`. Error:", e);
+            failedLoad(file.toPath());
+            return null;
+        }
+
+        CobblemonSpawnAlerts.LOGGER.info("Config file `"+fileName+"` loaded successfully.");
+        saveConfigFile(file, finalConfig);
+        return finalConfig;
     }
 
     public <T> void saveConfigFile(File file, T config) {
@@ -96,7 +108,7 @@ public abstract class AbstractConfigManager {
             GSON.toJson(config, writer);
             CobblemonSpawnAlerts.LOGGER.info("Config file `"+fileName+"` saved successfully.");
         } catch (IOException e) {
-            CobblemonSpawnAlerts.LOGGER.error("Failed to save config file `"+fileName+"`: " + e.getMessage());
+            CobblemonSpawnAlerts.LOGGER.error("Failed to save config file `"+fileName+"`. Error: " + e.getMessage());
             MessageUtils.sendTranslated("cobblemon-spawn-alerts.config_save_failed", file.toPath());
             isReloading = false;
         }

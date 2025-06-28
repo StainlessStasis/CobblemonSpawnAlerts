@@ -15,22 +15,23 @@ public class ClientConfigManager extends AbstractConfigManager {
     private MessageTemplates messageTemplates;
 
     @Override
-    void onConfigLoad() {
+    boolean onConfigLoad() {
         messageTemplates = loadConfigFile(MESSAGE_TEMPLATES_FILE, MessageTemplates.class);
         if (messageTemplates == null) {
             failedLoad(MESSAGE_TEMPLATES_FILE.toPath());
-            return;
+            return false;
         }
         pokemonConfig = loadConfigFile(POKEMON_CONFIG_FILE, PokemonConfig.class);
         if (pokemonConfig == null) {
             failedLoad(POKEMON_CONFIG_FILE.toPath());
-            return;
+            return false;
         }
         mainConfig = loadConfigFile(MAIN_CONFIG_FILE, MainConfig.class);
         if (mainConfig == null) {
             failedLoad(MAIN_CONFIG_FILE.toPath());
-            return;
+            return false;
         }
+        return true;
     }
 
     public MainConfig getMainConfig() {

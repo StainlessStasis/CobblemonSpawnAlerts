@@ -38,7 +38,7 @@ dependencies {
 	modImplementation(fabricApi.module("fabric-command-api-v2", "0.104.0+1.21.1"))
 
 	modImplementation("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
-	modImplementation("com.cobblemon:fabric:1.6.1+1.21.1-SNAPSHOT")
+	modImplementation("com.cobblemon:fabric:1.6.1+1.21.1")
 
 	modImplementation(include("net.kyori:adventure-platform-fabric:5.14.1")!!)
 

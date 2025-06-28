@@ -20,9 +20,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -39,6 +42,7 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
         configManager.loadConfig();
 //        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
 //        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
+        ClientPlayConnectionEvents.JOIN.register(this::onJoin);
 
         // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
@@ -66,6 +70,12 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
                                         return 1;
                                     })));
         });
+    }
+
+    private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
+        if (!minecraft.isSingleplayer()) {
+            MessageUtils.sendTranslated("<green>[CobblemonSpawnAlert]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting or Pokemon info, certain things, like IVs or Nature, may be displayed incorrectly!");
+        }
     }
 
 //    private void onClientStop(Minecraft minecraft) {

@@ -1,7 +1,6 @@
 accessWidener v2 named
 
-accessible field com/cobblemon/mod/common/command/SpawnPokemon NO_SPECIES_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
-accessible field com/cobblemon/mod/common/command/SpawnPokemon INVALID_POS_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
-accessible field com/cobblemon/mod/common/command/SpawnPokemon FAILED_SPAWN_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
+# i thought i needed this but i dont
+# but thats fine it can stay here
 accessible field net/minecraft/world/entity/Entity yRot F
 accessible field net/minecraft/world/entity/Entity xRot F

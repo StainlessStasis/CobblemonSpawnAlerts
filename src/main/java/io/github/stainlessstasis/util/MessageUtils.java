@@ -53,7 +53,7 @@ public class MessageUtils {
         String hoverText = "";
 
         // Shiny
-        boolean shouldAlertShiny = config.alertShiny() && pokemonEntity.getPokemon().getShiny();
+        boolean shouldAlertShiny = config.alertShiny() && pokemon.getShiny();
         if (shouldAlertShiny) {
             message = message.replace("{shiny}", I18n.get(messageTemplates.shiny()));
             message = message.replace("{shiny_unformatted}", I18n.get(messageTemplates.shiny_unformatted()));
@@ -85,6 +85,7 @@ public class MessageUtils {
         if (config.showLevel()) {
             String configMessage = isHoverEnabled ? messageTemplates.level_hover() : messageTemplates.level();
             String levelMessage = I18n.get(configMessage, level);
+
             if (isHoverEnabled) {
                 hoverText += levelMessage + "\n";
             } else {
