@@ -202,6 +202,7 @@ I just started making this mod, so it is quite obviously lacking many features. 
 * Sounds
 * Abilities
 * EVs
+* Neoforge support
 * Individually customizable hoverable stats
 
 I may also add the following, but I'm unsure:
