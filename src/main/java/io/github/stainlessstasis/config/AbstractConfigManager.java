@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.stainlessstasis.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.util.MessageUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -22,7 +24,7 @@ public abstract class AbstractConfigManager {
     protected static final Path MOD_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve(CobblemonSpawnAlerts.MOD_ID);
     protected boolean isReloading;
 
-    public void loadConfig() {
+    public boolean loadConfig() {
         isReloading = true;
 
         try {
@@ -30,12 +32,13 @@ public abstract class AbstractConfigManager {
         } catch (IOException e) {
             CobblemonSpawnAlerts.LOGGER.error("Failed to create mod config directory: " + MOD_CONFIG_DIR, e);
             failedLoad(MOD_CONFIG_DIR);
-            return;
+            return false;
         }
 
         onConfigLoad();
 
         isReloading = false;
+        return true;
     }
 
     abstract void onConfigLoad();
@@ -99,14 +102,18 @@ public abstract class AbstractConfigManager {
         }
     }
 
-    public void reload() {
+    @Environment(EnvType.CLIENT)
+    public void reloadClient() {
         if (Minecraft.getInstance().player == null) {
             return;
         }
 
-        MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID+".config_reloading");
-        loadConfig();
-        MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID+".config_reloaded");
+        MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID+".client_config_reloading");
+        if (loadConfig()) {
+            MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID + ".client_config_reloaded");
+        } else {
+            MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID + ".client_config_reload_failed");
+        }
     }
 
     public boolean isReloading() {

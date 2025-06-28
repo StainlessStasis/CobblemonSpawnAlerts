@@ -1,9 +1,9 @@
 {
-  "cobblemon-spawn-alerts.config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Config reloading...</white>",
-  "cobblemon-spawn-alerts.config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Config reloaded!</white>",
+  "cobblemon-spawn-alerts.client_config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloading...</white>",
+  "cobblemon-spawn-alerts.client_config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloaded!</white>",
+  "cobblemon-spawn-alerts.client_config_reload_failed": "<green>[CobblemonSpawnAlerts] </green><red>Client config reload failed.</red>",
   "cobblemon-spawn-alerts.config_load_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to load properly while loading `%s`.</red>",
   "cobblemon-spawn-alerts.config_save_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to save properly while saving `%s`.</red>",
-  "cobblemon-spawn-alerts.no_permission": "<red>You do not have permission to use this command!</red>",
 
   "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",

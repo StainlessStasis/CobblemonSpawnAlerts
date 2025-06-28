@@ -10,12 +10,15 @@ import io.github.stainlessstasis.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.config.ClientConfigManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 public class MessageUtils {
+    @Environment(EnvType.CLIENT)
     public static void sendTranslated(String translationKey, Object... args) {
         if (!(Minecraft.getInstance().player instanceof Player player)) {
             return;
@@ -26,16 +29,13 @@ public class MessageUtils {
         player.sendSystemMessage(component);
     }
 
+    @Environment(EnvType.CLIENT)
     public static String getTranslated(String translationKey, Object... args) {
         return I18n.get(translationKey, args);
     }
 
-    public static Component getMiniMessageTranslated(String translationKey, Object... args) {
-        String translated = I18n.get(translationKey, args);
-        Component component = ComponentUtil.convertFromAdventure(translated);
-        return component;
-    }
-
+    // this will eventually be used on server & client but rn just client so yeah thats why this is here
+    @Environment(EnvType.CLIENT)
     public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, PokemonConfig.PokemonSpecificConfig config) {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = pokemon.getSpecies().getName();

@@ -2,7 +2,6 @@ package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
-import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -53,11 +52,9 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             dispatcher.register(ClientCommandManager.literal("cobblemonspawnalerts")
                     .then(ClientCommandManager.literal("reload")
                         .executes(context -> {
-                            configManager.reload();
-                            return 1;
-            }))
-                    .then(ClientCommandManager.literal("reload-server")
-                            .executes(context -> {return 1;})));
+                            configManager.reloadClient();
+                return 1;
+            })));
         });
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
@@ -89,11 +86,9 @@ public class CobblemonSpawnAlertsClient implements ClientModInitializer {
             return;
         }
 
-        System.out.println("POKEMON DATA: "+pokemonNetworkID+" "+ivs.get(Stats.HP)+" "+nature.getDisplayName());
         Pokemon pokemon = pokemonEntity.getPokemon();
         pokemon.setIvs$common(ivs);
         pokemon.setNature(nature);
-
 
         // -ALERT MESSAGE-
 
