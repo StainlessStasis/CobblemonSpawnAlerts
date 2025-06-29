@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.platform;
 
-import io.github.stainlessstasis.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 import java.util.ServiceLoader;
 

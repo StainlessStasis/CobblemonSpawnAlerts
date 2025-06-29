@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "cobblemon-spawn-alerts",
+  "id": "cobblemon_spawn_alerts",
   "version": "${version}",
   "name": "Cobblemon Spawn Alerts",
   "description": "A highly customizable sidemod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns",
@@ -8,6 +8,7 @@
     "Stasis, the Shattered"
   ],
   "license": "MIT License",
+  "icon": "assets/cobblemon-spawn-alerts/icon.png",
   "environment": "*",
   "mixins": [
     "cobblemon-spawn-alerts.mixins.json"

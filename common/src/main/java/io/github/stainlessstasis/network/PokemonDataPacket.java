@@ -10,12 +10,6 @@ import org.jetbrains.annotations.NotNull;
 
 public record PokemonDataPacket(int pokemonNetworkID, IVs ivs, Nature nature) implements CustomPacketPayload {
     public static final Type<PokemonDataPacket> ID = new Type<>(ModPackets.POKEMON_DATA);
-//    public static final Codec<PokemonDataPacket> CODEC = RecordCodecBuilder.create(instance ->
-//            instance.group(
-//            UUIDUtil.CODEC.fieldOf("pokemonUUID").forGetter(PokemonDataPacket::pokemonUUID),
-//            IVs.getCODEC().fieldOf("ivs").forGetter(PokemonDataPacket::ivs),
-//            Nature.getBY_IDENTIFIER_CODEC().fieldOf("nature").forGetter(PokemonDataPacket::nature)
-//    ).apply(instance, PokemonDataPacket::new));
     public static final StreamCodec<FriendlyByteBuf, PokemonDataPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT,
             PokemonDataPacket::pokemonNetworkID,

@@ -19,7 +19,7 @@ dependencies {
     // Depend on fabric loader to make mixins work
     modImplementation("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
 
-    compileOnly("net.kyori:adventure-platform-mod-shared:6.4.0")
+    modCompileOnly("net.kyori:adventure-platform-mod-shared:6.0.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit_version")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit_version")}")

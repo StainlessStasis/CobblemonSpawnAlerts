@@ -1865,3 +1865,1068 @@ fabric/run/showdown/translations/traditionalchinese/minor-activities.js.map
 fabric/run/showdown/translations/turkish/main.js
 fabric/run/showdown/translations/turkish/main.js.map
 fabric/run/usercache.json
+fabric/run/crash-reports/crash-2025-06-28_20.52.30-client.txt
+fabric/run/crash-reports/crash-2025-06-28_21.19.21-client.txt
+fabric/run/crash-reports/crash-2025-06-28_21.22.07-client.txt
+fabric/run/saves/New World/advancements/3e1fbeae-13f8-3fbb-9842-63bc739da918.json
+fabric/run/saves/New World/advancements/691b5991-d81d-336c-9128-6e2de0ef0a95.json
+fabric/run/saves/New World/advancements/6db1171d-4fa6-31cb-b425-1896281a26e2.json
+fabric/run/saves/New World/advancements/c5f2027d-c05b-3ad0-bbf1-20e3f4a553c8.json
+fabric/run/saves/New World/cobblemonplayerdata/3e/3e1fbeae-13f8-3fbb-9842-63bc739da918.json
+fabric/run/saves/New World/cobblemonplayerdata/69/691b5991-d81d-336c-9128-6e2de0ef0a95.json
+fabric/run/saves/New World/cobblemonplayerdata/6d/6db1171d-4fa6-31cb-b425-1896281a26e2.json
+fabric/run/saves/New World/cobblemonplayerdata/c5/c5f2027d-c05b-3ad0-bbf1-20e3f4a553c8.json
+fabric/run/saves/New World/playerdata/3e1fbeae-13f8-3fbb-9842-63bc739da918.dat
+fabric/run/saves/New World/playerdata/691b5991-d81d-336c-9128-6e2de0ef0a95.dat
+fabric/run/saves/New World/playerdata/6db1171d-4fa6-31cb-b425-1896281a26e2.dat
+fabric/run/saves/New World/playerdata/c5f2027d-c05b-3ad0-bbf1-20e3f4a553c8.dat
+fabric/run/saves/New World/pokedex/3e/3e1fbeae-13f8-3fbb-9842-63bc739da918.nbt
+fabric/run/saves/New World/pokedex/69/691b5991-d81d-336c-9128-6e2de0ef0a95.nbt
+fabric/run/saves/New World/pokedex/6d/6db1171d-4fa6-31cb-b425-1896281a26e2.nbt
+fabric/run/saves/New World/pokedex/c5/c5f2027d-c05b-3ad0-bbf1-20e3f4a553c8.nbt
+fabric/run/saves/New World/stats/3e1fbeae-13f8-3fbb-9842-63bc739da918.json
+fabric/run/saves/New World/stats/691b5991-d81d-336c-9128-6e2de0ef0a95.json
+fabric/run/saves/New World/stats/6db1171d-4fa6-31cb-b425-1896281a26e2.json
+fabric/run/saves/New World/stats/c5f2027d-c05b-3ad0-bbf1-20e3f4a553c8.json
+fabric/run/banned-ips.json
+fabric/run/banned-players.json
+fabric/run/crash-reports/crash-2025-06-29_03.07.44-client.txt
+fabric/run/eula.txt
+fabric/run/logs/2025-06-29-1.log.gz
+fabric/run/logs/2025-06-29-2.log.gz
+fabric/run/logs/2025-06-29-3.log.gz
+fabric/run/logs/2025-06-29-4.log.gz
+fabric/run/logs/2025-06-29-5.log.gz
+fabric/run/logs/2025-06-29-6.log.gz
+fabric/run/logs/2025-06-29-7.log.gz
+fabric/run/ops.json
+fabric/run/saves/New World/advancements/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.json
+fabric/run/saves/New World/advancements/29c791a6-b421-3f40-ad2b-613924f9b1c3.json
+fabric/run/saves/New World/advancements/3ebb1391-453f-3fbc-829d-8510c6e3c283.json
+fabric/run/saves/New World/advancements/4aee401f-639e-3eed-a2fe-2b876770093d.json
+fabric/run/saves/New World/advancements/638f7175-5dde-3b0d-a13d-f593ecd79b38.json
+fabric/run/saves/New World/advancements/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.json
+fabric/run/saves/New World/advancements/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.json
+fabric/run/saves/New World/advancements/a70a6712-7f92-3213-946b-c67e8479c034.json
+fabric/run/saves/New World/advancements/baf6de3a-5bd7-32fc-ab9f-e6b63b25393f.json
+fabric/run/saves/New World/advancements/c4c1cea7-1a87-33fc-9811-42fa00e73975.json
+fabric/run/saves/New World/advancements/d4f59999-1785-359b-b48d-ac18df657dda.json
+fabric/run/saves/New World/advancements/ef840057-4261-321f-afc5-1f78d46c0c90.json
+fabric/run/saves/New World/cobblemonplayerdata/11/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.json
+fabric/run/saves/New World/cobblemonplayerdata/29/29c791a6-b421-3f40-ad2b-613924f9b1c3.json
+fabric/run/saves/New World/cobblemonplayerdata/3e/3ebb1391-453f-3fbc-829d-8510c6e3c283.json
+fabric/run/saves/New World/cobblemonplayerdata/4a/4aee401f-639e-3eed-a2fe-2b876770093d.json
+fabric/run/saves/New World/cobblemonplayerdata/63/638f7175-5dde-3b0d-a13d-f593ecd79b38.json
+fabric/run/saves/New World/cobblemonplayerdata/82/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.json
+fabric/run/saves/New World/cobblemonplayerdata/90/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.json
+fabric/run/saves/New World/cobblemonplayerdata/a7/a70a6712-7f92-3213-946b-c67e8479c034.json
+fabric/run/saves/New World/cobblemonplayerdata/ba/baf6de3a-5bd7-32fc-ab9f-e6b63b25393f.json
+fabric/run/saves/New World/cobblemonplayerdata/c4/c4c1cea7-1a87-33fc-9811-42fa00e73975.json
+fabric/run/saves/New World/cobblemonplayerdata/d4/d4f59999-1785-359b-b48d-ac18df657dda.json
+fabric/run/saves/New World/cobblemonplayerdata/ef/ef840057-4261-321f-afc5-1f78d46c0c90.json
+fabric/run/saves/New World/playerdata/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.dat
+fabric/run/saves/New World/playerdata/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.dat_old
+fabric/run/saves/New World/playerdata/29c791a6-b421-3f40-ad2b-613924f9b1c3.dat
+fabric/run/saves/New World/playerdata/29c791a6-b421-3f40-ad2b-613924f9b1c3.dat_old
+fabric/run/saves/New World/playerdata/3ebb1391-453f-3fbc-829d-8510c6e3c283.dat
+fabric/run/saves/New World/playerdata/3ebb1391-453f-3fbc-829d-8510c6e3c283.dat_old
+fabric/run/saves/New World/playerdata/4aee401f-639e-3eed-a2fe-2b876770093d.dat
+fabric/run/saves/New World/playerdata/4aee401f-639e-3eed-a2fe-2b876770093d.dat_old
+fabric/run/saves/New World/playerdata/638f7175-5dde-3b0d-a13d-f593ecd79b38.dat
+fabric/run/saves/New World/playerdata/638f7175-5dde-3b0d-a13d-f593ecd79b38.dat_old
+fabric/run/saves/New World/playerdata/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.dat
+fabric/run/saves/New World/playerdata/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.dat_old
+fabric/run/saves/New World/playerdata/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.dat
+fabric/run/saves/New World/playerdata/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.dat_old
+fabric/run/saves/New World/playerdata/a70a6712-7f92-3213-946b-c67e8479c034.dat
+fabric/run/saves/New World/playerdata/a70a6712-7f92-3213-946b-c67e8479c034.dat_old
+fabric/run/saves/New World/playerdata/baf6de3a-5bd7-32fc-ab9f-e6b63b25393f.dat
+fabric/run/saves/New World/playerdata/c4c1cea7-1a87-33fc-9811-42fa00e73975.dat
+fabric/run/saves/New World/playerdata/d4f59999-1785-359b-b48d-ac18df657dda.dat
+fabric/run/saves/New World/playerdata/ef840057-4261-321f-afc5-1f78d46c0c90.dat
+fabric/run/saves/New World/playerdata/ef840057-4261-321f-afc5-1f78d46c0c90.dat_old
+fabric/run/saves/New World/poi/r.-1.-2.mca
+fabric/run/saves/New World/poi/r.0.-2.mca
+fabric/run/saves/New World/pokedex/11/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.nbt
+fabric/run/saves/New World/pokedex/29/29c791a6-b421-3f40-ad2b-613924f9b1c3.nbt
+fabric/run/saves/New World/pokedex/3e/3ebb1391-453f-3fbc-829d-8510c6e3c283.nbt
+fabric/run/saves/New World/pokedex/4a/4aee401f-639e-3eed-a2fe-2b876770093d.nbt
+fabric/run/saves/New World/pokedex/63/638f7175-5dde-3b0d-a13d-f593ecd79b38.nbt
+fabric/run/saves/New World/pokedex/82/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.nbt
+fabric/run/saves/New World/pokedex/90/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.nbt
+fabric/run/saves/New World/pokedex/a7/a70a6712-7f92-3213-946b-c67e8479c034.nbt
+fabric/run/saves/New World/pokedex/ba/baf6de3a-5bd7-32fc-ab9f-e6b63b25393f.nbt
+fabric/run/saves/New World/pokedex/c4/c4c1cea7-1a87-33fc-9811-42fa00e73975.nbt
+fabric/run/saves/New World/pokedex/d4/d4f59999-1785-359b-b48d-ac18df657dda.nbt
+fabric/run/saves/New World/pokedex/ef/ef840057-4261-321f-afc5-1f78d46c0c90.nbt
+fabric/run/saves/New World/region/r.-1.-2.mca
+fabric/run/saves/New World/region/r.-2.-1.mca
+fabric/run/saves/New World/region/r.-2.-2.mca
+fabric/run/saves/New World/region/r.-2.0.mca
+fabric/run/saves/New World/region/r.0.-2.mca
+fabric/run/saves/New World/stats/11e12ca9-fda1-31b6-8f92-6e251e7a18f2.json
+fabric/run/saves/New World/stats/29c791a6-b421-3f40-ad2b-613924f9b1c3.json
+fabric/run/saves/New World/stats/3ebb1391-453f-3fbc-829d-8510c6e3c283.json
+fabric/run/saves/New World/stats/4aee401f-639e-3eed-a2fe-2b876770093d.json
+fabric/run/saves/New World/stats/638f7175-5dde-3b0d-a13d-f593ecd79b38.json
+fabric/run/saves/New World/stats/82eab9c5-ed04-3a17-8da6-2923b8b4dcf8.json
+fabric/run/saves/New World/stats/9033e00b-50d9-3cb5-b190-7fa9d916bd8f.json
+fabric/run/saves/New World/stats/a70a6712-7f92-3213-946b-c67e8479c034.json
+fabric/run/saves/New World/stats/baf6de3a-5bd7-32fc-ab9f-e6b63b25393f.json
+fabric/run/saves/New World/stats/c4c1cea7-1a87-33fc-9811-42fa00e73975.json
+fabric/run/saves/New World/stats/d4f59999-1785-359b-b48d-ac18df657dda.json
+fabric/run/saves/New World/stats/ef840057-4261-321f-afc5-1f78d46c0c90.json
+fabric/run/server.properties
+fabric/run/whitelist.json
+fabric/run/world/advancements/ec0f932e-1d25-4b09-aa33-6e1381f34415.json
+fabric/run/world/cobblemonplayerdata/ec/ec0f932e-1d25-4b09-aa33-6e1381f34415.json
+fabric/run/world/data/raids.dat
+fabric/run/world/data/random_sequences.dat
+fabric/run/world/DIM-1/data/raids.dat
+fabric/run/world/DIM1/data/raids_end.dat
+fabric/run/world/entities/r.-1.-1.mca
+fabric/run/world/entities/r.-1.0.mca
+fabric/run/world/entities/r.0.-1.mca
+fabric/run/world/entities/r.0.0.mca
+fabric/run/world/level.dat
+fabric/run/world/level.dat_old
+fabric/run/world/playerdata/ec0f932e-1d25-4b09-aa33-6e1381f34415.dat
+fabric/run/world/poi/r.-1.0.mca
+fabric/run/world/poi/r.0.-1.mca
+fabric/run/world/poi/r.0.0.mca
+fabric/run/world/pokedex/ec/ec0f932e-1d25-4b09-aa33-6e1381f34415.nbt
+fabric/run/world/pokemon/playerpartystore/ec/ec0f932e-1d25-4b09-aa33-6e1381f34415.dat
+fabric/run/world/region/r.-1.-1.mca
+fabric/run/world/region/r.-1.0.mca
+fabric/run/world/region/r.0.-1.mca
+fabric/run/world/region/r.0.0.mca
+fabric/run/world/session.lock
+fabric/run/world/stats/ec0f932e-1d25-4b09-aa33-6e1381f34415.json
+neoforge/run/.architectury-transformer/debug.log
+neoforge/run/command_history.txt
+neoforge/run/config/cobblemon-spawn-alerts/main.json
+neoforge/run/config/cobblemon-spawn-alerts/message_templates.json
+neoforge/run/config/cobblemon-spawn-alerts/pokemon.json
+neoforge/run/config/cobblemon-spawn-alerts/server.json
+neoforge/run/config/cobblemon/main.json
+neoforge/run/config/fml.toml
+neoforge/run/config/neoforge-client.toml
+neoforge/run/config/neoforge-common.toml
+neoforge/run/config/neoforge-server.toml
+neoforge/run/crash-reports/crash-2025-06-29_02.34.13-client.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.19.57-fml.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.28.20-fml.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.29.55-fml.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.30.41-fml.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.40.30-client.txt
+neoforge/run/crash-reports/crash-2025-06-29_03.41.47-client.txt
+neoforge/run/crash-reports/crash-2025-06-29_04.06.42-fml.txt
+neoforge/run/downloads/log.json
+neoforge/run/logs/2025-06-29-1.log.gz
+neoforge/run/logs/2025-06-29-2.log.gz
+neoforge/run/logs/2025-06-29-3.log.gz
+neoforge/run/logs/2025-06-29-4.log.gz
+neoforge/run/logs/2025-06-29-5.log.gz
+neoforge/run/logs/2025-06-29-6.log.gz
+neoforge/run/logs/2025-06-29-7.log.gz
+neoforge/run/logs/debug-1.log.gz
+neoforge/run/logs/debug-2.log.gz
+neoforge/run/logs/debug-3.log.gz
+neoforge/run/logs/debug-4.log.gz
+neoforge/run/logs/debug-5.log.gz
+neoforge/run/logs/debug.log
+neoforge/run/logs/latest.log
+neoforge/run/options.txt
+neoforge/run/saves/New World/advancements/380df991-f603-344c-a090-369bad2a924a.json
+neoforge/run/saves/New World/cobblemonplayerdata/38/380df991-f603-344c-a090-369bad2a924a.json
+neoforge/run/saves/New World/data/neoforge_data_attachments.dat
+neoforge/run/saves/New World/data/raids.dat
+neoforge/run/saves/New World/data/random_sequences.dat
+neoforge/run/saves/New World/DIM-1/data/neoforge_data_attachments.dat
+neoforge/run/saves/New World/DIM-1/data/raids.dat
+neoforge/run/saves/New World/DIM1/data/neoforge_data_attachments.dat
+neoforge/run/saves/New World/DIM1/data/raids_end.dat
+neoforge/run/saves/New World/entities/r.-1.-1.mca
+neoforge/run/saves/New World/entities/r.-1.-2.mca
+neoforge/run/saves/New World/entities/r.-1.0.mca
+neoforge/run/saves/New World/entities/r.-2.-1.mca
+neoforge/run/saves/New World/entities/r.-2.-2.mca
+neoforge/run/saves/New World/entities/r.-2.0.mca
+neoforge/run/saves/New World/entities/r.0.-1.mca
+neoforge/run/saves/New World/entities/r.0.0.mca
+neoforge/run/saves/New World/icon.png
+neoforge/run/saves/New World/level.dat
+neoforge/run/saves/New World/level.dat_old
+neoforge/run/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat
+neoforge/run/saves/New World/playerdata/380df991-f603-344c-a090-369bad2a924a.dat_old
+neoforge/run/saves/New World/poi/r.-1.-1.mca
+neoforge/run/saves/New World/poi/r.-1.-2.mca
+neoforge/run/saves/New World/poi/r.-1.0.mca
+neoforge/run/saves/New World/poi/r.-1.1.mca
+neoforge/run/saves/New World/poi/r.-2.-1.mca
+neoforge/run/saves/New World/poi/r.-2.-2.mca
+neoforge/run/saves/New World/poi/r.-2.0.mca
+neoforge/run/saves/New World/poi/r.-2.1.mca
+neoforge/run/saves/New World/poi/r.0.-1.mca
+neoforge/run/saves/New World/poi/r.0.0.mca
+neoforge/run/saves/New World/poi/r.0.1.mca
+neoforge/run/saves/New World/pokedex/38/380df991-f603-344c-a090-369bad2a924a.nbt
+neoforge/run/saves/New World/pokemon/playerpartystore/38/380df991-f603-344c-a090-369bad2a924a.dat.temp
+neoforge/run/saves/New World/region/r.-1.-1.mca
+neoforge/run/saves/New World/region/r.-1.-2.mca
+neoforge/run/saves/New World/region/r.-1.0.mca
+neoforge/run/saves/New World/region/r.-1.1.mca
+neoforge/run/saves/New World/region/r.-2.-1.mca
+neoforge/run/saves/New World/region/r.-2.-2.mca
+neoforge/run/saves/New World/region/r.-2.0.mca
+neoforge/run/saves/New World/region/r.-2.1.mca
+neoforge/run/saves/New World/region/r.0.-1.mca
+neoforge/run/saves/New World/region/r.0.0.mca
+neoforge/run/saves/New World/region/r.0.1.mca
+neoforge/run/saves/New World/serverconfig/readme.txt
+neoforge/run/saves/New World/session.lock
+neoforge/run/saves/New World/stats/380df991-f603-344c-a090-369bad2a924a.json
+neoforge/run/showdown/config/config-example.js
+neoforge/run/showdown/config/custom-formats.js
+neoforge/run/showdown/config/custom-formats.js.map
+neoforge/run/showdown/config/formats.js
+neoforge/run/showdown/config/formats.js.map
+neoforge/run/showdown/data/abilities.js
+neoforge/run/showdown/data/abilities.js.map
+neoforge/run/showdown/data/aliases.js
+neoforge/run/showdown/data/aliases.js.map
+neoforge/run/showdown/data/cg-team-data.js
+neoforge/run/showdown/data/cg-team-data.js.map
+neoforge/run/showdown/data/cg-teams.js
+neoforge/run/showdown/data/cg-teams.js.map
+neoforge/run/showdown/data/conditions.js
+neoforge/run/showdown/data/conditions.js.map
+neoforge/run/showdown/data/formats-data.js
+neoforge/run/showdown/data/formats-data.js.map
+neoforge/run/showdown/data/items.js
+neoforge/run/showdown/data/items.js.map
+neoforge/run/showdown/data/learnsets.js
+neoforge/run/showdown/data/learnsets.js.map
+neoforge/run/showdown/data/mods/cobblemon/pokedex.js
+neoforge/run/showdown/data/mods/cobblemon/pokedex.js.map
+neoforge/run/showdown/data/mods/cobblemon/scripts.js
+neoforge/run/showdown/data/mods/cobblemon/scripts.js.map
+neoforge/run/showdown/data/mods/fullpotential/abilities.js
+neoforge/run/showdown/data/mods/fullpotential/abilities.js.map
+neoforge/run/showdown/data/mods/fullpotential/scripts.js
+neoforge/run/showdown/data/mods/fullpotential/scripts.js.map
+neoforge/run/showdown/data/mods/gen1/conditions.js
+neoforge/run/showdown/data/mods/gen1/conditions.js.map
+neoforge/run/showdown/data/mods/gen1/formats-data.js
+neoforge/run/showdown/data/mods/gen1/formats-data.js.map
+neoforge/run/showdown/data/mods/gen1/moves.js
+neoforge/run/showdown/data/mods/gen1/moves.js.map
+neoforge/run/showdown/data/mods/gen1/pokedex.js
+neoforge/run/showdown/data/mods/gen1/pokedex.js.map
+neoforge/run/showdown/data/mods/gen1/random-data.json
+neoforge/run/showdown/data/mods/gen1/random-teams.js
+neoforge/run/showdown/data/mods/gen1/random-teams.js.map
+neoforge/run/showdown/data/mods/gen1/rulesets.js
+neoforge/run/showdown/data/mods/gen1/rulesets.js.map
+neoforge/run/showdown/data/mods/gen1/scripts.js
+neoforge/run/showdown/data/mods/gen1/scripts.js.map
+neoforge/run/showdown/data/mods/gen1/typechart.js
+neoforge/run/showdown/data/mods/gen1/typechart.js.map
+neoforge/run/showdown/data/mods/gen1jpn/conditions.js
+neoforge/run/showdown/data/mods/gen1jpn/conditions.js.map
+neoforge/run/showdown/data/mods/gen1jpn/moves.js
+neoforge/run/showdown/data/mods/gen1jpn/moves.js.map
+neoforge/run/showdown/data/mods/gen1jpn/rulesets.js
+neoforge/run/showdown/data/mods/gen1jpn/rulesets.js.map
+neoforge/run/showdown/data/mods/gen1jpn/scripts.js
+neoforge/run/showdown/data/mods/gen1jpn/scripts.js.map
+neoforge/run/showdown/data/mods/gen1stadium/conditions.js
+neoforge/run/showdown/data/mods/gen1stadium/conditions.js.map
+neoforge/run/showdown/data/mods/gen1stadium/formats-data.js
+neoforge/run/showdown/data/mods/gen1stadium/formats-data.js.map
+neoforge/run/showdown/data/mods/gen1stadium/moves.js
+neoforge/run/showdown/data/mods/gen1stadium/moves.js.map
+neoforge/run/showdown/data/mods/gen1stadium/rulesets.js
+neoforge/run/showdown/data/mods/gen1stadium/rulesets.js.map
+neoforge/run/showdown/data/mods/gen1stadium/scripts.js
+neoforge/run/showdown/data/mods/gen1stadium/scripts.js.map
+neoforge/run/showdown/data/mods/gen2/conditions.js
+neoforge/run/showdown/data/mods/gen2/conditions.js.map
+neoforge/run/showdown/data/mods/gen2/formats-data.js
+neoforge/run/showdown/data/mods/gen2/formats-data.js.map
+neoforge/run/showdown/data/mods/gen2/items.js
+neoforge/run/showdown/data/mods/gen2/items.js.map
+neoforge/run/showdown/data/mods/gen2/learnsets.js
+neoforge/run/showdown/data/mods/gen2/learnsets.js.map
+neoforge/run/showdown/data/mods/gen2/moves.js
+neoforge/run/showdown/data/mods/gen2/moves.js.map
+neoforge/run/showdown/data/mods/gen2/pokedex.js
+neoforge/run/showdown/data/mods/gen2/pokedex.js.map
+neoforge/run/showdown/data/mods/gen2/random-data.json
+neoforge/run/showdown/data/mods/gen2/random-teams.js
+neoforge/run/showdown/data/mods/gen2/random-teams.js.map
+neoforge/run/showdown/data/mods/gen2/rulesets.js
+neoforge/run/showdown/data/mods/gen2/rulesets.js.map
+neoforge/run/showdown/data/mods/gen2/scripts.js
+neoforge/run/showdown/data/mods/gen2/scripts.js.map
+neoforge/run/showdown/data/mods/gen2/typechart.js
+neoforge/run/showdown/data/mods/gen2/typechart.js.map
+neoforge/run/showdown/data/mods/gen2stadium2/conditions.js
+neoforge/run/showdown/data/mods/gen2stadium2/conditions.js.map
+neoforge/run/showdown/data/mods/gen2stadium2/items.js
+neoforge/run/showdown/data/mods/gen2stadium2/items.js.map
+neoforge/run/showdown/data/mods/gen2stadium2/moves.js
+neoforge/run/showdown/data/mods/gen2stadium2/moves.js.map
+neoforge/run/showdown/data/mods/gen2stadium2/rulesets.js
+neoforge/run/showdown/data/mods/gen2stadium2/rulesets.js.map
+neoforge/run/showdown/data/mods/gen2stadium2/scripts.js
+neoforge/run/showdown/data/mods/gen2stadium2/scripts.js.map
+neoforge/run/showdown/data/mods/gen3/abilities.js
+neoforge/run/showdown/data/mods/gen3/abilities.js.map
+neoforge/run/showdown/data/mods/gen3/conditions.js
+neoforge/run/showdown/data/mods/gen3/conditions.js.map
+neoforge/run/showdown/data/mods/gen3/formats-data.js
+neoforge/run/showdown/data/mods/gen3/formats-data.js.map
+neoforge/run/showdown/data/mods/gen3/items.js
+neoforge/run/showdown/data/mods/gen3/items.js.map
+neoforge/run/showdown/data/mods/gen3/moves.js
+neoforge/run/showdown/data/mods/gen3/moves.js.map
+neoforge/run/showdown/data/mods/gen3/random-sets.json
+neoforge/run/showdown/data/mods/gen3/random-teams.js
+neoforge/run/showdown/data/mods/gen3/random-teams.js.map
+neoforge/run/showdown/data/mods/gen3/rulesets.js
+neoforge/run/showdown/data/mods/gen3/rulesets.js.map
+neoforge/run/showdown/data/mods/gen3/scripts.js
+neoforge/run/showdown/data/mods/gen3/scripts.js.map
+neoforge/run/showdown/data/mods/gen4/abilities.js
+neoforge/run/showdown/data/mods/gen4/abilities.js.map
+neoforge/run/showdown/data/mods/gen4/conditions.js
+neoforge/run/showdown/data/mods/gen4/conditions.js.map
+neoforge/run/showdown/data/mods/gen4/formats-data.js
+neoforge/run/showdown/data/mods/gen4/formats-data.js.map
+neoforge/run/showdown/data/mods/gen4/items.js
+neoforge/run/showdown/data/mods/gen4/items.js.map
+neoforge/run/showdown/data/mods/gen4/moves.js
+neoforge/run/showdown/data/mods/gen4/moves.js.map
+neoforge/run/showdown/data/mods/gen4/pokedex.js
+neoforge/run/showdown/data/mods/gen4/pokedex.js.map
+neoforge/run/showdown/data/mods/gen4/random-sets.json
+neoforge/run/showdown/data/mods/gen4/random-teams.js
+neoforge/run/showdown/data/mods/gen4/random-teams.js.map
+neoforge/run/showdown/data/mods/gen4/rulesets.js
+neoforge/run/showdown/data/mods/gen4/rulesets.js.map
+neoforge/run/showdown/data/mods/gen4/scripts.js
+neoforge/run/showdown/data/mods/gen4/scripts.js.map
+neoforge/run/showdown/data/mods/gen4pt/formats-data.js
+neoforge/run/showdown/data/mods/gen4pt/formats-data.js.map
+neoforge/run/showdown/data/mods/gen4pt/learnsets.js
+neoforge/run/showdown/data/mods/gen4pt/learnsets.js.map
+neoforge/run/showdown/data/mods/gen4pt/scripts.js
+neoforge/run/showdown/data/mods/gen4pt/scripts.js.map
+neoforge/run/showdown/data/mods/gen5/abilities.js
+neoforge/run/showdown/data/mods/gen5/abilities.js.map
+neoforge/run/showdown/data/mods/gen5/conditions.js
+neoforge/run/showdown/data/mods/gen5/conditions.js.map
+neoforge/run/showdown/data/mods/gen5/formats-data.js
+neoforge/run/showdown/data/mods/gen5/formats-data.js.map
+neoforge/run/showdown/data/mods/gen5/items.js
+neoforge/run/showdown/data/mods/gen5/items.js.map
+neoforge/run/showdown/data/mods/gen5/moves.js
+neoforge/run/showdown/data/mods/gen5/moves.js.map
+neoforge/run/showdown/data/mods/gen5/pokedex.js
+neoforge/run/showdown/data/mods/gen5/pokedex.js.map
+neoforge/run/showdown/data/mods/gen5/random-sets.json
+neoforge/run/showdown/data/mods/gen5/random-teams.js
+neoforge/run/showdown/data/mods/gen5/random-teams.js.map
+neoforge/run/showdown/data/mods/gen5/rulesets.js
+neoforge/run/showdown/data/mods/gen5/rulesets.js.map
+neoforge/run/showdown/data/mods/gen5/scripts.js
+neoforge/run/showdown/data/mods/gen5/scripts.js.map
+neoforge/run/showdown/data/mods/gen5/typechart.js
+neoforge/run/showdown/data/mods/gen5/typechart.js.map
+neoforge/run/showdown/data/mods/gen5bw1/formats-data.js
+neoforge/run/showdown/data/mods/gen5bw1/formats-data.js.map
+neoforge/run/showdown/data/mods/gen5bw1/items.js
+neoforge/run/showdown/data/mods/gen5bw1/items.js.map
+neoforge/run/showdown/data/mods/gen5bw1/learnsets.js
+neoforge/run/showdown/data/mods/gen5bw1/learnsets.js.map
+neoforge/run/showdown/data/mods/gen5bw1/pokedex.js
+neoforge/run/showdown/data/mods/gen5bw1/pokedex.js.map
+neoforge/run/showdown/data/mods/gen5bw1/scripts.js
+neoforge/run/showdown/data/mods/gen5bw1/scripts.js.map
+neoforge/run/showdown/data/mods/gen6/abilities.js
+neoforge/run/showdown/data/mods/gen6/abilities.js.map
+neoforge/run/showdown/data/mods/gen6/conditions.js
+neoforge/run/showdown/data/mods/gen6/conditions.js.map
+neoforge/run/showdown/data/mods/gen6/factory-sets.json
+neoforge/run/showdown/data/mods/gen6/formats-data.js
+neoforge/run/showdown/data/mods/gen6/formats-data.js.map
+neoforge/run/showdown/data/mods/gen6/items.js
+neoforge/run/showdown/data/mods/gen6/items.js.map
+neoforge/run/showdown/data/mods/gen6/learnsets.js
+neoforge/run/showdown/data/mods/gen6/learnsets.js.map
+neoforge/run/showdown/data/mods/gen6/moves.js
+neoforge/run/showdown/data/mods/gen6/moves.js.map
+neoforge/run/showdown/data/mods/gen6/pokedex.js
+neoforge/run/showdown/data/mods/gen6/pokedex.js.map
+neoforge/run/showdown/data/mods/gen6/random-sets.json
+neoforge/run/showdown/data/mods/gen6/random-teams.js
+neoforge/run/showdown/data/mods/gen6/random-teams.js.map
+neoforge/run/showdown/data/mods/gen6/scripts.js
+neoforge/run/showdown/data/mods/gen6/scripts.js.map
+neoforge/run/showdown/data/mods/gen6/typechart.js
+neoforge/run/showdown/data/mods/gen6/typechart.js.map
+neoforge/run/showdown/data/mods/gen6xy/formats-data.js
+neoforge/run/showdown/data/mods/gen6xy/formats-data.js.map
+neoforge/run/showdown/data/mods/gen6xy/items.js
+neoforge/run/showdown/data/mods/gen6xy/items.js.map
+neoforge/run/showdown/data/mods/gen6xy/learnsets.js
+neoforge/run/showdown/data/mods/gen6xy/learnsets.js.map
+neoforge/run/showdown/data/mods/gen6xy/moves.js
+neoforge/run/showdown/data/mods/gen6xy/moves.js.map
+neoforge/run/showdown/data/mods/gen6xy/pokedex.js
+neoforge/run/showdown/data/mods/gen6xy/pokedex.js.map
+neoforge/run/showdown/data/mods/gen6xy/scripts.js
+neoforge/run/showdown/data/mods/gen6xy/scripts.js.map
+neoforge/run/showdown/data/mods/gen7/abilities.js
+neoforge/run/showdown/data/mods/gen7/abilities.js.map
+neoforge/run/showdown/data/mods/gen7/bss-factory-sets.json
+neoforge/run/showdown/data/mods/gen7/factory-sets.json
+neoforge/run/showdown/data/mods/gen7/formats-data.js
+neoforge/run/showdown/data/mods/gen7/formats-data.js.map
+neoforge/run/showdown/data/mods/gen7/items.js
+neoforge/run/showdown/data/mods/gen7/items.js.map
+neoforge/run/showdown/data/mods/gen7/moves.js
+neoforge/run/showdown/data/mods/gen7/moves.js.map
+neoforge/run/showdown/data/mods/gen7/pokedex.js
+neoforge/run/showdown/data/mods/gen7/pokedex.js.map
+neoforge/run/showdown/data/mods/gen7/random-doubles-data.json
+neoforge/run/showdown/data/mods/gen7/random-doubles-teams.js
+neoforge/run/showdown/data/mods/gen7/random-doubles-teams.js.map
+neoforge/run/showdown/data/mods/gen7/random-sets.json
+neoforge/run/showdown/data/mods/gen7/random-teams.js
+neoforge/run/showdown/data/mods/gen7/random-teams.js.map
+neoforge/run/showdown/data/mods/gen7/rulesets.js
+neoforge/run/showdown/data/mods/gen7/rulesets.js.map
+neoforge/run/showdown/data/mods/gen7/scripts.js
+neoforge/run/showdown/data/mods/gen7/scripts.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/formats-data.js
+neoforge/run/showdown/data/mods/gen7letsgo/formats-data.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/learnsets.js
+neoforge/run/showdown/data/mods/gen7letsgo/learnsets.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/moves.js
+neoforge/run/showdown/data/mods/gen7letsgo/moves.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/pokedex.js
+neoforge/run/showdown/data/mods/gen7letsgo/pokedex.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/random-data.json
+neoforge/run/showdown/data/mods/gen7letsgo/random-teams.js
+neoforge/run/showdown/data/mods/gen7letsgo/random-teams.js.map
+neoforge/run/showdown/data/mods/gen7letsgo/scripts.js
+neoforge/run/showdown/data/mods/gen7letsgo/scripts.js.map
+neoforge/run/showdown/data/mods/gen7pokebilities/abilities.js
+neoforge/run/showdown/data/mods/gen7pokebilities/abilities.js.map
+neoforge/run/showdown/data/mods/gen7pokebilities/moves.js
+neoforge/run/showdown/data/mods/gen7pokebilities/moves.js.map
+neoforge/run/showdown/data/mods/gen7pokebilities/random-teams.js
+neoforge/run/showdown/data/mods/gen7pokebilities/random-teams.js.map
+neoforge/run/showdown/data/mods/gen7pokebilities/scripts.js
+neoforge/run/showdown/data/mods/gen7pokebilities/scripts.js.map
+neoforge/run/showdown/data/mods/gen7sm/formats-data.js
+neoforge/run/showdown/data/mods/gen7sm/formats-data.js.map
+neoforge/run/showdown/data/mods/gen7sm/items.js
+neoforge/run/showdown/data/mods/gen7sm/items.js.map
+neoforge/run/showdown/data/mods/gen7sm/learnsets.js
+neoforge/run/showdown/data/mods/gen7sm/learnsets.js.map
+neoforge/run/showdown/data/mods/gen7sm/moves.js
+neoforge/run/showdown/data/mods/gen7sm/moves.js.map
+neoforge/run/showdown/data/mods/gen7sm/pokedex.js
+neoforge/run/showdown/data/mods/gen7sm/pokedex.js.map
+neoforge/run/showdown/data/mods/gen7sm/scripts.js
+neoforge/run/showdown/data/mods/gen7sm/scripts.js.map
+neoforge/run/showdown/data/mods/gen8/abilities.js
+neoforge/run/showdown/data/mods/gen8/abilities.js.map
+neoforge/run/showdown/data/mods/gen8/bss-factory-sets.json
+neoforge/run/showdown/data/mods/gen8/cap-1v1-sets.json
+neoforge/run/showdown/data/mods/gen8/factory-sets.json
+neoforge/run/showdown/data/mods/gen8/formats-data.js
+neoforge/run/showdown/data/mods/gen8/formats-data.js.map
+neoforge/run/showdown/data/mods/gen8/items.js
+neoforge/run/showdown/data/mods/gen8/items.js.map
+neoforge/run/showdown/data/mods/gen8/learnsets.js
+neoforge/run/showdown/data/mods/gen8/learnsets.js.map
+neoforge/run/showdown/data/mods/gen8/moves.js
+neoforge/run/showdown/data/mods/gen8/moves.js.map
+neoforge/run/showdown/data/mods/gen8/pokedex.js
+neoforge/run/showdown/data/mods/gen8/pokedex.js.map
+neoforge/run/showdown/data/mods/gen8/random-data.json
+neoforge/run/showdown/data/mods/gen8/random-teams.js
+neoforge/run/showdown/data/mods/gen8/random-teams.js.map
+neoforge/run/showdown/data/mods/gen8/rulesets.js
+neoforge/run/showdown/data/mods/gen8/rulesets.js.map
+neoforge/run/showdown/data/mods/gen8/scripts.js
+neoforge/run/showdown/data/mods/gen8/scripts.js.map
+neoforge/run/showdown/data/mods/gen8/typechart.js
+neoforge/run/showdown/data/mods/gen8/typechart.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/abilities.js
+neoforge/run/showdown/data/mods/gen8bdsp/abilities.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/formats-data.js
+neoforge/run/showdown/data/mods/gen8bdsp/formats-data.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/items.js
+neoforge/run/showdown/data/mods/gen8bdsp/items.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/learnsets.js
+neoforge/run/showdown/data/mods/gen8bdsp/learnsets.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/moves.js
+neoforge/run/showdown/data/mods/gen8bdsp/moves.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/pokedex.js
+neoforge/run/showdown/data/mods/gen8bdsp/pokedex.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/random-data.json
+neoforge/run/showdown/data/mods/gen8bdsp/random-teams.js
+neoforge/run/showdown/data/mods/gen8bdsp/random-teams.js.map
+neoforge/run/showdown/data/mods/gen8bdsp/scripts.js
+neoforge/run/showdown/data/mods/gen8bdsp/scripts.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/abilities.js
+neoforge/run/showdown/data/mods/gen8dlc1/abilities.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/formats-data.js
+neoforge/run/showdown/data/mods/gen8dlc1/formats-data.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/items.js
+neoforge/run/showdown/data/mods/gen8dlc1/items.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/learnsets.js
+neoforge/run/showdown/data/mods/gen8dlc1/learnsets.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/moves.js
+neoforge/run/showdown/data/mods/gen8dlc1/moves.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/pokedex.js
+neoforge/run/showdown/data/mods/gen8dlc1/pokedex.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/rulesets.js
+neoforge/run/showdown/data/mods/gen8dlc1/rulesets.js.map
+neoforge/run/showdown/data/mods/gen8dlc1/scripts.js
+neoforge/run/showdown/data/mods/gen8dlc1/scripts.js.map
+neoforge/run/showdown/data/mods/gen8linked/conditions.js
+neoforge/run/showdown/data/mods/gen8linked/conditions.js.map
+neoforge/run/showdown/data/mods/gen8linked/items.js
+neoforge/run/showdown/data/mods/gen8linked/items.js.map
+neoforge/run/showdown/data/mods/gen8linked/moves.js
+neoforge/run/showdown/data/mods/gen8linked/moves.js.map
+neoforge/run/showdown/data/mods/gen8linked/scripts.js
+neoforge/run/showdown/data/mods/gen8linked/scripts.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/abilities.js
+neoforge/run/showdown/data/mods/gen9dlc1/abilities.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/formats-data.js
+neoforge/run/showdown/data/mods/gen9dlc1/formats-data.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/items.js
+neoforge/run/showdown/data/mods/gen9dlc1/items.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/learnsets.js
+neoforge/run/showdown/data/mods/gen9dlc1/learnsets.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/moves.js
+neoforge/run/showdown/data/mods/gen9dlc1/moves.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/pokedex.js
+neoforge/run/showdown/data/mods/gen9dlc1/pokedex.js.map
+neoforge/run/showdown/data/mods/gen9dlc1/typechart.js
+neoforge/run/showdown/data/mods/gen9dlc1/typechart.js.map
+neoforge/run/showdown/data/mods/gen9predlc/abilities.js
+neoforge/run/showdown/data/mods/gen9predlc/abilities.js.map
+neoforge/run/showdown/data/mods/gen9predlc/formats-data.js
+neoforge/run/showdown/data/mods/gen9predlc/formats-data.js.map
+neoforge/run/showdown/data/mods/gen9predlc/items.js
+neoforge/run/showdown/data/mods/gen9predlc/items.js.map
+neoforge/run/showdown/data/mods/gen9predlc/learnsets.js
+neoforge/run/showdown/data/mods/gen9predlc/learnsets.js.map
+neoforge/run/showdown/data/mods/gen9predlc/moves.js
+neoforge/run/showdown/data/mods/gen9predlc/moves.js.map
+neoforge/run/showdown/data/mods/gen9predlc/pokedex.js
+neoforge/run/showdown/data/mods/gen9predlc/pokedex.js.map
+neoforge/run/showdown/data/mods/gen9predlc/scripts.js
+neoforge/run/showdown/data/mods/gen9predlc/scripts.js.map
+neoforge/run/showdown/data/mods/gennext/abilities.js
+neoforge/run/showdown/data/mods/gennext/abilities.js.map
+neoforge/run/showdown/data/mods/gennext/conditions.js
+neoforge/run/showdown/data/mods/gennext/conditions.js.map
+neoforge/run/showdown/data/mods/gennext/formats-data.js
+neoforge/run/showdown/data/mods/gennext/formats-data.js.map
+neoforge/run/showdown/data/mods/gennext/items.js
+neoforge/run/showdown/data/mods/gennext/items.js.map
+neoforge/run/showdown/data/mods/gennext/moves.js
+neoforge/run/showdown/data/mods/gennext/moves.js.map
+neoforge/run/showdown/data/mods/gennext/pokedex.js
+neoforge/run/showdown/data/mods/gennext/pokedex.js.map
+neoforge/run/showdown/data/mods/gennext/scripts.js
+neoforge/run/showdown/data/mods/gennext/scripts.js.map
+neoforge/run/showdown/data/mods/mixandmega/items.js
+neoforge/run/showdown/data/mods/mixandmega/items.js.map
+neoforge/run/showdown/data/mods/mixandmega/random-teams.js
+neoforge/run/showdown/data/mods/mixandmega/random-teams.js.map
+neoforge/run/showdown/data/mods/mixandmega/scripts.js
+neoforge/run/showdown/data/mods/mixandmega/scripts.js.map
+neoforge/run/showdown/data/mods/moderngen1/formats-data.js
+neoforge/run/showdown/data/mods/moderngen1/formats-data.js.map
+neoforge/run/showdown/data/mods/moderngen1/learnsets.js
+neoforge/run/showdown/data/mods/moderngen1/learnsets.js.map
+neoforge/run/showdown/data/mods/moderngen1/moves.js
+neoforge/run/showdown/data/mods/moderngen1/moves.js.map
+neoforge/run/showdown/data/mods/moderngen1/rulesets.js
+neoforge/run/showdown/data/mods/moderngen1/rulesets.js.map
+neoforge/run/showdown/data/mods/moderngen1/scripts.js
+neoforge/run/showdown/data/mods/moderngen1/scripts.js.map
+neoforge/run/showdown/data/mods/partnersincrime/abilities.js
+neoforge/run/showdown/data/mods/partnersincrime/abilities.js.map
+neoforge/run/showdown/data/mods/partnersincrime/items.js
+neoforge/run/showdown/data/mods/partnersincrime/items.js.map
+neoforge/run/showdown/data/mods/partnersincrime/moves.js
+neoforge/run/showdown/data/mods/partnersincrime/moves.js.map
+neoforge/run/showdown/data/mods/partnersincrime/random-teams.js
+neoforge/run/showdown/data/mods/partnersincrime/random-teams.js.map
+neoforge/run/showdown/data/mods/partnersincrime/scripts.js
+neoforge/run/showdown/data/mods/partnersincrime/scripts.js.map
+neoforge/run/showdown/data/mods/pokebilities/abilities.js
+neoforge/run/showdown/data/mods/pokebilities/abilities.js.map
+neoforge/run/showdown/data/mods/pokebilities/moves.js
+neoforge/run/showdown/data/mods/pokebilities/moves.js.map
+neoforge/run/showdown/data/mods/pokebilities/scripts.js
+neoforge/run/showdown/data/mods/pokebilities/scripts.js.map
+neoforge/run/showdown/data/mods/potd/random-teams.js
+neoforge/run/showdown/data/mods/potd/random-teams.js.map
+neoforge/run/showdown/data/mods/randomroulette/random-teams.js
+neoforge/run/showdown/data/mods/randomroulette/random-teams.js.map
+neoforge/run/showdown/data/mods/randomroulette/scripts.js
+neoforge/run/showdown/data/mods/randomroulette/scripts.js.map
+neoforge/run/showdown/data/mods/sharedpower/abilities.js
+neoforge/run/showdown/data/mods/sharedpower/abilities.js.map
+neoforge/run/showdown/data/mods/sharedpower/moves.js
+neoforge/run/showdown/data/mods/sharedpower/moves.js.map
+neoforge/run/showdown/data/mods/sharedpower/random-teams.js
+neoforge/run/showdown/data/mods/sharedpower/random-teams.js.map
+neoforge/run/showdown/data/mods/sharedpower/scripts.js
+neoforge/run/showdown/data/mods/sharedpower/scripts.js.map
+neoforge/run/showdown/data/mods/sharingiscaring/conditions.js
+neoforge/run/showdown/data/mods/sharingiscaring/conditions.js.map
+neoforge/run/showdown/data/mods/sharingiscaring/items.js
+neoforge/run/showdown/data/mods/sharingiscaring/items.js.map
+neoforge/run/showdown/data/mods/sharingiscaring/moves.js
+neoforge/run/showdown/data/mods/sharingiscaring/moves.js.map
+neoforge/run/showdown/data/mods/sharingiscaring/scripts.js
+neoforge/run/showdown/data/mods/sharingiscaring/scripts.js.map
+neoforge/run/showdown/data/mods/ssb/abilities.js
+neoforge/run/showdown/data/mods/ssb/abilities.js.map
+neoforge/run/showdown/data/mods/ssb/conditions.js
+neoforge/run/showdown/data/mods/ssb/conditions.js.map
+neoforge/run/showdown/data/mods/ssb/items.js
+neoforge/run/showdown/data/mods/ssb/items.js.map
+neoforge/run/showdown/data/mods/ssb/moves.js
+neoforge/run/showdown/data/mods/ssb/moves.js.map
+neoforge/run/showdown/data/mods/ssb/pokedex.js
+neoforge/run/showdown/data/mods/ssb/pokedex.js.map
+neoforge/run/showdown/data/mods/ssb/random-teams.js
+neoforge/run/showdown/data/mods/ssb/random-teams.js.map
+neoforge/run/showdown/data/mods/ssb/scripts.js
+neoforge/run/showdown/data/mods/ssb/scripts.js.map
+neoforge/run/showdown/data/mods/thecardgame/abilities.js
+neoforge/run/showdown/data/mods/thecardgame/abilities.js.map
+neoforge/run/showdown/data/mods/thecardgame/conditions.js
+neoforge/run/showdown/data/mods/thecardgame/conditions.js.map
+neoforge/run/showdown/data/mods/thecardgame/items.js
+neoforge/run/showdown/data/mods/thecardgame/items.js.map
+neoforge/run/showdown/data/mods/thecardgame/moves.js
+neoforge/run/showdown/data/mods/thecardgame/moves.js.map
+neoforge/run/showdown/data/mods/thecardgame/scripts.js
+neoforge/run/showdown/data/mods/thecardgame/scripts.js.map
+neoforge/run/showdown/data/mods/thecardgame/typechart.js
+neoforge/run/showdown/data/mods/thecardgame/typechart.js.map
+neoforge/run/showdown/data/mods/trademarked/scripts.js
+neoforge/run/showdown/data/mods/trademarked/scripts.js.map
+neoforge/run/showdown/data/mods/vaporemons/abilities.js
+neoforge/run/showdown/data/mods/vaporemons/abilities.js.map
+neoforge/run/showdown/data/mods/vaporemons/conditions.js
+neoforge/run/showdown/data/mods/vaporemons/conditions.js.map
+neoforge/run/showdown/data/mods/vaporemons/formats-data.js
+neoforge/run/showdown/data/mods/vaporemons/formats-data.js.map
+neoforge/run/showdown/data/mods/vaporemons/items.js
+neoforge/run/showdown/data/mods/vaporemons/items.js.map
+neoforge/run/showdown/data/mods/vaporemons/learnsets.js
+neoforge/run/showdown/data/mods/vaporemons/learnsets.js.map
+neoforge/run/showdown/data/mods/vaporemons/moves.js
+neoforge/run/showdown/data/mods/vaporemons/moves.js.map
+neoforge/run/showdown/data/mods/vaporemons/pokedex.js
+neoforge/run/showdown/data/mods/vaporemons/pokedex.js.map
+neoforge/run/showdown/data/mods/vaporemons/rulesets.js
+neoforge/run/showdown/data/mods/vaporemons/rulesets.js.map
+neoforge/run/showdown/data/mods/vaporemons/scripts.js
+neoforge/run/showdown/data/mods/vaporemons/scripts.js.map
+neoforge/run/showdown/data/moves.js
+neoforge/run/showdown/data/moves.js.map
+neoforge/run/showdown/data/natures.js
+neoforge/run/showdown/data/natures.js.map
+neoforge/run/showdown/data/pokedex.js
+neoforge/run/showdown/data/pokedex.js.map
+neoforge/run/showdown/data/pokemongo.js
+neoforge/run/showdown/data/pokemongo.js.map
+neoforge/run/showdown/data/random-doubles-sets.json
+neoforge/run/showdown/data/random-sets.json
+neoforge/run/showdown/data/random-teams.js
+neoforge/run/showdown/data/random-teams.js.map
+neoforge/run/showdown/data/rulesets.js
+neoforge/run/showdown/data/rulesets.js.map
+neoforge/run/showdown/data/scripts.js
+neoforge/run/showdown/data/scripts.js.map
+neoforge/run/showdown/data/tags.js
+neoforge/run/showdown/data/tags.js.map
+neoforge/run/showdown/data/text/abilities.js
+neoforge/run/showdown/data/text/abilities.js.map
+neoforge/run/showdown/data/text/default.js
+neoforge/run/showdown/data/text/default.js.map
+neoforge/run/showdown/data/text/items.js
+neoforge/run/showdown/data/text/items.js.map
+neoforge/run/showdown/data/text/moves.js
+neoforge/run/showdown/data/text/moves.js.map
+neoforge/run/showdown/data/text/pokedex.js
+neoforge/run/showdown/data/text/pokedex.js.map
+neoforge/run/showdown/data/typechart.js
+neoforge/run/showdown/data/typechart.js.map
+neoforge/run/showdown/index.js
+neoforge/run/showdown/lib/crashlogger.js
+neoforge/run/showdown/lib/crashlogger.js.map
+neoforge/run/showdown/lib/dashycode.js
+neoforge/run/showdown/lib/dashycode.js.map
+neoforge/run/showdown/lib/database.js
+neoforge/run/showdown/lib/database.js.map
+neoforge/run/showdown/lib/fs.js
+neoforge/run/showdown/lib/fs.js.map
+neoforge/run/showdown/lib/index.js
+neoforge/run/showdown/lib/index.js.map
+neoforge/run/showdown/lib/net.js
+neoforge/run/showdown/lib/net.js.map
+neoforge/run/showdown/lib/postgres.js
+neoforge/run/showdown/lib/postgres.js.map
+neoforge/run/showdown/lib/process-manager.js
+neoforge/run/showdown/lib/process-manager.js.map
+neoforge/run/showdown/lib/repl.js
+neoforge/run/showdown/lib/repl.js.map
+neoforge/run/showdown/lib/sql.js
+neoforge/run/showdown/lib/sql.js.map
+neoforge/run/showdown/lib/streams.js
+neoforge/run/showdown/lib/streams.js.map
+neoforge/run/showdown/lib/utils.js
+neoforge/run/showdown/lib/utils.js.map
+neoforge/run/showdown/server/artemis/index.js
+neoforge/run/showdown/server/artemis/index.js.map
+neoforge/run/showdown/server/artemis/local.js
+neoforge/run/showdown/server/artemis/local.js.map
+neoforge/run/showdown/server/artemis/remote.js
+neoforge/run/showdown/server/artemis/remote.js.map
+neoforge/run/showdown/server/chat-commands/admin.js
+neoforge/run/showdown/server/chat-commands/admin.js.map
+neoforge/run/showdown/server/chat-commands/avatars.js
+neoforge/run/showdown/server/chat-commands/avatars.js.map
+neoforge/run/showdown/server/chat-commands/core.js
+neoforge/run/showdown/server/chat-commands/core.js.map
+neoforge/run/showdown/server/chat-commands/info.js
+neoforge/run/showdown/server/chat-commands/info.js.map
+neoforge/run/showdown/server/chat-commands/moderation.js
+neoforge/run/showdown/server/chat-commands/moderation.js.map
+neoforge/run/showdown/server/chat-commands/room-settings.js
+neoforge/run/showdown/server/chat-commands/room-settings.js.map
+neoforge/run/showdown/server/chat-formatter.js
+neoforge/run/showdown/server/chat-formatter.js.map
+neoforge/run/showdown/server/chat-jsx.js
+neoforge/run/showdown/server/chat-jsx.js.map
+neoforge/run/showdown/server/chat-plugins/abuse-monitor.js
+neoforge/run/showdown/server/chat-plugins/abuse-monitor.js.map
+neoforge/run/showdown/server/chat-plugins/announcements.js
+neoforge/run/showdown/server/chat-plugins/announcements.js.map
+neoforge/run/showdown/server/chat-plugins/battlesearch.js
+neoforge/run/showdown/server/chat-plugins/battlesearch.js.map
+neoforge/run/showdown/server/chat-plugins/calculator.js
+neoforge/run/showdown/server/chat-plugins/calculator.js.map
+neoforge/run/showdown/server/chat-plugins/cg-teams-leveling.js
+neoforge/run/showdown/server/chat-plugins/cg-teams-leveling.js.map
+neoforge/run/showdown/server/chat-plugins/chat-monitor.js
+neoforge/run/showdown/server/chat-plugins/chat-monitor.js.map
+neoforge/run/showdown/server/chat-plugins/chatlog.js
+neoforge/run/showdown/server/chat-plugins/chatlog.js.map
+neoforge/run/showdown/server/chat-plugins/daily-spotlight.js
+neoforge/run/showdown/server/chat-plugins/daily-spotlight.js.map
+neoforge/run/showdown/server/chat-plugins/datasearch.js
+neoforge/run/showdown/server/chat-plugins/datasearch.js.map
+neoforge/run/showdown/server/chat-plugins/friends.js
+neoforge/run/showdown/server/chat-plugins/friends.js.map
+neoforge/run/showdown/server/chat-plugins/github.js
+neoforge/run/showdown/server/chat-plugins/github.js.map
+neoforge/run/showdown/server/chat-plugins/hangman.js
+neoforge/run/showdown/server/chat-plugins/hangman.js.map
+neoforge/run/showdown/server/chat-plugins/helptickets-auto.js
+neoforge/run/showdown/server/chat-plugins/helptickets-auto.js.map
+neoforge/run/showdown/server/chat-plugins/helptickets.js
+neoforge/run/showdown/server/chat-plugins/helptickets.js.map
+neoforge/run/showdown/server/chat-plugins/hosts.js
+neoforge/run/showdown/server/chat-plugins/hosts.js.map
+neoforge/run/showdown/server/chat-plugins/mafia.js
+neoforge/run/showdown/server/chat-plugins/mafia.js.map
+neoforge/run/showdown/server/chat-plugins/modlog-viewer.js
+neoforge/run/showdown/server/chat-plugins/modlog-viewer.js.map
+neoforge/run/showdown/server/chat-plugins/othermetas.js
+neoforge/run/showdown/server/chat-plugins/othermetas.js.map
+neoforge/run/showdown/server/chat-plugins/permalocks.js
+neoforge/run/showdown/server/chat-plugins/permalocks.js.map
+neoforge/run/showdown/server/chat-plugins/poll.js
+neoforge/run/showdown/server/chat-plugins/poll.js.map
+neoforge/run/showdown/server/chat-plugins/quotes.js
+neoforge/run/showdown/server/chat-plugins/quotes.js.map
+neoforge/run/showdown/server/chat-plugins/randombattles/index.js
+neoforge/run/showdown/server/chat-plugins/randombattles/index.js.map
+neoforge/run/showdown/server/chat-plugins/randombattles/winrates.js
+neoforge/run/showdown/server/chat-plugins/randombattles/winrates.js.map
+neoforge/run/showdown/server/chat-plugins/repeats.js
+neoforge/run/showdown/server/chat-plugins/repeats.js.map
+neoforge/run/showdown/server/chat-plugins/responder.js
+neoforge/run/showdown/server/chat-plugins/responder.js.map
+neoforge/run/showdown/server/chat-plugins/room-events.js
+neoforge/run/showdown/server/chat-plugins/room-events.js.map
+neoforge/run/showdown/server/chat-plugins/room-faqs.js
+neoforge/run/showdown/server/chat-plugins/room-faqs.js.map
+neoforge/run/showdown/server/chat-plugins/sample-teams.js
+neoforge/run/showdown/server/chat-plugins/sample-teams.js.map
+neoforge/run/showdown/server/chat-plugins/scavenger-games.js
+neoforge/run/showdown/server/chat-plugins/scavenger-games.js.map
+neoforge/run/showdown/server/chat-plugins/scavengers.js
+neoforge/run/showdown/server/chat-plugins/scavengers.js.map
+neoforge/run/showdown/server/chat-plugins/smogtours.js
+neoforge/run/showdown/server/chat-plugins/smogtours.js.map
+neoforge/run/showdown/server/chat-plugins/suspect-tests.js
+neoforge/run/showdown/server/chat-plugins/suspect-tests.js.map
+neoforge/run/showdown/server/chat-plugins/teams.js
+neoforge/run/showdown/server/chat-plugins/teams.js.map
+neoforge/run/showdown/server/chat-plugins/the-studio.js
+neoforge/run/showdown/server/chat-plugins/the-studio.js.map
+neoforge/run/showdown/server/chat-plugins/thing-of-the-day.js
+neoforge/run/showdown/server/chat-plugins/thing-of-the-day.js.map
+neoforge/run/showdown/server/chat-plugins/trivia/database.js
+neoforge/run/showdown/server/chat-plugins/trivia/database.js.map
+neoforge/run/showdown/server/chat-plugins/trivia/transactions.js
+neoforge/run/showdown/server/chat-plugins/trivia/transactions.js.map
+neoforge/run/showdown/server/chat-plugins/trivia/trivia.js
+neoforge/run/showdown/server/chat-plugins/trivia/trivia.js.map
+neoforge/run/showdown/server/chat-plugins/uno.js
+neoforge/run/showdown/server/chat-plugins/uno.js.map
+neoforge/run/showdown/server/chat-plugins/username-prefixes.js
+neoforge/run/showdown/server/chat-plugins/username-prefixes.js.map
+neoforge/run/showdown/server/chat-plugins/usersearch.js
+neoforge/run/showdown/server/chat-plugins/usersearch.js.map
+neoforge/run/showdown/server/chat-plugins/wifi.js
+neoforge/run/showdown/server/chat-plugins/wifi.js.map
+neoforge/run/showdown/server/chat-plugins/youtube.js
+neoforge/run/showdown/server/chat-plugins/youtube.js.map
+neoforge/run/showdown/server/chat.js
+neoforge/run/showdown/server/chat.js.map
+neoforge/run/showdown/server/config-loader.js
+neoforge/run/showdown/server/config-loader.js.map
+neoforge/run/showdown/server/friends.js
+neoforge/run/showdown/server/friends.js.map
+neoforge/run/showdown/server/index.js
+neoforge/run/showdown/server/index.js.map
+neoforge/run/showdown/server/ip-tools.js
+neoforge/run/showdown/server/ip-tools.js.map
+neoforge/run/showdown/server/ladders-challenges.js
+neoforge/run/showdown/server/ladders-challenges.js.map
+neoforge/run/showdown/server/ladders-local.js
+neoforge/run/showdown/server/ladders-local.js.map
+neoforge/run/showdown/server/ladders-remote.js
+neoforge/run/showdown/server/ladders-remote.js.map
+neoforge/run/showdown/server/ladders.js
+neoforge/run/showdown/server/ladders.js.map
+neoforge/run/showdown/server/loginserver.js
+neoforge/run/showdown/server/loginserver.js.map
+neoforge/run/showdown/server/modlog/index.js
+neoforge/run/showdown/server/modlog/index.js.map
+neoforge/run/showdown/server/modlog/transactions.js
+neoforge/run/showdown/server/modlog/transactions.js.map
+neoforge/run/showdown/server/monitor.js
+neoforge/run/showdown/server/monitor.js.map
+neoforge/run/showdown/server/private-messages/database.js
+neoforge/run/showdown/server/private-messages/database.js.map
+neoforge/run/showdown/server/private-messages/index.js
+neoforge/run/showdown/server/private-messages/index.js.map
+neoforge/run/showdown/server/punishments.js
+neoforge/run/showdown/server/punishments.js.map
+neoforge/run/showdown/server/replays.js
+neoforge/run/showdown/server/replays.js.map
+neoforge/run/showdown/server/room-battle-bestof.js
+neoforge/run/showdown/server/room-battle-bestof.js.map
+neoforge/run/showdown/server/room-battle.js
+neoforge/run/showdown/server/room-battle.js.map
+neoforge/run/showdown/server/room-game.js
+neoforge/run/showdown/server/room-game.js.map
+neoforge/run/showdown/server/room-minor-activity.js
+neoforge/run/showdown/server/room-minor-activity.js.map
+neoforge/run/showdown/server/roomlogs.js
+neoforge/run/showdown/server/roomlogs.js.map
+neoforge/run/showdown/server/rooms.js
+neoforge/run/showdown/server/rooms.js.map
+neoforge/run/showdown/server/sockets.js
+neoforge/run/showdown/server/sockets.js.map
+neoforge/run/showdown/server/team-validator-async.js
+neoforge/run/showdown/server/team-validator-async.js.map
+neoforge/run/showdown/server/tournaments/generator-elimination.js
+neoforge/run/showdown/server/tournaments/generator-elimination.js.map
+neoforge/run/showdown/server/tournaments/generator-round-robin.js
+neoforge/run/showdown/server/tournaments/generator-round-robin.js.map
+neoforge/run/showdown/server/tournaments/index.js
+neoforge/run/showdown/server/tournaments/index.js.map
+neoforge/run/showdown/server/user-groups.js
+neoforge/run/showdown/server/user-groups.js.map
+neoforge/run/showdown/server/users.js
+neoforge/run/showdown/server/users.js.map
+neoforge/run/showdown/server/verifier.js
+neoforge/run/showdown/server/verifier.js.map
+neoforge/run/showdown/showdown.json
+neoforge/run/showdown/sim/bag-items.js
+neoforge/run/showdown/sim/bag-items.js.map
+neoforge/run/showdown/sim/battle-actions.js
+neoforge/run/showdown/sim/battle-actions.js.map
+neoforge/run/showdown/sim/battle-queue.js
+neoforge/run/showdown/sim/battle-queue.js.map
+neoforge/run/showdown/sim/battle-stream.js
+neoforge/run/showdown/sim/battle-stream.js.map
+neoforge/run/showdown/sim/battle.js
+neoforge/run/showdown/sim/battle.js.map
+neoforge/run/showdown/sim/cobbled-debug-client.js
+neoforge/run/showdown/sim/cobbled-debug-client.js.map
+neoforge/run/showdown/sim/cobbled-debug-server.js
+neoforge/run/showdown/sim/cobbled-debug-server.js.map
+neoforge/run/showdown/sim/cobblemon-cache.js
+neoforge/run/showdown/sim/cobblemon-cache.js.map
+neoforge/run/showdown/sim/dex-abilities.js
+neoforge/run/showdown/sim/dex-abilities.js.map
+neoforge/run/showdown/sim/dex-conditions.js
+neoforge/run/showdown/sim/dex-conditions.js.map
+neoforge/run/showdown/sim/dex-data.js
+neoforge/run/showdown/sim/dex-data.js.map
+neoforge/run/showdown/sim/dex-formats.js
+neoforge/run/showdown/sim/dex-formats.js.map
+neoforge/run/showdown/sim/dex-items.js
+neoforge/run/showdown/sim/dex-items.js.map
+neoforge/run/showdown/sim/dex-moves.js
+neoforge/run/showdown/sim/dex-moves.js.map
+neoforge/run/showdown/sim/dex-species.js
+neoforge/run/showdown/sim/dex-species.js.map
+neoforge/run/showdown/sim/dex.js
+neoforge/run/showdown/sim/dex.js.map
+neoforge/run/showdown/sim/examples/battle-stream-example.js
+neoforge/run/showdown/sim/examples/battle-stream-example.js.map
+neoforge/run/showdown/sim/field.js
+neoforge/run/showdown/sim/field.js.map
+neoforge/run/showdown/sim/index.js
+neoforge/run/showdown/sim/index.js.map
+neoforge/run/showdown/sim/pokemon.js
+neoforge/run/showdown/sim/pokemon.js.map
+neoforge/run/showdown/sim/prng.js
+neoforge/run/showdown/sim/prng.js.map
+neoforge/run/showdown/sim/side.js
+neoforge/run/showdown/sim/side.js.map
+neoforge/run/showdown/sim/state.js
+neoforge/run/showdown/sim/state.js.map
+neoforge/run/showdown/sim/team-validator.js
+neoforge/run/showdown/sim/team-validator.js.map
+neoforge/run/showdown/sim/teams.js
+neoforge/run/showdown/sim/teams.js.map
+neoforge/run/showdown/sim/tools/exhaustive-runner.js
+neoforge/run/showdown/sim/tools/exhaustive-runner.js.map
+neoforge/run/showdown/sim/tools/multi-random-runner.js
+neoforge/run/showdown/sim/tools/multi-random-runner.js.map
+neoforge/run/showdown/sim/tools/random-player-ai.js
+neoforge/run/showdown/sim/tools/random-player-ai.js.map
+neoforge/run/showdown/sim/tools/runner.js
+neoforge/run/showdown/sim/tools/runner.js.map
+neoforge/run/showdown/tools/modlog/converter.js
+neoforge/run/showdown/tools/modlog/converter.js.map
+neoforge/run/showdown/tools/set-import/importer.js
+neoforge/run/showdown/tools/set-import/importer.js.map
+neoforge/run/showdown/translations/dutch/helptickets.js
+neoforge/run/showdown/translations/dutch/helptickets.js.map
+neoforge/run/showdown/translations/dutch/main.js
+neoforge/run/showdown/translations/dutch/main.js.map
+neoforge/run/showdown/translations/dutch/minor-activities.js
+neoforge/run/showdown/translations/dutch/minor-activities.js.map
+neoforge/run/showdown/translations/english/core-commands.js
+neoforge/run/showdown/translations/english/core-commands.js.map
+neoforge/run/showdown/translations/english/helptickets.js
+neoforge/run/showdown/translations/english/helptickets.js.map
+neoforge/run/showdown/translations/english/main.js
+neoforge/run/showdown/translations/english/main.js.map
+neoforge/run/showdown/translations/english/minor-activities.js
+neoforge/run/showdown/translations/english/minor-activities.js.map
+neoforge/run/showdown/translations/english/repeats.js
+neoforge/run/showdown/translations/english/repeats.js.map
+neoforge/run/showdown/translations/english/trivia.js
+neoforge/run/showdown/translations/english/trivia.js.map
+neoforge/run/showdown/translations/french/core-commands.js
+neoforge/run/showdown/translations/french/core-commands.js.map
+neoforge/run/showdown/translations/french/helptickets.js
+neoforge/run/showdown/translations/french/helptickets.js.map
+neoforge/run/showdown/translations/french/main.js
+neoforge/run/showdown/translations/french/main.js.map
+neoforge/run/showdown/translations/french/minor-activities.js
+neoforge/run/showdown/translations/french/minor-activities.js.map
+neoforge/run/showdown/translations/german/core-commands.js
+neoforge/run/showdown/translations/german/core-commands.js.map
+neoforge/run/showdown/translations/german/helptickets.js
+neoforge/run/showdown/translations/german/helptickets.js.map
+neoforge/run/showdown/translations/german/main.js
+neoforge/run/showdown/translations/german/main.js.map
+neoforge/run/showdown/translations/german/minor-activities.js
+neoforge/run/showdown/translations/german/minor-activities.js.map
+neoforge/run/showdown/translations/german/repeats.js
+neoforge/run/showdown/translations/german/repeats.js.map
+neoforge/run/showdown/translations/hindi/main.js
+neoforge/run/showdown/translations/hindi/main.js.map
+neoforge/run/showdown/translations/italian/core-commands.js
+neoforge/run/showdown/translations/italian/core-commands.js.map
+neoforge/run/showdown/translations/italian/helptickets.js
+neoforge/run/showdown/translations/italian/helptickets.js.map
+neoforge/run/showdown/translations/italian/main.js
+neoforge/run/showdown/translations/italian/main.js.map
+neoforge/run/showdown/translations/italian/minor-activities.js
+neoforge/run/showdown/translations/italian/minor-activities.js.map
+neoforge/run/showdown/translations/italian/repeats.js
+neoforge/run/showdown/translations/italian/repeats.js.map
+neoforge/run/showdown/translations/japanese/core-commands.js
+neoforge/run/showdown/translations/japanese/core-commands.js.map
+neoforge/run/showdown/translations/japanese/helptickets.js
+neoforge/run/showdown/translations/japanese/helptickets.js.map
+neoforge/run/showdown/translations/japanese/main.js
+neoforge/run/showdown/translations/japanese/main.js.map
+neoforge/run/showdown/translations/japanese/minor-activities.js
+neoforge/run/showdown/translations/japanese/minor-activities.js.map
+neoforge/run/showdown/translations/japanese/repeats.js
+neoforge/run/showdown/translations/japanese/repeats.js.map
+neoforge/run/showdown/translations/portuguese/core-commands.js
+neoforge/run/showdown/translations/portuguese/core-commands.js.map
+neoforge/run/showdown/translations/portuguese/helptickets.js
+neoforge/run/showdown/translations/portuguese/helptickets.js.map
+neoforge/run/showdown/translations/portuguese/main.js
+neoforge/run/showdown/translations/portuguese/main.js.map
+neoforge/run/showdown/translations/portuguese/minor-activities.js
+neoforge/run/showdown/translations/portuguese/minor-activities.js.map
+neoforge/run/showdown/translations/portuguese/repeats.js
+neoforge/run/showdown/translations/portuguese/repeats.js.map
+neoforge/run/showdown/translations/simplifiedchinese/helptickets.js
+neoforge/run/showdown/translations/simplifiedchinese/helptickets.js.map
+neoforge/run/showdown/translations/simplifiedchinese/main.js
+neoforge/run/showdown/translations/simplifiedchinese/main.js.map
+neoforge/run/showdown/translations/simplifiedchinese/minor-activities.js
+neoforge/run/showdown/translations/simplifiedchinese/minor-activities.js.map
+neoforge/run/showdown/translations/spanish/core-commands.js
+neoforge/run/showdown/translations/spanish/core-commands.js.map
+neoforge/run/showdown/translations/spanish/helptickets.js
+neoforge/run/showdown/translations/spanish/helptickets.js.map
+neoforge/run/showdown/translations/spanish/main.js
+neoforge/run/showdown/translations/spanish/main.js.map
+neoforge/run/showdown/translations/spanish/minor-activities.js
+neoforge/run/showdown/translations/spanish/minor-activities.js.map
+neoforge/run/showdown/translations/spanish/repeats.js
+neoforge/run/showdown/translations/spanish/repeats.js.map
+neoforge/run/showdown/translations/traditionalchinese/main.js
+neoforge/run/showdown/translations/traditionalchinese/main.js.map
+neoforge/run/showdown/translations/traditionalchinese/minor-activities.js
+neoforge/run/showdown/translations/traditionalchinese/minor-activities.js.map
+neoforge/run/showdown/translations/turkish/main.js
+neoforge/run/showdown/translations/turkish/main.js.map
+neoforge/run/usercache.json
+neoforge/run/usernamecache.json

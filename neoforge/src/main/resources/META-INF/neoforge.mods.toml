@@ -1,35 +1,38 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-#issueTrackerURL = "A valid URL to your issue tracker where people can open bug tickets"
 license = "MIT License"
 
 [[mods]]
-modId = "cobblemon_multiplatform_mdk"
+# neo doesnt like dashes so yeah
+modId = "cobblemon_spawn_alerts"
 version = "${version}"
-displayName = "Cobblemon Multiplatform-NeoForge Template Sidemod"
-authors = "Me!"
+displayName = "CobblemonSpawnAlerts"
+authors = "Stasis, the Shattered"
 description = '''
-A very cool multi-line description!
+A highly customizable sidemod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns
 '''
-#logoFile = ""
+logoFile = "assets/cobblemon-spawn-alerts/icon.png"
 
-[[dependencies.cobblemon_multiplatform_mdk]]
+[[dependencies.cobblemon_spawn_alerts]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cobblemon_multiplatform_mdk]]
+[[dependencies.cobblemon_spawn_alerts]]
 modId = "neoforge"
 mandatory = true
 versionRange = "[21.1.66,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.cobblemon_multiplatform_mdk]]
+[[dependencies.cobblemon_spawn_alerts]]
 modId = "cobblemon"
 mandatory = true
-versionRange = "[1.6,)"
+versionRange = "[1.6.1,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config="cobblemon_spawn_alerts.mixins.json"

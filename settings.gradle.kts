@@ -1,4 +1,4 @@
-rootProject.name = "Multi-Platform"
+rootProject.name = "CobblemonSpawnAlerts"
 
 pluginManagement {
     repositories {

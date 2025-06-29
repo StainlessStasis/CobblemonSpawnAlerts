@@ -6,7 +6,7 @@ import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import io.github.stainlessstasis.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
 import net.minecraft.client.Minecraft;

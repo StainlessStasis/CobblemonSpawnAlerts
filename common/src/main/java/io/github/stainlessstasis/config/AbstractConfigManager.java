@@ -1,11 +1,10 @@
 package io.github.stainlessstasis.config;
 
 import com.google.gson.*;
-import io.github.stainlessstasis.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,7 +17,7 @@ import java.nio.file.Path;
 
 public abstract class AbstractConfigManager {
     protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    protected static final Path MOD_CONFIG_DIR = Services.PLATFORM.getConfigDir().resolve(CobblemonSpawnAlerts.MOD_ID);
+    protected static final Path MOD_CONFIG_DIR = Services.PLATFORM.getConfigDir().resolve("cobblemon-spawn-alerts");
     protected boolean isReloading;
 
     public boolean loadConfig() {
@@ -109,19 +108,6 @@ public abstract class AbstractConfigManager {
             CobblemonSpawnAlerts.LOGGER.error("Failed to save config file `"+fileName+"`. Error: " + e.getMessage());
             MessageUtils.sendTranslated("cobblemon-spawn-alerts.config_save_failed", file.toPath());
             isReloading = false;
-        }
-    }
-
-    public void reloadClient() {
-        if (Minecraft.getInstance().player == null) {
-            return;
-        }
-
-        MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID+".client_config_reloading");
-        if (loadConfig()) {
-            MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID + ".client_config_reloaded");
-        } else {
-            MessageUtils.sendTranslated(CobblemonSpawnAlerts.MOD_ID + ".client_config_reload_failed");
         }
     }
 

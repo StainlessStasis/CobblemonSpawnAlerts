@@ -1,5 +1,8 @@
 package io.github.stainlessstasis.config;
 
+import io.github.stainlessstasis.util.MessageUtils;
+import net.minecraft.client.Minecraft;
+
 import java.io.File;
 
 public class ClientConfigManager extends AbstractConfigManager {
@@ -28,6 +31,19 @@ public class ClientConfigManager extends AbstractConfigManager {
             return false;
         }
         return true;
+    }
+
+    public void reload() {
+        if (Minecraft.getInstance().player == null) {
+            return;
+        }
+
+        MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reloading");
+        if (loadConfig()) {
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reloaded");
+        } else {
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reload_failed");
+        }
     }
 
     public MainConfig getMainConfig() {

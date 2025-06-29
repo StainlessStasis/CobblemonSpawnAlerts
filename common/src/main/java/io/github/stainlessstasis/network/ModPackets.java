@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.network;
 
-import io.github.stainlessstasis.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import net.minecraft.resources.ResourceLocation;
 
 public class ModPackets {

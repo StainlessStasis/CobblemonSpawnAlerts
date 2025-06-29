@@ -39,6 +39,9 @@ dependencies {
         exclude("net.neoforged.fancymodloader", "loader")
     }
 
+    implementation("net.kyori:adventure-platform-neoforge:6.0.0")
+//    implementation(jarJar("net.kyori:adventure-platform-neoforge:6.0.0")!!)
+
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {
         isTransitive = false

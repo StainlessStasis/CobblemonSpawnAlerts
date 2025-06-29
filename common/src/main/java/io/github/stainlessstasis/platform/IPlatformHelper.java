@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.platform;
 
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+
 import java.nio.file.Path;
 
 public interface IPlatformHelper {
@@ -41,4 +43,6 @@ public interface IPlatformHelper {
      * @return A Path to the config directory.
      */
     Path getConfigDir();
+
+    void onPokemonSpawned(PokemonEntity pokemonEntity);
 }
