@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "cobblemon-spawn-alerts",
+  "version": "${version}",
+  "name": "Cobblemon Spawn Alerts",
+  "description": "A highly customizable sidemod for Cobblemon 1.6.1 to alert you when a certain Pokemon spawns",
+  "authors": [
+    "Stasis, the Shattered"
+  ],
+  "license": "MIT License",
+  "environment": "*",
+  "mixins": [
+    "cobblemon-spawn-alerts.mixins.json"
+  ],
+  "accessWidener": "cobblemon-spawn-alerts.accesswidener",
+  "entrypoints": {
+    "main": [
+      "io.github.stainlessstasis.CSAFabric"
+    ],
+    "client": [
+      "io.github.stainlessstasis.CSAFabricClient"
+    ]
+  },
+  "depends": {
+    "minecraft": "1.21.1",
+    "cobblemon": ">=1.6.1"
+  }
+}
