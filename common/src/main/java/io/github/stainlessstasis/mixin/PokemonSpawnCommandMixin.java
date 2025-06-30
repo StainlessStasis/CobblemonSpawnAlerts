@@ -29,14 +29,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Mixin(value = SpawnPokemon.class)
 public abstract class PokemonSpawnCommandMixin {
     @Unique
-    private UUID playerUUID;
+    private UUID cobblemonSpawnAlerts$playerUUID;
     @Unique
-    private BlockPos blockPos;
+    private BlockPos cobblemonSpawnAlerts$blockPos;
 
     @Inject(method = "execute", at = @At("HEAD"))
     private void execute(CommandContext<CommandSourceStack> context, Vec3 pos, CallbackInfoReturnable<Integer> cir) {
-        playerUUID = context.getSource().getPlayer().getUUID();
-        blockPos = BlockPos.containing(pos);
+        cobblemonSpawnAlerts$playerUUID = context.getSource().getPlayer().getUUID();
+        cobblemonSpawnAlerts$blockPos = BlockPos.containing(pos);
     }
 
     @Redirect(
@@ -47,19 +47,19 @@ public abstract class PokemonSpawnCommandMixin {
             )
     )
     private boolean onAddFreshEntity(ServerLevel world, Entity entity) {
-        if (playerUUID == null) {
+        if (cobblemonSpawnAlerts$playerUUID == null) {
             return false;
         }
-        if (blockPos == null) {
+        if (cobblemonSpawnAlerts$blockPos == null) {
             return false;
         }
 
-        PlayerSpawner spawner = CobblemonWorldSpawnerManager.INSTANCE.getSpawnersForPlayers().get(playerUUID);
+        PlayerSpawner spawner = CobblemonWorldSpawnerManager.INSTANCE.getSpawnersForPlayers().get(cobblemonSpawnAlerts$playerUUID);
         SpawnCause cause = new SpawnCause(spawner, spawner.chooseBucket(), entity);
         WorldSlice slice = spawner.getProspector().prospect(spawner, spawner.getArea(cause));
         AreaSpawningContext spawningContext = new AreaSpawningContext(
-                cause, world, blockPos, 15, 15, true,
-                new ArrayList<>(), 0, slice.nearbyBlocks(blockPos, 1, 1), slice);
+                cause, world, cobblemonSpawnAlerts$blockPos, 15, 15, true,
+                new ArrayList<>(), 0, slice.nearbyBlocks(cobblemonSpawnAlerts$blockPos, 1, 1), slice);
 
         AtomicBoolean idkWhatToCallThisButTheCommandDidntError = new AtomicBoolean(false);
         CobblemonEvents.ENTITY_SPAWN.postThen(new SpawnEvent<>(entity, spawningContext),
