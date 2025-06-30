@@ -11,6 +11,7 @@ import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.platform.IPlatformHelper;
+import io.github.stainlessstasis.platform.Platform;
 import kotlin.Unit;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -22,8 +23,8 @@ import java.nio.file.Path;
 public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
-    public String getPlatformName() {
-        return "Fabric";
+    public Platform getPlatform() {
+        return Platform.FABRIC;
     }
 
     @Override

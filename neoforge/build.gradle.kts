@@ -40,7 +40,7 @@ dependencies {
     }
 
     implementation("net.kyori:adventure-platform-neoforge:6.0.0")
-//    implementation(jarJar("net.kyori:adventure-platform-neoforge:6.0.0")!!)
+    include("net.kyori:adventure-platform-neoforge:6.0.0")
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {
@@ -65,7 +65,6 @@ tasks.processResources {
 }
 
 tasks {
-
     jar {
         archiveBaseName.set("${rootProject.property("archives_base_name")}-${project.name}")
         archiveClassifier.set("dev-slim")

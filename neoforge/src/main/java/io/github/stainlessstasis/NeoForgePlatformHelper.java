@@ -11,6 +11,7 @@ import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.platform.IPlatformHelper;
+import io.github.stainlessstasis.platform.Platform;
 import kotlin.Unit;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
@@ -22,8 +23,8 @@ import java.nio.file.Path;
 public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
-    public String getPlatformName() {
-        return "NeoForge";
+    public Platform getPlatform() {
+        return Platform.NEOFORGE;
     }
 
     @Override

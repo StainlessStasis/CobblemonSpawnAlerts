@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Mixin(value = SpawnPokemon.class, remap = true)
+@Mixin(value = SpawnPokemon.class)
 public abstract class PokemonSpawnCommandMixin {
     @Unique
     private UUID playerUUID;
@@ -43,9 +43,9 @@ public abstract class PokemonSpawnCommandMixin {
             method = "execute",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"
-            ),
-            remap = true
+                    target = "Lnet/minecraft/server/level/ServerLevel;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z",
+                    ordinal = 0
+            )
     )
     private boolean onAddFreshEntity(ServerLevel world, Entity entity) {
         if (playerUUID == null) {

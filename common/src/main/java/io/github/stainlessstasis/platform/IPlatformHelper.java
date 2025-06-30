@@ -10,7 +10,7 @@ public interface IPlatformHelper {
      *
      * @return The name of the current platform.
      */
-    String getPlatformName();
+    Platform getPlatform();
 
     /**
      * Checks if a mod with the given id is loaded.
@@ -33,7 +33,6 @@ public interface IPlatformHelper {
      * @return The name of the environment type.
      */
     default String getEnvironmentName() {
-
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 

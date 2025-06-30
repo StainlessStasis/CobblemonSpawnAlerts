@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.pokemon.Nature;
 import io.github.stainlessstasis.core.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
+import io.github.stainlessstasis.network.ModLoadedPacket;
 import io.github.stainlessstasis.network.PacketHandlers;
 import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.util.MessageUtils;
@@ -25,7 +26,7 @@ import net.minecraft.world.entity.Entity;
 
 @Environment(EnvType.CLIENT)
 public class CSAFabricClient implements ClientModInitializer {
-    private static boolean doesServerHaveMod = false;
+    public static boolean doesServerHaveMod = false;
 
     @Override
     public void onInitializeClient() {
@@ -38,16 +39,23 @@ public class CSAFabricClient implements ClientModInitializer {
 
        CommandRegistrationCallback.EVENT.register(CommandRegistry::registerClientCommands);
 
+       // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
             context.client().execute(() -> {
-                handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.nature());
+                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.nature());
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ModLoadedPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                doesServerHaveMod = true;
             });
         });
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
         if (!minecraft.isSingleplayer()) {
-            MessageUtils.sendTranslated("<green>[CobblemonSpawnAlert]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting or Pokemon info, certain things, like IVs or Nature, may be displayed incorrectly!");
+            MessageUtils.sendTranslated("<green>[CobblemonSpawnAlert]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs or Nature, may be displayed incorrectly!");
         }
     }
 
@@ -63,11 +71,5 @@ public class CSAFabricClient implements ClientModInitializer {
         if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
             AlertHandler.alert(pe);
         }
-    }
-
-    private void handlePokemonDataPacket(int pokemonNetworkID, IVs ivs, Nature nature) {
-        // TODO: make a better solution for this?
-        doesServerHaveMod = true;
-        PacketHandlers.handlePokemonDataPacket(pokemonNetworkID, ivs, nature);
     }
 }
