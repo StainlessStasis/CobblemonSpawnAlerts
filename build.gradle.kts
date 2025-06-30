@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("java-library")
-    kotlin("jvm") version("1.9.23")
+    kotlin("jvm") version("2.2.0")
 
     id("dev.architectury.loom") version("1.7-SNAPSHOT") apply false
     id("architectury-plugin") version("3.4-SNAPSHOT") apply false
@@ -28,6 +28,12 @@ allprojects {
 
     java {
         withSourcesJar()
+    }
+
+    tasks.processResources {
+        filesMatching(listOf("**/*.mods.toml", "pack.mcmeta", "fabric.mod.json", "*.mixins.json")) {
+            expand(project.properties)
+        }
     }
 }
 

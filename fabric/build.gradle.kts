@@ -9,22 +9,6 @@ architectury {
     fabric()
 }
 
-loom {
-    enableTransitiveAccessWideners.set(true)
-    silentMojangMappingsLicense()
-
-    mixin {
-        defaultRefmapName.set("mixins.${project.name}.refmap.json")
-//        defaultRefmapName.set("common-common-refmap.json")
-    }
-}
-
-//configurations.all {
-//    resolutionStrategy {
-//        force("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
-//    }
-//}
-
 val shadowCommon = configurations.create("shadowCommon")
 
 dependencies {
@@ -54,10 +38,10 @@ tasks.getByName<Test>("test") {
 }
 
 tasks.processResources {
-    inputs.property("version", project.version)
+    inputs.property("version", rootProject.version)
 
     filesMatching("fabric.mod.json") {
-        expand(project.properties)
+        expand(rootProject.properties)
     }
 
 }
