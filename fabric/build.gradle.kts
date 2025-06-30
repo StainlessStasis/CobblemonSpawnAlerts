@@ -14,8 +14,8 @@ loom {
     silentMojangMappingsLicense()
 
     mixin {
-//        defaultRefmapName.set("mixins.${project.name}.refmap.json")
-        defaultRefmapName.set("common-common-refmap.json")
+        defaultRefmapName.set("mixins.${project.name}.refmap.json")
+//        defaultRefmapName.set("common-common-refmap.json")
     }
 }
 

@@ -8,5 +8,5 @@
 	"injectors": {
 		"defaultRequire": 1
 	},
-	"refmap": "common-common-refmap.json"
+	"refmap": "mixins.CobblemonSpawnAlerts.refmap.json"
 }
