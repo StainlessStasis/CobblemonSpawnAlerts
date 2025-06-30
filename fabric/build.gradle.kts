@@ -14,18 +14,16 @@ loom {
     silentMojangMappingsLicense()
 
     mixin {
-        useLegacyMixinAp.set(true)
 //        defaultRefmapName.set("mixins.${project.name}.refmap.json")
-//        defaultRefmapName.set("mixins.cobblemon-spawn-alerts.refmap.json")
         defaultRefmapName.set("common-common-refmap.json")
     }
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
-    }
-}
+//configurations.all {
+//    resolutionStrategy {
+//        force("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
+//    }
+//}
 
 val shadowCommon = configurations.create("shadowCommon")
 
