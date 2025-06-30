@@ -57,10 +57,10 @@ tasks.getByName<Test>("test") {
 }
 
 tasks.processResources {
-    inputs.property("version", project.version)
+    inputs.property("version", rootProject.version)
 
     filesMatching("META-INF/neoforge.mods.toml") {
-        expand(project.properties)
+        expand(rootProject.properties)
     }
 }
 
