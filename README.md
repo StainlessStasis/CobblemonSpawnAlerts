@@ -36,7 +36,7 @@ This file is called `main.json`
 You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reload` to reload it. Leaving/entering a world will **NOT** reload the config. The command must be run to take effect.<br>
 
 ## Config - Server
-The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
+The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig` in singleplayer.<br><br>
 This file is called `server.json`
 
 ### Config Settings:<br>
