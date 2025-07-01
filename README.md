@@ -28,7 +28,7 @@ This file is called `main.json`
 **alertAllLegendaries**: Alerts you when any legendary spawns, unless its config is disabled.<br>
 **alertAllMythicals**: Alerts you when any mythical spawns, unless its config is disabled.<br>
 **alertAllUltraBeasts**: Alerts you when any ultra beast spawns, unless its config is disabled.<br>
-**alertALlParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
+**alertAllParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
 **alertAllNotInDex**: Alerts you when any Pokemon which is not already registered in your Pokedex spawns, unless its config is disabled.<br>
 **alertAllUncaught**: Alerts you when any Pokemon which you have not caught spawns, unless its config is disabled.<br>
 
@@ -61,6 +61,7 @@ The config is found in your Minecraft instance folder under `config -> cobblemon
 **showNature**: (Currently only works in singleplayer) Shows the Pokemon's nature.<br>
 **showGender**: Shows the Pokemon's gender.<br>
 **showCoordinates**: Shows the Pokemon's coordinates (x/y/z).<br>
+**showBiome**: Shows the biome the Pokemon spawned in.<br>
 **showInfoAsHover**: Shows certain info only when the message is hovered over instead of in the main message. This includes: level, IVs, nature, and coordinates. These are not currently individually configurable to be hovered, so it either shows all the enabled stats in the hover, or all in the main message. I will be adding this feature soon though!<br>
 **customAlertMessage**: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.<br>
 
@@ -77,11 +78,12 @@ Show all stats in message:<br>
     "showNature": true,
     "showGender": true,
     "showCoordinates": true,
+    "showBiome": true,
     "showInfoAsHover": false,
     "customAlertMessage": ""
   },
 ```
-![Stats in main message](https://cdn.modrinth.com/data/cached_images/450637c1ebf32f2558eb5ca4d87e6c479813e22f.png)<br>
+![All stats in message](https://cdn.modrinth.com/data/cached_images/aecca0f8f36fa8718ed82002d02c09784d5f70f2.png)
 Show all stats in hover:<br>
 ```json
 "bidoof": {
@@ -94,11 +96,12 @@ Show all stats in hover:<br>
     "showNature": true,
     "showGender": true,
     "showCoordinates": true,
+    "showBiome": true,
     "showInfoAsHover": true,
     "customAlertMessage": ""
   },
 ```
-![Hoverable stats](https://cdn.modrinth.com/data/cached_images/3073f3109ff8c95f418e8c999108e6d4abc59441.png)
+![Hoverable stats](https://cdn.modrinth.com/data/cached_images/8f4896e3abf83dedadb1510261b60fbdb36f10ed.png)
 
 ## Config - Templates (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
@@ -115,7 +118,7 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.config_load_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to load properly while loading `%s`.</red>",
   "cobblemon-spawn-alerts.config_save_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to save properly while saving `%s`.</red>",
 
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}!</green>",
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{nature}has appeared{coords}{biome}!</green>",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
   "cobblemon-spawn-alerts.shiny_unformatted": "Shiny ",
   "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>",
@@ -124,6 +127,9 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.ivs": "with IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_hover": "IVs: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
   "cobblemon-spawn-alerts.ivs_unformatted": "(%s/%s/%s/%s/%s/%s)",
+  "cobblemon-spawn-alerts.evs": "with EV yield: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
+  "cobblemon-spawn-alerts.evs_hover": "EV Yield: <gray>(%s/%s/%s/%s/%s/%s)</gray> ",
+  "cobblemon-spawn-alerts.evs_unformatted": "(%s/%s/%s/%s/%s/%s)",
   "cobblemon-spawn-alerts.nature": "with Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_hover": "Nature: <gray>%s</gray> ",
   "cobblemon-spawn-alerts.nature_unformatted": "%s",
@@ -136,6 +142,9 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.coords": " at <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_hover": "Coordinates: <gray>(%s, %s, %s)</gray>",
   "cobblemon-spawn-alerts.coords_unformatted": "(%s, %s, %s)",
+  "cobblemon-spawn-alerts.biome": " in a <gray>%s</gray> biome",
+  "cobblemon-spawn-alerts.biome_hover": "Biome: <gray>%s</gray>",
+  "cobblemon-spawn-alerts.biome_unformatted": "%s",
   "cobblemon-spawn-alerts.legendary": "<light_purple>Legendary </light_purple>",
   "cobblemon-spawn-alerts.legendary_unformatted": "Legendary",
   "cobblemon-spawn-alerts.mythical": "<light_purple>Mythical </light_purple>",
@@ -174,6 +183,7 @@ Currently, the available dynamic replacements are:
 * **{nature / {nature_unformatted}**: Inserts the Pokemon's nature if `showNature` is enabled
 * **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender if `showGender` is enabled
 * **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates if `showCoordinates` is enabled
+* **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned in if `showBiome` is enabled
 * **{legendary} / {legendary_unformatted}**: Inserts the Pokemon's rarity (legendary/mythical/ultra beast) if `showLegendary` is enabled
 <br><br>
 ### Examples:<br>
@@ -189,6 +199,7 @@ Creating a custom alert message:<br>
     "showNature": false,
     "showGender": false,
     "showCoordinates": true,
+    "showBiome": false,
     "showInfoAsHover": false,
     "customAlertMessage": "<blue>My beautiful boy {shiny}<gradient:blue:green><b>BIDOOF</b></gradient> {level}spawned{coords}!</blue>"
   },
@@ -198,11 +209,10 @@ Creating a custom alert message:<br>
 
 ## More to come!
 I just started making this mod, so it is quite obviously lacking many features. In no particular order, I plan to add:
-* Serverside global alerts
+* Serverside global alerts & alert for despawn/faint
 * Sounds
 * Abilities
 * EVs
-* Neoforge support
 * Individually customizable hoverable stats
 
 I may also add the following, but I'm unsure:
