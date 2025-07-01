@@ -3,6 +3,7 @@ package io.github.stainlessstasis;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -50,7 +51,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
             IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : CobblemonStatProvider.INSTANCE.createEmptyIVs(0);
             Nature nature = config.broadcastNature() ? pokemon.getNature() : Natures.INSTANCE.getNAUGHTY();
-
             PacketDistributor.sendToPlayersTrackingEntity(pokemonEntity, new PokemonDataPacket(pokemonEntity.getId(), ivs, nature));
             return Unit.INSTANCE;
         }).build();

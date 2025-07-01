@@ -1,18 +1,24 @@
 package io.github.stainlessstasis.util;
 
+import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Gender;
-import com.cobblemon.mod.common.pokemon.IVs;
-import com.cobblemon.mod.common.pokemon.Nature;
-import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.*;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.biome.Biome;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+
+import java.util.HashMap;
 
 public class MessageUtils {
     public static void sendTranslated(String translationKey, Object... args) {
@@ -29,13 +35,13 @@ public class MessageUtils {
         return I18n.get(translationKey, args);
     }
 
-    // this will eventually be used on server & client but rn just client so yeah thats why this is here
     public static String applyDynamicReplacements(String message, PokemonEntity pokemonEntity, PokemonConfig.PokemonSpecificConfig config) {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = pokemon.getSpecies().getName();
         MessageTemplates messageTemplates = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates();
         int level = pokemon.getLevel();
         IVs ivs = pokemon.getIvs();
+//        HashMap<Stat, Integer> evs = pokemon.getSpecies().getEvYield();
         Nature nature = pokemon.getNature();
         Gender gender = pokemon.getGender();
 
@@ -109,11 +115,30 @@ public class MessageUtils {
         message = message.replace("{ivs}", "");
         message = message.replace("{ivs_unformatted}", "");
 
+        // EVs
+//        if (config.showEVs()) {
+//            String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
+//            String evsMessage =
+//                    I18n.get(configMessage,
+//                            evs.get(Stats.HP), evs.get(Stats.ATTACK), evs.get(Stats.DEFENCE),
+//                            evs.get(Stats.SPECIAL_ATTACK), evs.get(Stats.SPECIAL_DEFENCE), evs.get(Stats.SPEED));
+//            if (isHoverEnabled) {
+//                hoverText += evsMessage + "\n";
+//            } else {
+//                message = message.replace("{evs}", evsMessage);
+//            }
+//            message = message.replace("{evs_unformatted}", I18n.get(messageTemplates.evs_unformatted(),
+//                    evs.get(Stats.HP), evs.get(Stats.ATTACK), evs.get(Stats.DEFENCE),
+//                    evs.get(Stats.SPECIAL_ATTACK), evs.get(Stats.SPECIAL_DEFENCE), evs.get(Stats.SPEED)));
+//        }
+//        message = message.replace("{evs}", "");
+//        message = message.replace("{evs_unformatted}", "");
+
         // Nature
         if (config.showNature()) {
             String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
             String natureString = nature.getDisplayName().replace("cobblemon.nature.", "");
-            natureString = natureString.substring(0, 1).toUpperCase() + natureString.substring(1);
+            natureString = StringUtil.capitalize(natureString);
             String natureMessage = I18n.get(configMessage, natureString);
             if (isHoverEnabled) {
                 hoverText += natureMessage + "\n";
@@ -146,21 +171,39 @@ public class MessageUtils {
         message = message.replace("{gender}", "");
         message = message.replace("{gender_unformatted}", "");
 
+        Vector3i coords = new Vector3i((int)pokemonEntity.getX(), (int)pokemonEntity.getY(), (int)pokemonEntity.getZ());
         // Coordinates
         if (config.showCoordinates()) {
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
-            String coordsMessage = I18n.get(configMessage,
-                    (int)pokemonEntity.getX(), (int)pokemonEntity.getY(), (int)pokemonEntity.getZ());
+            String coordsMessage = I18n.get(configMessage, coords.x, coords.y, coords.z);
             if (isHoverEnabled) {
                 hoverText += coordsMessage + "\n";
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
-            message = message.replace("{coords_unformatted}", I18n.get(messageTemplates.coords_unformatted(),
-                    (int)pokemonEntity.getX(), (int)pokemonEntity.getY(), (int)pokemonEntity.getZ()));
+            message = message.replace("{coords_unformatted}", I18n.get(messageTemplates.coords_unformatted(), coords.x, coords.y, coords.z));
         }
         message = message.replace("{coords}", "");
         message = message.replace("{coords_unformatted}", "");
+
+        // Biome
+        if (config.showBiome() && Minecraft.getInstance().level != null) {
+            BlockPos blockPos = BlockPos.containing(pokemonEntity.getPosition(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true)));
+            Holder<Biome> biomeHolder = Minecraft.getInstance().level.getBiome(blockPos);
+            String biomeName = I18n.get(biomeHolder.unwrapKey().get().location().toShortLanguageKey());
+            biomeName = StringUtil.capitalize(biomeName);
+
+            String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
+            String biomeMessage = I18n.get(configMessage, biomeName);
+            if (isHoverEnabled) {
+                hoverText += biomeMessage + "\n";
+            } else {
+                message = message.replace("{biome}", biomeMessage);
+            }
+            message = message.replace("{biome_unformatted}", I18n.get(messageTemplates.biome_unformatted(), biomeName));
+        }
+        message = message.replace("{biome}", "");
+        message = message.replace("{biome_unformatted}", "");
 
         // Hover
         if (isHoverEnabled) {

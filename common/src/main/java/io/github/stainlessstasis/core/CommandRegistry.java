@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
 import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
 import net.minecraft.commands.CommandBuildContext;
@@ -35,20 +36,15 @@ public class CommandRegistry {
         })));
     }
 
-    public static void registerClientCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
-        dispatcher.register(
-                Commands.literal("cobblemonspawnalerts")
-                .then(Commands.literal("reload")
-                .executes(ctx -> {
-                    CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.reload();
-                    return 1;
-                })));
-        dispatcher.register(
-                Commands.literal("cobblemonspawnalerts")
-                .then(Commands.literal("openconfig")
-                .executes(ctx -> {
-                    ClientConfigManager.openDirectory();
-                    return 1;
-                })));
+    public static int handleReloadCommand() {
+        CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.reload();
+        return 1;
     }
+
+    public static int handleOpenConfigCommand() {
+        ClientConfigManager.openDirectory();
+        return 1;
+    }
+
+
 }

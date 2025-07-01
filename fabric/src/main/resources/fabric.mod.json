@@ -11,7 +11,7 @@
   "icon": "assets/cobblemon-spawn-alerts/icon.png",
   "environment": "*",
   "mixins": [
-    "cobblemon-spawn-alerts.mixins.json"
+    "cobblemon_spawn_alerts.mixins.json"
   ],
   "accessWidener": "cobblemon-spawn-alerts.accesswidener",
   "entrypoints": {

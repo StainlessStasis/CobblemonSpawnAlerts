@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.network;
 
+import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Nature;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,6 +16,8 @@ public record PokemonDataPacket(int pokemonNetworkID, IVs ivs, Nature nature) im
             PokemonDataPacket::pokemonNetworkID,
             ByteBufCodecs.fromCodec(IVs.getCODEC()),
             PokemonDataPacket::ivs,
+//            ByteBufCodecs.fromCodec(EVs.getCODEC()),
+//            PokemonDataPacket::evs,
             ByteBufCodecs.fromCodec(Nature.getBY_IDENTIFIER_CODEC()),
             PokemonDataPacket::nature,
             PokemonDataPacket::new
