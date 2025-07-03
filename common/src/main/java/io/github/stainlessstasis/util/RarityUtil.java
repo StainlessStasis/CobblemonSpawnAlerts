@@ -32,10 +32,10 @@ public class RarityUtil {
 
     // i know koraidon and miraidon are technically also paradox, but since they're legendaries i do not care
     private static final Set<String> PARADOX = Set.of(
-            "great tusk", "scream tail", "brute bonnet", "flutter mane", "slither wing",
-            "sandy shocks", "roaring moon", "walking wake", "gouging fire", "raging bolt",
-            "iron treads", "iron bundle", "iron hands", "iron jugulis", "iron moth",
-            "iron thorns", "iron valiant", "iron leaves", "iron boulder", "iron crown"
+            "greattusk", "screamtail", "brutebonnet", "fluttermane", "slitherwing",
+            "sandyshocks", "roaringmoon", "walkingwake", "gougingfire", "ragingbolt",
+            "irontreads", "ironbundle", "ironhands", "ironjugulis", "ironmoth",
+            "ironthorns", "ironvaliant", "ironleaves", "ironboulder", "ironcrown"
     );
 
     public static boolean isLegendary(String name) {

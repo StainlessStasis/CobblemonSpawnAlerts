@@ -1,35 +1,38 @@
 package io.github.stainlessstasis.config;
 
-import java.util.HashMap;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.alert.StatDisplayMode;
+
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-public record PokemonConfig (Map<String, PokemonSpecificConfig> pokemonConfigs){
+public record PokemonConfig (float configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs){
 
     public record PokemonSpecificConfig (
             boolean enabled,
             boolean alwaysAlert,
             boolean alertShiny,
             boolean showLegendary,
-            boolean showLevel,
-            boolean showIVs,
-//            boolean showEVs,
-            boolean showNature,
-            boolean showGender,
-            boolean showCoordinates,
-            boolean showBiome,
-            boolean showInfoAsHover,
+            Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage
     ) {
         public static PokemonSpecificConfig createDefault() {
-            return new PokemonSpecificConfig(true, true, true, true,
-                    true, false, false, false, false,
-                    false, false, "");
+            Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
+            statDisplayModes.put("level", StatDisplayMode.MAIN_MESSAGE);
+            statDisplayModes.put("ivs", StatDisplayMode.DISABLED);
+            statDisplayModes.put("evs", StatDisplayMode.DISABLED);
+            statDisplayModes.put("nature", StatDisplayMode.DISABLED);
+            statDisplayModes.put("gender", StatDisplayMode.HOVER);
+            statDisplayModes.put("coordinates", StatDisplayMode.HOVER);
+            statDisplayModes.put("biome", StatDisplayMode.MAIN_MESSAGE);
+
+            return new PokemonSpecificConfig(true, true, true, true, statDisplayModes, "");
         }
     }
 
     public static PokemonConfig createDefault() {
-        Map<String, PokemonSpecificConfig> defaults = new HashMap<>();
-        defaults.put("default (You can modify anything BELOW this, but dont delete it!)", PokemonSpecificConfig.createDefault());
-        return new PokemonConfig(defaults);
+        Map<String, PokemonSpecificConfig> defaults = new LinkedHashMap<>();
+        defaults.put(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, PokemonSpecificConfig.createDefault());
+        return new PokemonConfig(1.6f, defaults);
     }
 }

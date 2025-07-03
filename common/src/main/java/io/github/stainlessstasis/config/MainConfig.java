@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.config;
 
 public record MainConfig (
+    boolean multiplayerWarning,
     boolean alertAllShinies,
     boolean alertAllLegendaries,
     boolean alertAllMythicals,
@@ -10,6 +11,6 @@ public record MainConfig (
     boolean alertAllUncaught
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(true, true, true, true, true,false, false);
+        return new MainConfig(true, true, true, true, true, true,false, false);
     }
 }

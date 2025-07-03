@@ -1,6 +1,11 @@
 package io.github.stainlessstasis.platform;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon;
+import io.github.stainlessstasis.alert.DespawnReason;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 import java.nio.file.Path;
 
@@ -36,12 +41,17 @@ public interface IPlatformHelper {
         return isDevelopmentEnvironment() ? "development" : "production";
     }
 
-    /**
-     * Gets the Path of the config directory.
-     *
-     * @return A Path to the config directory.
-     */
     Path getConfigDir();
 
     void onPokemonSpawned(PokemonEntity pokemonEntity);
+
+    default void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
+        CobblemonSpawnAlerts.globallyAlerted.remove(pokemon.getUuid());
+
+        if (despawnReason != DespawnReason.DESPAWNED) {
+            CobblemonSpawnAlerts.despawned.add(pokemon.getUuid());
+        } else {
+            CobblemonSpawnAlerts.despawned.remove(pokemon.getUuid());
+        }
+    };
 }
