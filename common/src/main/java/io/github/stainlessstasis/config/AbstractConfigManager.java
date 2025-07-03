@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 public abstract class AbstractConfigManager {
     protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -34,7 +35,6 @@ public abstract class AbstractConfigManager {
         if (!onConfigLoad()) {
             return false;
         }
-
 
         isReloading = false;
         return true;
@@ -80,9 +80,11 @@ public abstract class AbstractConfigManager {
         JsonObject mergedJson = GSON.toJsonTree(defaultConfig).getAsJsonObject();
 
         if (userConfigJson != null) {
-            for (String key : userConfigJson.keySet()) {
-                mergedJson.add(key, userConfigJson.get(key));
-            }
+            mergeJsonObjects(mergedJson, userConfigJson);
+        }
+
+        if (config.equals(PokemonConfig.class)) {
+            applyPokemonConfigMerge(fileName, mergedJson, userConfigJson, (PokemonConfig) defaultConfig);
         }
 
         finalConfig = GSON.fromJson(mergedJson, config);
@@ -96,6 +98,67 @@ public abstract class AbstractConfigManager {
         CobblemonSpawnAlerts.LOGGER.info("Config file `"+fileName+"` loaded successfully.");
         saveConfigFile(file, finalConfig);
         return finalConfig;
+    }
+
+    private void mergeJsonObjects(JsonObject base, JsonObject overwrite) {
+        for (Map.Entry<String, JsonElement> entry : overwrite.entrySet()) {
+            String key = entry.getKey();
+            JsonElement value = entry.getValue();
+
+            if (base.has(key) && base.get(key).isJsonObject() && value.isJsonObject()) {
+                mergeJsonObjects(base.get(key).getAsJsonObject(), value.getAsJsonObject());
+            } else {
+                base.add(key, value);
+            }
+        }
+    }
+
+    private void applyPokemonConfigMerge(String fileName, JsonObject mergedJson, JsonObject userConfigJson, PokemonConfig defaultConfigs) {
+        PokemonConfig.PokemonSpecificConfig defaultPokemonConfig =
+                defaultConfigs.pokemonConfigs().get(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME);
+
+        if (defaultPokemonConfig == null) {
+            CobblemonSpawnAlerts.LOGGER.error("Default config entry not found in PokemonConfig#createDefault. Skipping specific pokemon config merge.");
+            return;
+        }
+
+        JsonObject mergedPokemonConfigs = mergedJson.has("pokemonConfigs") ?
+                mergedJson.get("pokemonConfigs").getAsJsonObject() : new JsonObject();
+        mergedJson.add("pokemonConfigs", mergedPokemonConfigs);
+
+        JsonObject userPokemonConfigs = null;
+        if (userConfigJson != null && userConfigJson.has("pokemonConfigs") && userConfigJson.get("pokemonConfigs").isJsonObject()) {
+            userPokemonConfigs = userConfigJson.get("pokemonConfigs").getAsJsonObject();
+        }
+
+        JsonObject defaultSpecificConfig = GSON.toJsonTree(defaultPokemonConfig).getAsJsonObject();
+        if (userPokemonConfigs != null && userPokemonConfigs.has(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME) &&
+                userPokemonConfigs.get(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME).isJsonObject()) {
+
+            mergeJsonObjects(defaultSpecificConfig, userPokemonConfigs.get(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME).getAsJsonObject());
+        }
+        mergedPokemonConfigs.add(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, defaultSpecificConfig);
+
+        if (userPokemonConfigs != null) {
+            for (Map.Entry<String, JsonElement> entry : userPokemonConfigs.entrySet()) {
+                String pokemonName = entry.getKey();
+
+                if (pokemonName.equals(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME)) {
+                    continue;
+                }
+
+                JsonElement userSpecificConfigElement = entry.getValue();
+                if (userSpecificConfigElement.isJsonObject()) {
+                    JsonObject userSpecificConfig = userSpecificConfigElement.getAsJsonObject();
+                    JsonObject specificPokemonDefault = GSON.toJsonTree(PokemonConfig.PokemonSpecificConfig.createDefault()).getAsJsonObject();
+
+                    mergeJsonObjects(specificPokemonDefault, userSpecificConfig);
+                    mergedPokemonConfigs.add(pokemonName, specificPokemonDefault);
+                } else {
+                    CobblemonSpawnAlerts.LOGGER.warn("Invalid entry for Pokemon '"+pokemonName+"' in config file `"+fileName+"`. Skipping.");
+                }
+            }
+        }
     }
 
     public <T> void saveConfigFile(File file, T config) {

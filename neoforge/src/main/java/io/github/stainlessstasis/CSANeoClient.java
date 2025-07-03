@@ -1,14 +1,11 @@
 package io.github.stainlessstasis;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import io.github.stainlessstasis.config.ClientConfigManager;
-import io.github.stainlessstasis.core.AlertHandler;
+import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -51,8 +48,8 @@ public class CSANeoClient {
 
         @SubscribeEvent
         public static void onConnect(ClientPlayerNetworkEvent.LoggingIn event) {
-            if (!Minecraft.getInstance().isSingleplayer()) {
-                MessageUtils.sendTranslated("<green>[CobblemonSpawnAlerts]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs or Nature, may be displayed incorrectly!");
+            if (!Minecraft.getInstance().isSingleplayer() && CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
+                MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
             }
         }
 
@@ -64,13 +61,12 @@ public class CSANeoClient {
 
         @SubscribeEvent
         public static void onEntityLoad(EntityJoinLevelEvent event) {
-            System.out.println("ENTITY LOADED");
             if (!(event.getLevel().isClientSide)) {
                 return;
             }
 
             if (event.getEntity() instanceof PokemonEntity pe && !doesServerHaveMod) {
-                AlertHandler.alert(pe);
+                AlertHandler.alertClientside(pe);
             }
         }
     }
