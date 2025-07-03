@@ -102,7 +102,7 @@ public class CobblemonSpawnAlerts {
     public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
-        String pokemonName = PokemonNameUtil.getName(pokemon);
+        String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
         boolean shouldAlertShiny = pokemon.getShiny() && config.alertShinies();
         boolean shouldAlertLegend = pokemon.isLegendary() && config.alertLegendaries();
@@ -118,7 +118,8 @@ public class CobblemonSpawnAlerts {
                 new PokemonSpawnData(
                         pokemonName,
                         pokemon.getUuid(),
-                        pokemonEntity.position().toVector3f()),
+                        pokemonEntity.position().toVector3f(),
+                        pokemon.getSpecies().getNationalPokedexNumber()),
                 new PokemonStats(
                         pokemon.getLevel(),
                         ivs,
@@ -135,7 +136,7 @@ public class CobblemonSpawnAlerts {
 
     public static DespawnDataPacket createDespawnData(Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
-        String pokemonName = PokemonNameUtil.getName(pokemon);
+        String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
         boolean shouldAlertShiny = pokemon.getShiny() && config.alertShinies();
         boolean shouldAlertLegend = pokemon.isLegendary() && config.alertLegendaries();
@@ -148,7 +149,8 @@ public class CobblemonSpawnAlerts {
                 new PokemonSpawnData(
                         pokemonName,
                         pokemon.getUuid(),
-                        new Vector3f(0, 0, 0)),
+                        new Vector3f(0, 0, 0),
+                        pokemon.getSpecies().getNationalPokedexNumber()),
                 new PokemonTraits(
                         shouldAlertShiny,
                         shouldAlertLegend,

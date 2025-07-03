@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.alert;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
@@ -46,24 +47,25 @@ public class AlertHandler {
         }
 
         Pokemon pokemon = pokemonEntity.getPokemon();
-        String pokemonName = PokemonNameUtil.getName(pokemon);
-        String fixedPokemonName = PokemonNameUtil.fixName(pokemonName);
+        String pokemonName = PokemonNameUtil.getTranslatedName(pokemon);
+        int dexId = pokemon.getSpecies().getNationalPokedexNumber();
 
         alert(new AlertDataPacket(
                 new PokemonSpawnData(
                         pokemonName,
                         pokemon.getUuid(),
-                        pokemonEntity.position().toVector3f()),
+                        pokemonEntity.position().toVector3f(),
+                        pokemon.getSpecies().getNationalPokedexNumber()),
                 new PokemonStats(
                         pokemon.getLevel(),
                         pokemon.getIvs(),
                         evYield),
                 new PokemonTraits(
                         pokemon.getShiny(),
-                        RarityUtil.isLegendary(fixedPokemonName),
-                        RarityUtil.isMythical(fixedPokemonName),
-                        RarityUtil.isUltraBeast(fixedPokemonName),
-                        RarityUtil.isParadox(fixedPokemonName)),
+                        RarityUtil.isLegendary(dexId),
+                        RarityUtil.isMythical(dexId),
+                        RarityUtil.isUltraBeast(dexId),
+                        RarityUtil.isParadox(dexId)),
                 pokemon.getNature().getName().getPath(),
                 pokemon.getGender().name()
         ));
@@ -83,7 +85,8 @@ public class AlertHandler {
         MainConfig config = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
-        Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(alertData.spawnData().pokemonName());
+        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().pokemonTranslationKey());
+        Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(pokemonName);
         boolean isInConfig = result.getFirst();
         PokemonConfig.PokemonSpecificConfig pokemonConfig = result.getSecond();
 
@@ -98,7 +101,7 @@ public class AlertHandler {
 
         boolean shouldAlertNotInDex = config.alertAllNotInDex();
         boolean shouldAlertUncaught = config.alertAllUncaught();
-        Species species = PokemonSpecies.INSTANCE.getByName(PokemonNameUtil.fixName(alertData.spawnData().pokemonName()));
+        Species species = PokemonSpecies.INSTANCE.getByPokedexNumber(alertData.spawnData().dexId(), Cobblemon.MODID);
         SpeciesDexRecord record = dex.getSpeciesRecord(species.resourceIdentifier);
         if (record != null) {
             shouldAlertNotInDex = false;
@@ -166,7 +169,7 @@ public class AlertHandler {
             case FAINTED -> message.replace("{despawned}", I18n.get(messageTemplates.despawnReason_Fainted(), despawnData.playerName()));
         };
 
-        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().pokemonName()).getSecond(),
+        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().pokemonTranslationKey()).getSecond(),
                 new AlertDataPacket(
                         despawnData.spawnData(),
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
@@ -216,9 +219,11 @@ public class AlertHandler {
         Nature nature = Natures.INSTANCE.getNature(alertData.natureID());
         Gender gender = Gender.valueOf(alertData.genderID());
 
-        message = message.replace("{name}", alertData.spawnData().pokemonName());
-        message = message.replace("{name_lower}", alertData.spawnData().pokemonName().toLowerCase());
-        message = message.replace("{name_upper}", alertData.spawnData().pokemonName().toUpperCase());
+        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().pokemonTranslationKey());
+
+        message = message.replace("{name}", pokemonName);
+        message = message.replace("{name_lower}", pokemonName.toLowerCase());
+        message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
         String hoverText = "";
         Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
@@ -241,17 +246,17 @@ public class AlertHandler {
 
         // Legendary/Mythical/Ultra Beast/Paradox
         if (config.showLegendary()) {
-            String fixedName = alertData.spawnData().pokemonName().toLowerCase().replaceAll("[ _-]", "");
-            if (RarityUtil.isLegendary(fixedName)) {
+            int dexId = alertData.spawnData().dexId();
+            if (RarityUtil.isLegendary(dexId)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.legendary()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.legendary_unformatted()));
-            } else if (RarityUtil.isMythical(fixedName)) {
+            } else if (RarityUtil.isMythical(dexId)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.mythical()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.mythical_unformatted()));
-            } else if (RarityUtil.isUltraBeast(fixedName)) {
+            } else if (RarityUtil.isUltraBeast(dexId)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.ultrabeast()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.ultrabeast_unformatted()));
-            } else if (RarityUtil.isParadox(fixedName)) {
+            } else if (RarityUtil.isParadox(dexId)) {
                 message = message.replace("{legendary}", I18n.get(messageTemplates.paradox()));
                 message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.paradox_unformatted()));
             }

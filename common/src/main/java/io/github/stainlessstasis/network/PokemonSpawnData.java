@@ -8,11 +8,12 @@ import org.joml.Vector3f;
 
 import java.util.UUID;
 
-public record PokemonSpawnData(String pokemonName, UUID pokemonUUID, Vector3f position) {
+public record PokemonSpawnData(String pokemonTranslationKey, UUID pokemonUUID, Vector3f position, int dexId) {
     public static final StreamCodec<FriendlyByteBuf, PokemonSpawnData> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, PokemonSpawnData::pokemonName,
+            ByteBufCodecs.STRING_UTF8, PokemonSpawnData::pokemonTranslationKey,
             UUIDUtil.STREAM_CODEC, PokemonSpawnData::pokemonUUID,
             ByteBufCodecs.VECTOR3F, PokemonSpawnData::position,
+            ByteBufCodecs.INT, PokemonSpawnData::dexId,
             PokemonSpawnData::new
     );
 }
