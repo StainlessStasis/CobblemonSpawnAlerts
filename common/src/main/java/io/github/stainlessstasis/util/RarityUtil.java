@@ -3,8 +3,6 @@ package io.github.stainlessstasis.util;
 import java.util.Set;
 
 public class RarityUtil {
-    // had ai generate this instead of typing it all manually so sorry if some of it is wrong
-
     private static final Set<Integer> LEGENDARIES = Set.of(
             144, // Articuno
             145, // Zapdos
@@ -28,18 +26,18 @@ public class RarityUtil {
             482, // Azelf
             483, // Dialga
             484, // Palkia
-            487, // Giratina
             485, // Heatran
             486, // Regigigas
+            487, // Giratina
             488, // Cresselia
             638, // Cobalion
             639, // Terrakion
             640, // Virizion
             641, // Tornadus
             642, // Thundurus
-            645, // Landorus
             643, // Reshiram
             644, // Zekrom
+            645, // Landorus
             646, // Kyurem
             716, // Xerneas
             717, // Yveltal
@@ -54,7 +52,7 @@ public class RarityUtil {
             790, // Cosmoem
             791, // Solgaleo
             792, // Lunala
-            793, // Necrozma
+            800, // Necrozma
             888, // Zacian
             889, // Zamazenta
             890, // Eternatus
@@ -72,10 +70,10 @@ public class RarityUtil {
             1004, // Chi-Yu
             1007, // Koraidon
             1008, // Miraidon
+            1014, // Okidogi
+            1015, // Munkidori
+            1016, // Fezandipiti
             1017, // Ogerpon
-            1013, // Okidogi
-            1014, // Munkidori
-            1015, // Fezandipiti
             1024  // Terapagos
     );
 
@@ -84,8 +82,8 @@ public class RarityUtil {
             251, // Celebi
             385, // Jirachi
             386, // Deoxys
-            489, // Manaphy
-            490, // Phione
+            489, // Phione
+            490, // Manaphy
             491, // Darkrai
             492, // Shaymin
             493, // Arceus
@@ -106,17 +104,19 @@ public class RarityUtil {
     );
 
     private static final Set<Integer> ULTRA_BEASTS = Set.of(
-            794, // Nihilego
-            795, // Buzzwole
-            796, // Pheromosa
-            797, // Xurkitree
-            798, // Celesteela
-            799, // Kartana
-            800, // Guzzlord
-            806, // Blacephalon
-            805, // Stakataka
+            793, // Nihilego
+            794, // Buzzwole
+            795, // Pheromosa
+            796, // Xurkitree
+            797, // Celesteela
+            798, // Kartana
+            799, // Guzzlord
             803, // Poipole
-            804  // Naganadel
+            804, // Naganadel
+            805, // Stakataka
+            806  // Blacephalon
+
+
     );
 
     private static final Set<Integer> PARADOX = Set.of(
@@ -126,20 +126,20 @@ public class RarityUtil {
             987, // Flutter Mane
             988, // Slither Wing
             989, // Sandy Shocks
-            990, // Roaring Moon
+            1005, // Roaring Moon
             1009, // Walking Wake
-            1010, // Gouging Fire
-            1011, // Raging Bolt
-            991, // Iron Treads
-            992, // Iron Bundle
-            993, // Iron Hands
-            994, // Iron Jugulis
-            995, // Iron Moth
-            996, // Iron Thorns
-            997, // Iron Valiant
-            1012, // Iron Leaves
-            1020, // Iron Boulder
-            1021  // Iron Crown
+            1020, // Gouging Fire
+            1021, // Raging Bolt
+            990, // Iron Treads
+            991, // Iron Bundle
+            992, // Iron Hands
+            993, // Iron Jugulis
+            994, // Iron Moth
+            995, // Iron Thorns
+            1006, // Iron Valiant
+            1010, // Iron Leaves
+            1022, // Iron Boulder
+            1023  // Iron Crown
     );
 
     public static boolean isLegendary(int dexId) {

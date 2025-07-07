@@ -1,8 +1,7 @@
 package io.github.stainlessstasis.util;
 
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 
 public class PokemonNameUtil {
     public static String getName(Pokemon pokemon) {
@@ -10,11 +9,11 @@ public class PokemonNameUtil {
     }
 
     public static String getTranslatedName(String name) {
-        return I18n.get(name);
+        return Component.translatable(name).getString();
     }
 
     public static String getTranslatedName(Pokemon pokemon) {
-        return I18n.get(getTranslationKey(pokemon));
+        return Component.translatable(getTranslationKey(pokemon)).getString();
     }
 
     public static String getTranslationKey (Pokemon pokemon) {

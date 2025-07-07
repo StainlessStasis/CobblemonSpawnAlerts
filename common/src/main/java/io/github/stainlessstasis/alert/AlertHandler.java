@@ -10,6 +10,7 @@ import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.*;
+import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
 import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.MessageTemplates;
@@ -19,7 +20,6 @@ import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -85,7 +85,7 @@ public class AlertHandler {
         MainConfig config = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
-        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().pokemonTranslationKey());
+        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
         Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(pokemonName);
         boolean isInConfig = result.getFirst();
         PokemonConfig.PokemonSpecificConfig pokemonConfig = result.getSecond();
@@ -164,12 +164,12 @@ public class AlertHandler {
         String message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().despawnMessage());
 
         message = switch (DespawnReason.valueOf(despawnData.despawnReason())) {
-            case CAPTURED -> message.replace("{despawned}", I18n.get(messageTemplates.despawnReason_Captured(), despawnData.playerName()));
-            case DESPAWNED -> message.replace("{despawned}", I18n.get(messageTemplates.despawnReason_Despawned()));
-            case FAINTED -> message.replace("{despawned}", I18n.get(messageTemplates.despawnReason_Fainted(), despawnData.playerName()));
+            case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), despawnData.playerName()).getString());
+            case DESPAWNED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Despawned()).getString());
+            case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
         };
 
-        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().pokemonTranslationKey()).getSecond(),
+        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().translatedPokemonName()).getSecond(),
                 new AlertDataPacket(
                         despawnData.spawnData(),
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
@@ -219,7 +219,7 @@ public class AlertHandler {
         Nature nature = Natures.INSTANCE.getNature(alertData.natureID());
         Gender gender = Gender.valueOf(alertData.genderID());
 
-        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().pokemonTranslationKey());
+        String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
 
         message = message.replace("{name}", pokemonName);
         message = message.replace("{name_lower}", pokemonName.toLowerCase());
@@ -238,8 +238,8 @@ public class AlertHandler {
         // Shiny
         boolean shouldAlertShiny = config.alertShiny() && alertData.traits().isShiny();
         if (shouldAlertShiny) {
-            message = message.replace("{shiny}", I18n.get(messageTemplates.shiny()));
-            message = message.replace("{shiny_unformatted}", I18n.get(messageTemplates.shiny_unformatted()));
+            message = message.replace("{shiny}", Component.translatable(messageTemplates.shiny()).getString());
+            message = message.replace("{shiny_unformatted}", Component.translatable(messageTemplates.shiny_unformatted()).getString());
         }
         message = message.replace("{shiny}", "");
         message = message.replace("{shiny_unformatted}", "");
@@ -248,17 +248,17 @@ public class AlertHandler {
         if (config.showLegendary()) {
             int dexId = alertData.spawnData().dexId();
             if (RarityUtil.isLegendary(dexId)) {
-                message = message.replace("{legendary}", I18n.get(messageTemplates.legendary()));
-                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.legendary_unformatted()));
+                message = message.replace("{legendary}", Component.translatable(messageTemplates.legendary()).getString());
+                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.legendary_unformatted()).getString());
             } else if (RarityUtil.isMythical(dexId)) {
-                message = message.replace("{legendary}", I18n.get(messageTemplates.mythical()));
-                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.mythical_unformatted()));
+                message = message.replace("{legendary}", Component.translatable(messageTemplates.mythical()).getString());
+                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.mythical_unformatted()).getString());
             } else if (RarityUtil.isUltraBeast(dexId)) {
-                message = message.replace("{legendary}", I18n.get(messageTemplates.ultrabeast()));
-                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.ultrabeast_unformatted()));
+                message = message.replace("{legendary}", Component.translatable(messageTemplates.ultrabeast()).getString());
+                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.ultrabeast_unformatted()).getString());
             } else if (RarityUtil.isParadox(dexId)) {
-                message = message.replace("{legendary}", I18n.get(messageTemplates.paradox()));
-                message = message.replace("{legendary_unformatted}", I18n.get(messageTemplates.paradox_unformatted()));
+                message = message.replace("{legendary}", Component.translatable(messageTemplates.paradox()).getString());
+                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.paradox_unformatted()).getString());
             }
         }
         message = message.replace("{legendary}", "");
@@ -268,14 +268,14 @@ public class AlertHandler {
         if (levelDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = levelDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.level_hover() : messageTemplates.level();
-            String levelMessage = I18n.get(configMessage, level);
+            String levelMessage = Component.translatable(configMessage, level).getString();
 
             if (isHoverEnabled) {
                 hoverText += levelMessage + "\n";
             } else {
                 message = message.replace("{level}", levelMessage);
             }
-            message = message.replace("{level_unformatted}", I18n.get(messageTemplates.level_unformatted(), level));
+            message = message.replace("{level_unformatted}", Component.translatable(messageTemplates.level_unformatted(), level).getString());
         }
         message = message.replace("{level}", "");
         message = message.replace("{level_unformatted}", "");
@@ -285,17 +285,17 @@ public class AlertHandler {
             boolean isHoverEnabled = ivsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.ivs_hover() : messageTemplates.ivs();
             String ivsMessage =
-                    I18n.get(configMessage,
+                    Component.translatable(configMessage,
                             ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED));
+                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
                 hoverText += ivsMessage + "\n";
             } else {
                 message = message.replace("{ivs}", ivsMessage);
             }
-            message = message.replace("{ivs_unformatted}", I18n.get(messageTemplates.ivs_unformatted(),
+            message = message.replace("{ivs_unformatted}", Component.translatable(messageTemplates.ivs_unformatted(),
                     ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                    ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)));
+                    ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString());
         }
         message = message.replace("{ivs}", "");
         message = message.replace("{ivs_unformatted}", "");
@@ -305,17 +305,17 @@ public class AlertHandler {
             boolean isHoverEnabled = evsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
             String evsMessage =
-                    I18n.get(configMessage,
+                    Component.translatable(configMessage,
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED));
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
                 hoverText += evsMessage + "\n";
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
-            message = message.replace("{evs_unformatted}", I18n.get(messageTemplates.evs_unformatted(),
+            message = message.replace("{evs_unformatted}", Component.translatable(messageTemplates.evs_unformatted(),
                     evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)));
+                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString());
         }
         message = message.replace("{evs}", "");
         message = message.replace("{evs_unformatted}", "");
@@ -324,15 +324,16 @@ public class AlertHandler {
         if (natureDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = natureDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
-            String natureString = nature.getDisplayName().replace("cobblemon.nature.", "");
+            String natureString = nature != null ? MiscUtilsKt.asTranslated(nature.getDisplayName()).getString() : "N/A";
+            System.out.println(alertData.spawnData().translatedPokemonName());
             natureString = StringUtil.capitalize(natureString);
-            String natureMessage = I18n.get(configMessage, natureString);
+            String natureMessage = Component.translatable(configMessage, natureString).getString();
             if (isHoverEnabled) {
                 hoverText += natureMessage + "\n";
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
-            message = message.replace("{nature_unformatted}", I18n.get(messageTemplates.nature_unformatted(), natureString));
+            message = message.replace("{nature_unformatted}", Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
         }
         message = message.replace("{nature}", "");
         message = message.replace("{nature_unformatted}", "");
@@ -345,16 +346,16 @@ public class AlertHandler {
                 case FEMALE -> messageTemplates.female();
                 case GENDERLESS -> messageTemplates.genderless();
             };
-            genderString = I18n.get(genderString);
+            genderString = Component.translatable(genderString).getString();
             String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
-            String genderMessage = I18n.get(configMessage, genderString);
+            String genderMessage = Component.translatable(configMessage, genderString).getString();
             if (isHoverEnabled) {
                 hoverText += genderMessage + "\n";
             } else {
                 message = message.replace("{gender}", genderMessage);
             }
             message = message.replace("{gender_unformatted}",
-                    I18n.get(messageTemplates.gender_unformatted(), gender.toString().charAt(0) + gender.toString().toLowerCase().substring(1)));
+                    Component.translatable(messageTemplates.gender_unformatted(), gender.toString().charAt(0) + gender.toString().toLowerCase().substring(1)).getString());
         }
         message = message.replace("{gender}", "");
         message = message.replace("{gender_unformatted}", "");
@@ -364,13 +365,13 @@ public class AlertHandler {
         if (coordinatesDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = coordinatesDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
-            String coordsMessage = I18n.get(configMessage, (int)coords.x, (int)coords.y, (int)coords.z);
+            String coordsMessage = Component.translatable(configMessage, (int)coords.x, (int)coords.y, (int)coords.z).getString();
             if (isHoverEnabled) {
                 hoverText += coordsMessage + "\n";
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
-            message = message.replace("{coords_unformatted}", I18n.get(messageTemplates.coords_unformatted(), (int)coords.x, (int)coords.y, (int)coords.z));
+            message = message.replace("{coords_unformatted}",Component.translatable(messageTemplates.coords_unformatted(), (int)coords.x, (int)coords.y, (int)coords.z).getString());
         }
         message = message.replace("{coords}", "");
         message = message.replace("{coords_unformatted}", "");
@@ -380,17 +381,17 @@ public class AlertHandler {
             boolean isHoverEnabled = biomeDisplayMode == StatDisplayMode.HOVER;
             BlockPos blockPos = BlockPos.containing(new Vec3(coords));
             Holder<Biome> biomeHolder = Minecraft.getInstance().level.getBiome(blockPos);
-            String biomeName = I18n.get(biomeHolder.unwrapKey().get().location().toShortLanguageKey());
+            String biomeName = Component.translatable("biome."+biomeHolder.unwrapKey().get().location().toLanguageKey()).getString();
             biomeName = StringUtil.makeBeautiful(biomeName);
 
             String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
-            String biomeMessage = I18n.get(configMessage, biomeName);
+            String biomeMessage = Component.translatable(configMessage, biomeName).getString();
             if (isHoverEnabled) {
                 hoverText += biomeMessage + "\n";
             } else {
                 message = message.replace("{biome}", biomeMessage);
             }
-            message = message.replace("{biome_unformatted}", I18n.get(messageTemplates.biome_unformatted(), biomeName));
+            message = message.replace("{biome_unformatted}", Component.translatable(messageTemplates.biome_unformatted(), biomeName).getString());
         }
         message = message.replace("{biome}", "");
         message = message.replace("{biome_unformatted}", "");
