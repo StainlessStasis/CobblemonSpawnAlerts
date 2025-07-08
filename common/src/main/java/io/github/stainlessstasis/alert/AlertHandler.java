@@ -1,6 +1,10 @@
 package io.github.stainlessstasis.alert;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.abilities.Abilities;
+import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
@@ -18,11 +22,14 @@ import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
+import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
@@ -32,6 +39,8 @@ import java.util.*;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
+    // i have no idea what to name this shit tbh
+    private static final List<String> SOUND_TRAITS = List.of("shiny", "legendary", "mythical", "ultrabeast", "paradox", "unregistered", "uncaught");
 
     public static void clearCache() {
         alreadyAlerted.clear();
@@ -67,6 +76,7 @@ public class AlertHandler {
                         RarityUtil.isUltraBeast(dexId),
                         RarityUtil.isParadox(dexId)),
                 pokemon.getNature().getName().getPath(),
+                pokemon.getAbility().getName(),
                 pokemon.getGender().name()
         ));
     }
@@ -137,6 +147,32 @@ public class AlertHandler {
 
         alreadyAlerted.add(alertData.spawnData().pokemonUUID());
 
+        // play custom alert sound if one exists
+        if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
+            SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.customAlertSound()), 32f);
+            player.playSound(sound);
+        }
+        // play alert sounds if they exist
+        else {
+            // this code probably sucks but oh well, if it works then it works
+            List<Boolean> traitBools = List.of(shouldAlertShiny, shouldAlertLegend, shouldAlertMythical, shouldAlertUltra,
+                    shouldAlertParadox, shouldAlertNotInDex, shouldAlertUncaught);
+            HashMap<String, Boolean> traits = new HashMap<>();
+            int i = 0;
+            for (String trait : SOUND_TRAITS) {
+                traits.put(trait, traitBools.get(i));
+                        i++;
+            }
+
+            for (String soundTrait : pokemonConfig.sounds().keySet()) {
+                if (traits.get(soundTrait)) {
+                    SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.sounds().get(soundTrait)), 32f);
+                    player.playSound(sound);
+                }
+            }
+        }
+
+
         // send the custom alert if one exits
         String message;
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
@@ -175,6 +211,7 @@ public class AlertHandler {
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
                         despawnData.traits(),
                         Natures.INSTANCE.getNAUGHTY().getName().getPath(),
+                        Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName(),
                         Gender.GENDERLESS.name()
 
                 ));
@@ -217,6 +254,7 @@ public class AlertHandler {
         IVs ivs = alertData.stats().ivs();
         EVs evYield = alertData.stats().evYield();
         Nature nature = Natures.INSTANCE.getNature(alertData.natureID());
+        AbilityTemplate ability = Abilities.INSTANCE.get(alertData.abilityID());
         Gender gender = Gender.valueOf(alertData.genderID());
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
@@ -231,6 +269,7 @@ public class AlertHandler {
         StatDisplayMode ivsDisplayMode = displayModes.get("ivs");
         StatDisplayMode evsDisplayMode = displayModes.get("evs");
         StatDisplayMode natureDisplayMode = displayModes.get("nature");
+        StatDisplayMode abilityDisplayMode = displayModes.get("ability");
         StatDisplayMode genderDisplayMode = displayModes.get("gender");
         StatDisplayMode coordinatesDisplayMode = displayModes.get("coordinates");
         StatDisplayMode biomeDisplayMode = displayModes.get("biome");
@@ -284,18 +323,26 @@ public class AlertHandler {
         if (ivsDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = ivsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.ivs_hover() : messageTemplates.ivs();
-            String ivsMessage =
+            String ivsMessage = Services.PLATFORM.doesServerHaveMod() ?
                     Component.translatable(configMessage,
                             ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString();
+                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString()
+                    :
+                    Component.translatable(configMessage,
+                            "-", "-", "-", "-", "-", "-").getString();
             if (isHoverEnabled) {
                 hoverText += ivsMessage + "\n";
             } else {
                 message = message.replace("{ivs}", ivsMessage);
             }
-            message = message.replace("{ivs_unformatted}", Component.translatable(messageTemplates.ivs_unformatted(),
-                    ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                    ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString());
+            String ivsUnformatted = Services.PLATFORM.doesServerHaveMod() ?
+                    Component.translatable(messageTemplates.ivs_unformatted(),
+                            ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
+                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString()
+                    :
+                    Component.translatable(messageTemplates.evs_unformatted(),
+                            "-", "-", "-", "-", "-", "-").getString();
+            message = message.replace("{ivs_unformatted}", ivsUnformatted);
         }
         message = message.replace("{ivs}", "");
         message = message.replace("{ivs_unformatted}", "");
@@ -304,18 +351,26 @@ public class AlertHandler {
         if (evsDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = evsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
-            String evsMessage =
+            String evsMessage = Services.PLATFORM.doesServerHaveMod() ?
                     Component.translatable(configMessage,
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString()
+                    :
+                    Component.translatable(configMessage,
+                            "-", "-", "-", "-", "-", "-").getString();
             if (isHoverEnabled) {
                 hoverText += evsMessage + "\n";
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
-            message = message.replace("{evs_unformatted}", Component.translatable(messageTemplates.evs_unformatted(),
-                    evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString());
+            String evsUnformatted = Services.PLATFORM.doesServerHaveMod() ?
+                    Component.translatable(messageTemplates.evs_unformatted(),
+                            evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString()
+                    :
+                    Component.translatable(messageTemplates.evs_unformatted(),
+                            "-", "-", "-", "-", "-", "-").getString();
+            message = message.replace("{evs_unformatted}", evsUnformatted);
         }
         message = message.replace("{evs}", "");
         message = message.replace("{evs_unformatted}", "");
@@ -325,28 +380,48 @@ public class AlertHandler {
             boolean isHoverEnabled = natureDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
             String natureString = nature != null ? MiscUtilsKt.asTranslated(nature.getDisplayName()).getString() : "N/A";
-            System.out.println(alertData.spawnData().translatedPokemonName());
             natureString = StringUtil.capitalize(natureString);
+            natureString = replaceIfNotAvailable(natureString);
             String natureMessage = Component.translatable(configMessage, natureString).getString();
             if (isHoverEnabled) {
                 hoverText += natureMessage + "\n";
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
-            message = message.replace("{nature_unformatted}", Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
+            String natureUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
+            message = message.replace("{nature_unformatted}", natureUnformatted);
         }
         message = message.replace("{nature}", "");
         message = message.replace("{nature_unformatted}", "");
 
+        // Ability
+        if (abilityDisplayMode != StatDisplayMode.DISABLED) {
+            boolean isHoverEnabled = abilityDisplayMode == StatDisplayMode.HOVER;
+            String configMessage = isHoverEnabled ? messageTemplates.ability_hover() : messageTemplates.ability();
+            String abilityString = ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A";
+            abilityString = replaceIfNotAvailable(abilityString);
+            String abilityMessage = Component.translatable(configMessage, abilityString).getString();
+            if (isHoverEnabled) {
+                hoverText += abilityMessage + "\n";
+            } else {
+                message = message.replace("{ability}", abilityMessage);
+            }
+            String abilityUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
+            message = message.replace("{ability_unformatted}", abilityUnformatted);
+        }
+        message = message.replace("{ability}", "");
+        message = message.replace("{ability_unformatted}", "");
+
         // Gender
         if (genderDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = genderDisplayMode == StatDisplayMode.HOVER;
-            String genderString = switch (gender) {
+            String genderSymbol = switch (gender) {
                 case MALE -> messageTemplates.male();
                 case FEMALE -> messageTemplates.female();
                 case GENDERLESS -> messageTemplates.genderless();
             };
-            genderString = Component.translatable(genderString).getString();
+            String genderName = StringUtil.capitalize(gender.toString().toLowerCase());
+            String genderString = Component.translatable(genderSymbol, genderName).getString();
             String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
             String genderMessage = Component.translatable(configMessage, genderString).getString();
             if (isHoverEnabled) {
@@ -355,13 +430,13 @@ public class AlertHandler {
                 message = message.replace("{gender}", genderMessage);
             }
             message = message.replace("{gender_unformatted}",
-                    Component.translatable(messageTemplates.gender_unformatted(), gender.toString().charAt(0) + gender.toString().toLowerCase().substring(1)).getString());
+                    Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
         }
         message = message.replace("{gender}", "");
         message = message.replace("{gender_unformatted}", "");
 
-        Vector3f coords = new Vector3f(alertData.spawnData().position().x, alertData.spawnData().position().y, alertData.spawnData().position().z);
         // Coordinates
+        Vector3f coords = new Vector3f(alertData.spawnData().position().x, alertData.spawnData().position().y, alertData.spawnData().position().z);
         if (coordinatesDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = coordinatesDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
@@ -402,5 +477,12 @@ public class AlertHandler {
         }
 
         return message;
+    }
+
+    private static String replaceIfNotAvailable(String string) {
+        if (!Services.PLATFORM.doesServerHaveMod()) {
+            return "N/A";
+        }
+        return string;
     }
 }

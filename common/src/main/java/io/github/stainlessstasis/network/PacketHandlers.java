@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.network;
 
+import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
@@ -10,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 
 public class PacketHandlers {
-    public static void handlePokemonDataPacket(int pokemonNetworkID, IVs ivs, EVs evYield, Nature nature) {
+    public static void handlePokemonDataPacket(int pokemonNetworkID, IVs ivs, EVs evYield, Nature nature, Ability ability) {
         if (!(Minecraft.getInstance().level instanceof ClientLevel level)) {
             return;
         }
@@ -21,6 +22,7 @@ public class PacketHandlers {
         Pokemon pokemon = pokemonEntity.getPokemon();
         pokemon.setIvs$common(ivs);
         pokemon.setNature(nature);
+        pokemon.setAbility$common(ability);
         AlertHandler.alertClientside(pokemonEntity, evYield);
     }
 

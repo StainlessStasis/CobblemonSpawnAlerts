@@ -12,7 +12,6 @@ import kotlin.Unit;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
@@ -85,5 +84,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         IPlatformHelper.super.onPokemonDespawned(_level, pokemon, playerName, despawnReason);
         PacketDistributor.sendToAllPlayers(CobblemonSpawnAlerts.createDespawnData(pokemon, playerName, despawnReason));
+    }
+
+    @Override
+    public boolean doesServerHaveMod() {
+        return CSANeoClient.doesServerHaveMod;
     }
 }

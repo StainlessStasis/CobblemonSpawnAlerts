@@ -1,6 +1,8 @@
 package io.github.stainlessstasis.core;
 
 import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.abilities.Abilities;
+import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
@@ -90,13 +92,14 @@ public class CobblemonSpawnAlerts {
 
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : CobblemonStatProvider.INSTANCE.createEmptyIVs(0);
         Nature nature = config.broadcastNature() ? pokemon.getNature() : Natures.INSTANCE.getNAUGHTY();
+        Ability ability = config.broadcastAbility() ? pokemon.getAbility() : Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST);
 
         EVs finalEvYield = CobblemonStatProvider.INSTANCE.createEmptyEVs();
         if (config.broadcastEVs()) {
             finalEvYield = EvsUtil.getEVsFromYield(pokemon.getForm().getEvYield());
         }
 
-        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature);
+        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability);
     }
 
     public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity) {
@@ -113,6 +116,7 @@ public class CobblemonSpawnAlerts {
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
         EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
         String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.INSTANCE.getNAUGHTY().getName().getPath();
+        String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName();
 
         return new AlertDataPacket(
                 new PokemonSpawnData(
@@ -131,6 +135,7 @@ public class CobblemonSpawnAlerts {
                         shouldAlertUltra,
                         shouldAlertParadox),
                 nature,
+                ability,
                 pokemon.getGender().name());
     }
 

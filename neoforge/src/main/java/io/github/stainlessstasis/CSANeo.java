@@ -97,7 +97,7 @@ public class CSANeo {
 
     public static class PokemonDataPacketHandler {
         public static void handleClient(final PokemonDataPacket data, final IPayloadContext context) {
-            PacketHandlers.handlePokemonDataPacket(data.pokemonNetworkID(), data.ivs(), data.evYield(), data.nature());
+            PacketHandlers.handlePokemonDataPacket(data.pokemonNetworkID(), data.ivs(), data.evYield(), data.nature(), data.ability());
         }
         public static void handleServer(final PokemonDataPacket data, final IPayloadContext context) {}
     }

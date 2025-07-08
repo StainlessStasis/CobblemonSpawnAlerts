@@ -54,4 +54,6 @@ public interface IPlatformHelper {
             CobblemonSpawnAlerts.despawned.remove(pokemon.getUuid());
         }
     };
+
+    boolean doesServerHaveMod();
 }

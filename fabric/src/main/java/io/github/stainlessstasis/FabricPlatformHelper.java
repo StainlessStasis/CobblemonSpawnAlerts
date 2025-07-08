@@ -87,4 +87,9 @@ public class FabricPlatformHelper implements IPlatformHelper {
             }
         }
     }
+
+    @Override
+    public boolean doesServerHaveMod() {
+        return CSAFabricClient.doesServerHaveMod;
+    }
 }
