@@ -36,23 +36,6 @@ This file is called `main.json`
 ### Reloading the Config:<br>
 You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reload` to reload it. Leaving/entering a world will **NOT** reload the config. The command must be run to take effect.<br>
 
-## Config - Server
-The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig` in singleplayer.<br><br>
-This file is called `server.json`
-
-### Config Settings:<br>
-* **alertShinies**: Alerts all players on the server when a shiny spawns.<br>
-* **alertLegendaries**: Alerts all players on the server when a legendary spawns.<br>
-* **alertMythicals**: Alerts all players on the server when a mythical spawns.<br>
-* **alertUltraBeasts**: Alerts all players on the server when a ultra beast spawns.<br>
-* **alertParadox**: Alerts all players on the server when a paradox spawns.<br>
-* **broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
-* **broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
-**Note:** Disabling these on your client instance will also stop things from displaying properly in singleplayer... so don't do that (unless you want to)
-
-### Reloading the Config:<br>
-You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
-
 ## Config - Pokemon (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
 
@@ -115,6 +98,64 @@ Show all stats in hover:<br>
 },
 ```
 ![Hoverable stats](https://cdn.modrinth.com/data/cached_images/8f4896e3abf83dedadb1510261b60fbdb36f10ed.png)
+<br>
+Full template example:
+```json
+{
+  "configVersion": 1.6,
+  "pokemonConfigs": {
+    "default (You can modify anything BELOW this, but dont delete it!)": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "MAIN_MESSAGE",
+        "ivs": "DISABLED",
+        "evs": "DISABLED",
+        "nature": "DISABLED",
+        "gender": "HOVER",
+        "coordinates": "HOVER",
+        "biome": "MAIN_MESSAGE"
+      },
+      "customAlertMessage": ""
+    },
+    "charmander, charmeleon, charizard": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "MAIN_MESSAGE",
+        "ivs": "DISABLED",
+        "evs": "DISABLED",
+        "nature": "DISABLED",
+        "gender": "HOVER",
+        "coordinates": "HOVER",
+        "biome": "MAIN_MESSAGE"
+      },
+      "customAlertMessage": ""
+    }
+  }
+}
+```
+
+## Config - Server
+The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig` in singleplayer.<br><br>
+This file is called `server.json`
+
+### Config Settings:<br>
+* **alertShinies**: Alerts all players on the server when a shiny spawns.<br>
+* **alertLegendaries**: Alerts all players on the server when a legendary spawns.<br>
+* **alertMythicals**: Alerts all players on the server when a mythical spawns.<br>
+* **alertUltraBeasts**: Alerts all players on the server when a ultra beast spawns.<br>
+* **alertParadox**: Alerts all players on the server when a paradox spawns.<br>
+* **broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
+* **broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
+**Note:** Disabling these on your client instance will also stop things from displaying properly in singleplayer... so don't do that (unless you want to)
+
+### Reloading the Config:<br>
+You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
 
 ## Config - Templates (client)
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
@@ -203,7 +244,7 @@ Currently, the available dynamic replacements are:
 * **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender if `showGender` is enabled
 * **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates if `showCoordinates` is enabled
 * **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned in if `showBiome` is enabled
-* **{despawn}**: Inserts the Pokemon's despawn message for despawn, captured, and fainted respectively
+* **{despawned}**: Inserts the Pokemon's despawn message for despawn, captured, and fainted respectively
 
 ### Examples:<br>
 Creating a custom alert message:<br>
