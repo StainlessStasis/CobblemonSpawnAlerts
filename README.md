@@ -279,7 +279,7 @@ This file is called `server.json`
 * **broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
 * **broadcastIVs**: Tells clients what EV Yield a spawned Pokemon has.<br>
 * **broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
-* * **broadcastAbility**: Tells clients what Ability a spawned Pokemon has.<br>
+* **broadcastAbility**: Tells clients what Ability a spawned Pokemon has.<br>
 **Note:** Disabling these on your client instance will also stop things from displaying properly in singleplayer... so don't do that?
 
 ### Reloading the Config:<br>
