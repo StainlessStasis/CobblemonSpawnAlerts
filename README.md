@@ -59,6 +59,7 @@ The following are a sub category of the config for displaying certain info about
 * **ivs**: Lists the Pokemon's IVs in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.
 * **evs**: Lists the Pokemon's EV Yield in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.
 * **nature**: Shows the Pokemon's nature.
+* **ability**: Shows the Pokemon's ability.
 * **gender**: Shows the Pokemon's gender.
 * **coordinates**: Shows the Pokemon's coordinates (x/y/z).<br>
 * **biome**: Shows the biome the Pokemon spawned in.
@@ -354,7 +355,7 @@ Next up is adding your sound in the config, which is super simple. Whatever your
 <details>
   <summary>Full template using the default sounds provided in the pack</summary>
 
-  This play the Pokemon: Legends Arceus shiny sound when any shiny spawns
+  This plays the Pokemon: Legends Arceus shiny sound when any shiny spawns
   ```json
 {
   "configVersion": 1.7,
