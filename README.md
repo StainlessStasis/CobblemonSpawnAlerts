@@ -15,7 +15,7 @@ By simply editing the config, you can be alerted whenever an unregistered or unc
 Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use MiniMessage formatting to easily color or format messages however you like (see the [MiniMessage docs](https://docs.advntr.dev/minimessage/format.html)). <br>The default message looks like this:<br>
 ![Default message](https://cdn.modrinth.com/data/cached_images/4b5500d73cb2c2d1a630cc5c1bee5b220bdb9eb7.png)<br>
 But can be modified to look like this, or however you want!
-![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
+![Cool bidoof](https://cdn.modrinth.com/data/cached_images/21ac636baa53001eb530b22ff3b57d1b0b5813d0.png)
 
 ## Global Alerts!
 Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification), all players will be alerted when a rare Pokemon (such as a shiny or legendary) spawns. This can be disabled in the server's `server.json` config for the mod. The server simply sends a packet to all clients, so that each player can individually customize their messages.
@@ -87,7 +87,7 @@ Show all stats in message:<br>
       ...other config stuff
 },
 ```
-![All stats in message](https://cdn.modrinth.com/data/cached_images/aecca0f8f36fa8718ed82002d02c09784d5f70f2.png)
+![All stats in main message](https://cdn.modrinth.com/data/cached_images/91a4c7f5079243efff2aba7e84f7044c5f8048c4.png)
 Show all stats in hover:<br>
 ```json
 "bidoof": {
@@ -109,7 +109,7 @@ Show all stats in hover:<br>
       ...other config stuff
 },
 ```
-![Hoverable stats](https://cdn.modrinth.com/data/cached_images/8f4896e3abf83dedadb1510261b60fbdb36f10ed.png)
+![Hoverable stats](https://cdn.modrinth.com/data/cached_images/b5e4af0678a754053ae022708d1ab867846206a0.png)
 
 <details>
   <summary>Full template example</summary>
@@ -322,12 +322,12 @@ Creating a custom alert message:<br>
         "coordinates": "MAIN_MESSAGE",
         "biome": "DISABLED"
       },
-    "customAlertMessage": "<blue>My beautiful boy {shiny}<gradient:blue:green><b>BIDOOF</b></gradient> {level}spawned{coords}!</blue>",
+    "customAlertMessage": "<rainbow>A beautiful <gradient:light_purple:white><b>{shiny_unformatted}</b></gradient><u>{name}</u> spawned in a <u>{biome_unformatted}</u> biome</rainbow><white>{coords}!</white>",
     ...other config stuff
 }
 ```
 **Note:** This can also be done by modifying the `fullSpawnMessage` template or the default Pokemon config if you want it to apply to all Pokemon.
-![Custom spawn message](https://cdn.modrinth.com/data/cached_images/71ff33f8e14b2520cc97c897754ce8579037d4b5.png)
+![Cool bidoof](https://cdn.modrinth.com/data/cached_images/21ac636baa53001eb530b22ff3b57d1b0b5813d0.png)
 
 </details>
 
