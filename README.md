@@ -35,6 +35,9 @@ This file is called `main.json`
 * **alertAllParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
 * **alertAllNotInDex**: Alerts you when any Pokemon which is not already registered in your Pokedex spawns, unless its config is disabled.<br>
 * **alertAllUncaught**: Alerts you when any Pokemon which you have not caught spawns, unless its config is disabled.<br>
+* **alertEverything**: Alerts you to every single spawn near you, unless its config is disabled. Why would you want to do this? Idk.
+
+For IV/EV hunting, see the IV/EV Hunting tab under Config
 
 ### Reloading the Config:<br>
 You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reload` to reload it. Leaving/entering a world will **NOT** reload the config. The command must be run to take effect.<br>
@@ -393,16 +396,32 @@ Next up is adding your sound in the config, which is super simple. Whatever your
 </details>
 
 Also, you can even use vanilla Minecraft sounds! E.g. `entity.warden.sonic_boom`.<br>
-And that's it!
+</details>
+
+<details>
+  <summary>IV/EV Hunting</summary>
+
+IV and EV hunting can be found in your `main.json` config. To prevent bloating of the Pokemon-specific configs, these apply to all spawns. This may be changed in the future if deemed necessary or is heavily requested.<br>
+
+Let's start with IV hunting, as it is the more complicated of the two:
+* **requireAllMinimumsMet**: Requires all of the specified minimum stats to be met for an alert to trigger. For example, say `minHp` and `minAtk` are both set to 20, and a Pokemon spawns with 25 hp but only 10 atk. If this is enabled, then an alert will NOT trigger, since both conditions aren't met. If this is disabled, however, an alert will trigger since at least one of the conditions is met. (basically, if it's true it functions as an AND gate, and false, an OR gate)
+* **minPerfectIVs**: Requires at least x perfect IVs to trigger an alert
+
+For EV hunting, there is no equivalent of `requireAllMinimumsMet`. An alert will be triggered if any of the minimum conditions are true. So, if `minHp` and `minAtk` are both set to 1, then any Pokemon with an EV yield of at least 1 hp OR attack will trigger an alert.<br>
+
+Lastly, for both IV and EV hunting, anything set to 0 will be ignored when determining whether to alert. This means you can safely leave any stats you don't care about at 0 and it will not falsely alert.
+
 </details>
 
 ## More to come!
-My current plans, in no particular order, are to add the following:
+I currently plan to add the following:
 * Ability/HA hunting
-* IV/EV hunting
+* Nature hunting
 
-I may also add the following, but I'm unsure:
-* Alert to specific type or egg group? Idk seems unnecessary
+I may also add these, but I'm unsure:
+* Alert to specific type or egg group
+* Alert to specific spawn bucket (unsure if possible, but very likely to add if so)
+* Ability to edit config in game
 
 If you have any other ideas, feel free to share them with me!
 
