@@ -3,7 +3,6 @@ package io.github.stainlessstasis.alert;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
-import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
@@ -36,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
@@ -47,13 +47,16 @@ public class AlertHandler {
     }
 
     public static void alertClientside(PokemonEntity pokemonEntity) {
-        alertClientside(pokemonEntity, EVs.createEmpty());
+        EVs defaultEVYield = EvsUtil.getYield(pokemonEntity.getPokemon().getSpecies().getNationalPokedexNumber());
+        alertClientside(pokemonEntity, defaultEVYield);
     }
 
     public static void alertClientside(PokemonEntity pokemonEntity, EVs evYield) {
         if (pokemonEntity.getOwnerUUID() != null) {
             return;
         }
+
+        evYield = EvsUtil.getYield(pokemonEntity.getPokemon().getSpecies().getNationalPokedexNumber());
 
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslatedName(pokemon);
@@ -92,7 +95,7 @@ public class AlertHandler {
             return;
         }
 
-        MainConfig config = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
+        MainConfig mainConfig = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
@@ -104,13 +107,20 @@ public class AlertHandler {
             return;
         }
 
-        boolean shouldAlertLegend = alertData.traits().isLegendary() && config.alertAllLegendaries();
-        boolean shouldAlertMythical = alertData.traits().isMythical() && config.alertAllMythicals();
-        boolean shouldAlertUltra = alertData.traits().isUltraBeast() && config.alertAllUltraBeasts();
-        boolean shouldAlertParadox = alertData.traits().isParadox() && config.alertAllParadox();
+        // Check if should alert for rarity/shiny
+        boolean shouldAlertShiny =
+                isInConfig ?
+                        alertData.traits().isShiny() && pokemonConfig.alertShiny() || mainConfig.alertAllShinies()
+                        :
+                        alertData.traits().isShiny() && mainConfig.alertAllShinies();
+        boolean shouldAlertLegend = alertData.traits().isLegendary() && mainConfig.alertAllLegendaries();
+        boolean shouldAlertMythical = alertData.traits().isMythical() && mainConfig.alertAllMythicals();
+        boolean shouldAlertUltra = alertData.traits().isUltraBeast() && mainConfig.alertAllUltraBeasts();
+        boolean shouldAlertParadox = alertData.traits().isParadox() && mainConfig.alertAllParadox();
 
-        boolean shouldAlertNotInDex = config.alertAllNotInDex();
-        boolean shouldAlertUncaught = config.alertAllUncaught();
+        // Check if should alert for dex
+        boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
+        boolean shouldAlertUncaught = mainConfig.alertAllUncaught();
         Species species = PokemonSpecies.INSTANCE.getByPokedexNumber(alertData.spawnData().dexId(), Cobblemon.MODID);
         SpeciesDexRecord record = dex.getSpeciesRecord(species.resourceIdentifier);
         if (record != null) {
@@ -120,11 +130,60 @@ public class AlertHandler {
             }
         }
 
-        boolean shouldAlertShiny =
-                isInConfig ?
-                        alertData.traits().isShiny() && pokemonConfig.alertShiny() || config.alertAllShinies()
-                        :
-                        alertData.traits().isShiny() && config.alertAllShinies();
+        // Check if should alert for IV and EV hunting
+        final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
+        final MainConfig.EVHunting evHunting = mainConfig.evHunting();
+
+        boolean shouldAlertIVs = false;
+        if (ivHunting.enabled()) {
+            final IVs ivs = alertData.stats().ivs();
+
+            boolean meetsMinReqs = false;
+            if (ivHunting.requireAllMinimumsMet()) {
+                if (
+                    (ivHunting.minHp() <= 0 || ivs.get(Stats.HP) >= ivHunting.minHp())
+                    && (ivHunting.minAtk() <= 0 || ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
+                    && (ivHunting.minDef() <= 0 || ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
+                    && (ivHunting.minSpAtk() <= 0 || ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
+                    && (ivHunting.minSpDef() <= 0 || ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
+                    && (ivHunting.minSpeed() <= 0 || ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
+                ) {
+                    meetsMinReqs = true;
+                }
+            } else {
+                if (
+                    (ivHunting.minHp() > 0 && ivs.get(Stats.HP) >= ivHunting.minHp())
+                    || (ivHunting.minAtk() > 0 && ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
+                    || (ivHunting.minDef() > 0 && ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
+                    || (ivHunting.minSpAtk() > 0 && ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
+                    || (ivHunting.minSpDef() > 0 && ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
+                    || (ivHunting.minSpeed() > 0 && ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
+                ) {
+                    meetsMinReqs = true;
+                }
+            }
+
+            AtomicInteger numPerfect = new AtomicInteger();
+            ivs.forEach(iv -> {
+                if (iv.getValue() >= IVs.MAX_VALUE) numPerfect.getAndIncrement();
+            });
+            shouldAlertIVs = numPerfect.get() >= ivHunting.minPerfectIVs() && meetsMinReqs;
+        }
+
+        boolean shouldAlertEVs = false;
+        if (evHunting.enabled()) {
+            final EVs evs = alertData.stats().evYield();
+
+            shouldAlertEVs =
+                (evHunting.minHp() > 0 && evs.get(Stats.HP) >= evHunting.minHp())
+                || (evHunting.minAtk() > 0 && evs.get(Stats.ATTACK) >= evHunting.minAtk())
+                || (evHunting.minDef() > 0 && evs.get(Stats.DEFENCE) >= evHunting.minDef())
+                || (evHunting.minSpAtk() > 0 && evs.get(Stats.SPECIAL_ATTACK) >= evHunting.minSpAtk())
+                || (evHunting.minSpDef() > 0 && evs.get(Stats.SPECIAL_DEFENCE) >= evHunting.minSpDef())
+                || (evHunting.minSpeed() > 0 && evs.get(Stats.SPEED) >= evHunting.minSpeed());
+        }
+
+        // Finalize alert check
         boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
         boolean shouldAlertNotInConfig =
                 shouldAlertShiny
@@ -133,7 +192,10 @@ public class AlertHandler {
                         || shouldAlertUltra
                         || shouldAlertParadox
                         || shouldAlertNotInDex
-                        || shouldAlertUncaught;
+                        || shouldAlertUncaught
+                        || mainConfig.alertEverything()
+                        || shouldAlertIVs
+                        || shouldAlertEVs;
 
         if (isInConfig) {
             if (!shouldAlertInConfig) {
@@ -171,7 +233,6 @@ public class AlertHandler {
                 }
             }
         }
-
 
         // send the custom alert if one exits
         String message;
@@ -351,25 +412,17 @@ public class AlertHandler {
         if (evsDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = evsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
-            String evsMessage = Services.PLATFORM.doesServerHaveMod() ?
-                    Component.translatable(configMessage,
+            String evsMessage = Component.translatable(configMessage,
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString()
-                    :
-                    Component.translatable(configMessage,
-                            "-", "-", "-", "-", "-", "-").getString();
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
                 hoverText += evsMessage + "\n";
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
-            String evsUnformatted = Services.PLATFORM.doesServerHaveMod() ?
-                    Component.translatable(messageTemplates.evs_unformatted(),
+            String evsUnformatted = Component.translatable(messageTemplates.evs_unformatted(),
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString()
-                    :
-                    Component.translatable(messageTemplates.evs_unformatted(),
-                            "-", "-", "-", "-", "-", "-").getString();
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             message = message.replace("{evs_unformatted}", evsUnformatted);
         }
         message = message.replace("{evs}", "");

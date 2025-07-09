@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.config;
 
 public record MainConfig (
+    float configVersion,
     boolean multiplayerWarning,
     boolean alertAllShinies,
     boolean alertAllLegendaries,
@@ -8,9 +9,27 @@ public record MainConfig (
     boolean alertAllUltraBeasts,
     boolean alertAllParadox,
     boolean alertAllNotInDex,
-    boolean alertAllUncaught
+    boolean alertAllUncaught,
+    boolean alertEverything,
+    IVHunting ivHunting,
+    EVHunting evHunting
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(true, true, true, true, true, true,false, false);
+        return new MainConfig(1.8f, true, true, true, true,
+                true, true,false, false, false,
+                IVHunting.createDefault(), EVHunting.createDefault()
+                );
+    }
+
+    public record IVHunting(boolean enabled, boolean requireAllMinimumsMet, int minPerfectIVs, int minHp, int minAtk, int minDef, int minSpAtk, int minSpDef, int minSpeed) {
+        public static IVHunting createDefault() {
+            return new IVHunting(false, true, 0, 0, 0, 0, 0, 0, 0);
+        }
+    }
+
+    public record EVHunting(boolean enabled, int minHp, int minAtk, int minDef, int minSpAtk, int minSpDef, int minSpeed) {
+        public static EVHunting createDefault() {
+            return new EVHunting(false, 0, 0, 0, 0, 0, 0);
+        }
     }
 }

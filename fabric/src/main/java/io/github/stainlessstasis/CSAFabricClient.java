@@ -4,8 +4,8 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
-import io.github.stainlessstasis.core.EVYieldTool;
 import io.github.stainlessstasis.network.*;
+import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -21,8 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.entity.Entity;
-
-import java.io.IOException;
 
 @Environment(EnvType.CLIENT)
 public class CSAFabricClient implements ClientModInitializer {
@@ -87,11 +85,13 @@ public class CSAFabricClient implements ClientModInitializer {
 
     private void onClientStop(Minecraft minecraft) {
         AlertHandler.clearCache();
+        EvsUtil.clearCache();
         doesServerHaveMod = false;
     }
 
     private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
         AlertHandler.clearCache();
+        EvsUtil.clearCache();
         doesServerHaveMod = false;
     }
 

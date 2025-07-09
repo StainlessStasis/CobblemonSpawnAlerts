@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
+import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.Commands;
@@ -56,6 +57,7 @@ public class CSANeoClient {
         @SubscribeEvent
         public static void onDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
             AlertHandler.clearCache();
+            EvsUtil.clearCache();
             doesServerHaveMod = false;
         }
 
