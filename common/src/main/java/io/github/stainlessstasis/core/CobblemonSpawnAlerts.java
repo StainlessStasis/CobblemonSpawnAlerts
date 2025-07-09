@@ -26,11 +26,11 @@ import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
@@ -42,7 +42,7 @@ public class CobblemonSpawnAlerts {
     public static Set<UUID> globallyAlerted = new HashSet<>();
     public static Set<UUID> despawned = new HashSet<>();
 
-    public static void initCommon() {
+    public static void initServer() {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
         COMMON_CONFIG_MANAGER.loadConfig();
 
@@ -75,7 +75,6 @@ public class CobblemonSpawnAlerts {
             }
 
             Services.PLATFORM.onPokemonDespawned(evt.getKilled().getEntity().level(), pokemon, playerName, DespawnReason.FAINTED);
-
 
             return Unit.INSTANCE;
         });

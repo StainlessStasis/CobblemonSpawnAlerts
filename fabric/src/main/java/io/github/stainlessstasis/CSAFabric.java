@@ -1,6 +1,5 @@
 package io.github.stainlessstasis;
 
-import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
 import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.stainlessstasis.alert.DespawnReason;
@@ -26,7 +25,7 @@ import net.minecraft.world.entity.Entity;
 public class CSAFabric implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		CobblemonSpawnAlerts.initCommon();
+		CobblemonSpawnAlerts.initServer();
 
 		CommandRegistrationCallback.EVENT.register(CommandRegistry::registerServerCommands);
 		ServerPlayConnectionEvents.JOIN.register(this::onPlayerJoin);

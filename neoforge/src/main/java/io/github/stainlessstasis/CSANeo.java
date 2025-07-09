@@ -23,8 +23,6 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-import java.util.UUID;
-
 @Mod(value = CobblemonSpawnAlerts.MOD_ID)
 public class CSANeo {
 
@@ -32,7 +30,7 @@ public class CSANeo {
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onInit(FMLCommonSetupEvent event) {
-            CobblemonSpawnAlerts.initCommon();
+            CobblemonSpawnAlerts.initServer();
         }
 
         @SubscribeEvent
