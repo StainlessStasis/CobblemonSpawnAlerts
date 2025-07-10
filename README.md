@@ -306,7 +306,8 @@ Currently, the available dynamic replacements are:
 * **{ability} / {ability_unformatted}**: Inserts the Pokemon's ability if enabled
 * **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender if enabled
 * **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates if enabled
-* **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned in if enabled
+* **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned if enabled
+* **{nearest_player} / {nearest_player_unformatted}**: Inserts the name of the nearest player to the spawned Pokemon if enabled
 * **{despawned}**: Inserts the Pokemon's despawn message for despawn, captured, and fainted respectively. This probably shouldn't be used though.
 
 ### Examples:<br>
