@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.config;
 
 public record MainConfig (
-    float configVersion,
+    String configVersion,
     boolean multiplayerWarning,
     boolean alertAllShinies,
     boolean alertAllLegendaries,
@@ -15,7 +15,7 @@ public record MainConfig (
     EVHunting evHunting
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(1.8f, true, true, true, true,
+        return new MainConfig("1.8.1", true, true, true, true,
                 true, true,false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault()
                 );

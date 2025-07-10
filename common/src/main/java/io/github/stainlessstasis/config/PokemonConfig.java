@@ -6,7 +6,7 @@ import io.github.stainlessstasis.alert.StatDisplayMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public record PokemonConfig (float configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs){
+public record PokemonConfig (String configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs){
     public record PokemonSpecificConfig (
             boolean enabled,
             boolean alwaysAlert,
@@ -27,6 +27,7 @@ public record PokemonConfig (float configVersion, Map<String, PokemonSpecificCon
             statDisplayModes.put("gender", StatDisplayMode.HOVER);
             statDisplayModes.put("coordinates", StatDisplayMode.HOVER);
             statDisplayModes.put("biome", StatDisplayMode.MAIN_MESSAGE);
+            statDisplayModes.put("nearestPlayer", StatDisplayMode.DISABLED);
 
             Map<String, String> sounds = new LinkedHashMap<>();
             sounds.put("shiny", "");
@@ -44,6 +45,6 @@ public record PokemonConfig (float configVersion, Map<String, PokemonSpecificCon
     public static PokemonConfig createDefault() {
         Map<String, PokemonSpecificConfig> defaults = new LinkedHashMap<>();
         defaults.put(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, PokemonSpecificConfig.createDefault());
-        return new PokemonConfig(1.7f, defaults);
+        return new PokemonConfig("1.8.1", defaults);
     }
 }

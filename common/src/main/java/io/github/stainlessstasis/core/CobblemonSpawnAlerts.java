@@ -18,6 +18,7 @@ import io.github.stainlessstasis.config.CommonConfigManager;
 import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.platform.Services;
+import io.github.stainlessstasis.util.BiomeUtil;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.PokemonNameUtil;
 import kotlin.Unit;
@@ -117,12 +118,19 @@ public class CobblemonSpawnAlerts {
         String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.INSTANCE.getNAUGHTY().getName().getPath();
         String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName();
 
+        String nearestPlayerName = "N/A";
+        if (pokemonEntity.level().getNearestPlayer(pokemonEntity, 128d) instanceof Player player) {
+            nearestPlayerName = player.getName().getString();
+        }
+
         return new AlertDataPacket(
                 new PokemonSpawnData(
                         pokemonName,
                         pokemon.getUuid(),
                         pokemonEntity.position().toVector3f(),
-                        pokemon.getSpecies().getNationalPokedexNumber()),
+                        pokemon.getSpecies().getNationalPokedexNumber(),
+                        nearestPlayerName,
+                        BiomeUtil.getBiomeKeyFromCoords(pokemonEntity.level(), pokemonEntity.position())),
                 new PokemonStats(
                         pokemon.getLevel(),
                         ivs,
@@ -154,7 +162,9 @@ public class CobblemonSpawnAlerts {
                         pokemonName,
                         pokemon.getUuid(),
                         new Vector3f(0, 0, 0),
-                        pokemon.getSpecies().getNationalPokedexNumber()),
+                        pokemon.getSpecies().getNationalPokedexNumber(),
+                        "N/A",
+                        "N/A"),
                 new PokemonTraits(
                         shouldAlertShiny,
                         shouldAlertLegend,

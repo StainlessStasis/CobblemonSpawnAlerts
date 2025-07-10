@@ -56,7 +56,10 @@ public class AlertHandler {
             return;
         }
 
-        evYield = EvsUtil.getYield(pokemonEntity.getPokemon().getSpecies().getNationalPokedexNumber());
+        String nearestPlayerName = "N/A";
+        if (Minecraft.getInstance().player instanceof Player player) {
+            nearestPlayerName = player.getName().getString();
+        }
 
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslatedName(pokemon);
@@ -67,7 +70,9 @@ public class AlertHandler {
                         pokemonName,
                         pokemon.getUuid(),
                         pokemonEntity.position().toVector3f(),
-                        pokemon.getSpecies().getNationalPokedexNumber()),
+                        pokemon.getSpecies().getNationalPokedexNumber(),
+                        nearestPlayerName,
+                        BiomeUtil.getBiomeKeyFromCoords(pokemonEntity.level(), pokemonEntity.position())),
                 new PokemonStats(
                         pokemon.getLevel(),
                         pokemon.getIvs(),
@@ -317,6 +322,7 @@ public class AlertHandler {
         Nature nature = Natures.INSTANCE.getNature(alertData.natureID());
         AbilityTemplate ability = Abilities.INSTANCE.get(alertData.abilityID());
         Gender gender = Gender.valueOf(alertData.genderID());
+        String nearestPlayer = alertData.spawnData().nearestPlayerName();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
 
@@ -334,6 +340,7 @@ public class AlertHandler {
         StatDisplayMode genderDisplayMode = displayModes.get("gender");
         StatDisplayMode coordinatesDisplayMode = displayModes.get("coordinates");
         StatDisplayMode biomeDisplayMode = displayModes.get("biome");
+        StatDisplayMode nearestPlayerDisplayMode = displayModes.get("nearestPlayer");
 
         // Shiny
         boolean shouldAlertShiny = config.alertShiny() && alertData.traits().isShiny();
@@ -507,9 +514,7 @@ public class AlertHandler {
         // Biome
         if (biomeDisplayMode != StatDisplayMode.DISABLED && Minecraft.getInstance().level != null) {
             boolean isHoverEnabled = biomeDisplayMode == StatDisplayMode.HOVER;
-            BlockPos blockPos = BlockPos.containing(new Vec3(coords));
-            Holder<Biome> biomeHolder = Minecraft.getInstance().level.getBiome(blockPos);
-            String biomeName = Component.translatable("biome."+biomeHolder.unwrapKey().get().location().toLanguageKey()).getString();
+            String biomeName = Component.translatable(alertData.spawnData().biomeKey()).getString();
             biomeName = StringUtil.makeBeautiful(biomeName);
 
             String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
@@ -523,6 +528,22 @@ public class AlertHandler {
         }
         message = message.replace("{biome}", "");
         message = message.replace("{biome_unformatted}", "");
+
+        // Nearest Player
+        if (nearestPlayerDisplayMode != StatDisplayMode.DISABLED) {
+            boolean isHoverEnabled = nearestPlayerDisplayMode == StatDisplayMode.HOVER;
+            String configMessage = isHoverEnabled ? messageTemplates.nearest_player_hover() : messageTemplates.nearest_player();
+            String nearestPlayerMessage = Component.translatable(configMessage, nearestPlayer).getString();
+
+            if (isHoverEnabled) {
+                hoverText += nearestPlayerMessage + "\n";
+            } else {
+                message = message.replace("{nearest_player}", nearestPlayerMessage);
+            }
+            message = message.replace("{nearest_player_unformatted}", Component.translatable(messageTemplates.nearest_player_unformatted(), nearestPlayer).getString());
+        }
+        message = message.replace("{nearest_player}", "");
+        message = message.replace("{nearest_player_unformatted}", "");
 
         // Hover
         if (!hoverText.isEmpty()) {
