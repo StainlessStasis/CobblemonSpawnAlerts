@@ -68,7 +68,7 @@ public class AlertHandler {
         alert(new AlertDataPacket(
                 new PokemonSpawnData(
                         pokemonName,
-                        pokemon.getUuid(),
+                        pokemonEntity.getUUID(),
                         pokemonEntity.position().toVector3f(),
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
@@ -243,15 +243,25 @@ public class AlertHandler {
         String message;
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
             message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData);
-            MessageUtils.sendTranslated(message);
+            if (mainConfig.enableClickableGlow()) {
+                Component clickableComponent = createClickableMessage(message, alertData.spawnData().pokemonUUID());
+                player.sendSystemMessage(clickableComponent);
+            } else {
+                MessageUtils.sendTranslated(message);
+            }
             return;
         }
 
         // use the default message if no custom one is provided
         message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
         message = applyDynamicReplacements(message, pokemonConfig, alertData);
-        Component component = ComponentUtil.convertFromAdventure(message);
-        player.sendSystemMessage(component);
+        if (mainConfig.enableClickableGlow()) {
+            Component clickableComponent = createClickableMessage(message, alertData.spawnData().pokemonUUID());
+            player.sendSystemMessage(clickableComponent);
+        } else {
+            Component component = ComponentUtil.convertFromAdventure(message);
+            player.sendSystemMessage(component);
+        }
     }
 
     public static void alertDespawned(DespawnDataPacket despawnData) {
@@ -315,6 +325,7 @@ public class AlertHandler {
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
         MessageTemplates messageTemplates = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates();
+        MainConfig mainConfig = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
 
         int level = alertData.stats().level();
         IVs ivs = alertData.stats().ivs();
@@ -434,6 +445,26 @@ public class AlertHandler {
         }
         message = message.replace("{evs}", "");
         message = message.replace("{evs_unformatted}", "");
+
+        // Always show IVs in hover if configured (independent of IV hunting)
+        if (mainConfig.alwaysShowIVsInHover() && ivsDisplayMode == StatDisplayMode.DISABLED) {
+            String ivsMessage = Services.PLATFORM.doesServerHaveMod() ?
+                    Component.translatable(messageTemplates.ivs_hover(),
+                            ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
+                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString()
+                    :
+                    Component.translatable(messageTemplates.ivs_hover(),
+                            "-", "-", "-", "-", "-", "-").getString();
+            hoverText += ivsMessage + "\n";
+        }
+
+        // Always show EVs in hover if configured (independent of EV hunting)
+        if (mainConfig.alwaysShowEVsInHover() && evsDisplayMode == StatDisplayMode.DISABLED) {
+            String evsMessage = Component.translatable(messageTemplates.evs_hover(),
+                            evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
+                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
+            hoverText += evsMessage + "\n";
+        }
 
         // Nature
         if (natureDisplayMode != StatDisplayMode.DISABLED) {
@@ -558,5 +589,86 @@ public class AlertHandler {
             return "N/A";
         }
         return string;
+    }
+    
+    /**
+     * Creates a clickable chat message that applies glow effect to the Pokémon when clicked
+     */
+    private static Component createClickableMessage(String message, UUID pokemonUUID) {
+        boolean debugEnabled = false;
+        try {
+            debugEnabled = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().enableDebugOutput();
+        } catch (Exception e) {
+            // Config might not be loaded yet, default to false
+        }
+        
+        // Check if server has the mod - if not, don't add glow functionality
+        boolean serverHasMod = Services.PLATFORM.doesServerHaveMod();
+        boolean isClickableGlowEnabled = false;
+        boolean autoGlowEnabled = false;
+        
+        try {
+            isClickableGlowEnabled = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().enableClickableGlow();
+            autoGlowEnabled = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().enableAutoGlow();
+        } catch (Exception e) {
+            // Config might not be loaded yet, default to false
+        }
+        
+        if (debugEnabled) {
+            System.out.println("[CSA] Creating message for UUID: " + pokemonUUID);
+            System.out.println("[CSA] Server has mod: " + serverHasMod);
+            System.out.println("[CSA] Clickable glow enabled: " + isClickableGlowEnabled);
+            System.out.println("[CSA] Auto-glow enabled: " + autoGlowEnabled);
+        }
+        
+        // Only add glow functionality if server has the mod
+        if (serverHasMod && (isClickableGlowEnabled || autoGlowEnabled)) {
+            // Register the Pokémon for potential glowing
+            GlowEffectManager.registerSpawnedPokemon(pokemonUUID);
+            
+            // Auto-glow feature: automatically apply glow if enabled
+            if (autoGlowEnabled) {
+                if (debugEnabled) {
+                    System.out.println("[CSA] Auto-glow enabled, applying glow effect automatically");
+                }
+                // Apply glow effect automatically
+                GlowEffectManager.applyGlowEffect(pokemonUUID);
+            }
+        } else if (debugEnabled) {
+            System.out.println("[CSA] Glow features disabled - server doesn't have mod or features disabled in config");
+        }
+        
+        // Convert the message to Adventure component first to handle existing formatting and hover
+        net.kyori.adventure.text.Component adventureComponent = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(message);
+        net.kyori.adventure.text.Component finalComponent = adventureComponent;
+        
+        // Only add click functionality if server has the mod and clickable glow is enabled
+        if (serverHasMod && isClickableGlowEnabled) {
+            // Add click event while preserving existing hover text
+            finalComponent = adventureComponent
+                .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/csa_glow " + pokemonUUID.toString()));
+            
+            if (debugEnabled) {
+                System.out.println("[CSA] Added click event: /csa_glow " + pokemonUUID.toString());
+            }
+            
+            // Only add our own hover text if there isn't already hover text
+            if (adventureComponent.hoverEvent() == null) {
+                if (debugEnabled) {
+                    System.out.println("[CSA] No existing hover text, adding glow hover text");
+                }
+                finalComponent = finalComponent.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
+                    net.kyori.adventure.text.Component.text("Click to highlight this Pokémon for " + 30 + " seconds!")
+                        .color(net.kyori.adventure.text.format.NamedTextColor.YELLOW)
+                ));
+            } else if (debugEnabled) {
+                System.out.println("[CSA] Existing hover text found, preserving it");
+            }
+        } else if (debugEnabled) {
+            System.out.println("[CSA] Not adding click functionality - server mod or clickable glow disabled");
+        }
+        
+        // Convert back to Minecraft Component
+        return ComponentUtil.convertFromAdventureComponent(finalComponent);
     }
 }

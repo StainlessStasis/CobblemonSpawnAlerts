@@ -7,7 +7,9 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.network.DespawnDataPacket;
+import io.github.stainlessstasis.network.GlowEffectPacket;
 import io.github.stainlessstasis.network.ModLoadedPacket;
+import io.github.stainlessstasis.network.PacketHandlers;
 import io.github.stainlessstasis.network.PokemonDataPacket;
 import io.github.stainlessstasis.platform.Services;
 import kotlin.Unit;
@@ -17,6 +19,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -35,6 +38,16 @@ public class CSAFabric implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(AlertDataPacket.ID, AlertDataPacket.STREAM_CODEC);
 		PayloadTypeRegistry.playS2C().register(DespawnDataPacket.ID, DespawnDataPacket.STREAM_CODEC);
 		PayloadTypeRegistry.playS2C().register(ModLoadedPacket.ID, ModLoadedPacket.STREAM_CODEC);
+		
+		// Register client-to-server packets
+		PayloadTypeRegistry.playC2S().register(GlowEffectPacket.TYPE, GlowEffectPacket.STREAM_CODEC);
+		
+		// Register server-side packet handler for glow effects
+		ServerPlayNetworking.registerGlobalReceiver(GlowEffectPacket.TYPE, (payload, context) -> {
+			context.server().execute(() -> {
+				PacketHandlers.handleGlowEffectPacket(payload, context.player());
+			});
+		});
 	}
 
 	private void onEntityUnload(Entity entity, ServerLevel serverLevel) {

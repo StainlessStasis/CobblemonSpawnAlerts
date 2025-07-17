@@ -8,4 +8,5 @@ public class ModPackets {
     public static final ResourceLocation ALERT_DATA = ResourceLocation.fromNamespaceAndPath(CobblemonSpawnAlerts.MOD_ID, "alert-data-packet");
     public static final ResourceLocation DESPAWN_DATA = ResourceLocation.fromNamespaceAndPath(CobblemonSpawnAlerts.MOD_ID, "despawn-data-packet");
     public static final ResourceLocation MOD_LOADED = ResourceLocation.fromNamespaceAndPath(CobblemonSpawnAlerts.MOD_ID, "mod-loaded-packet");
+    public static final ResourceLocation GLOW_EFFECT = ResourceLocation.fromNamespaceAndPath(CobblemonSpawnAlerts.MOD_ID, "glow-effect-packet");
 }

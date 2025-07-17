@@ -95,21 +95,21 @@ public class CSANeo {
 
     public static class PokemonDataPacketHandler {
         public static void handleClient(final PokemonDataPacket data, final IPayloadContext context) {
-            PacketHandlers.handlePokemonDataPacket(data.pokemonNetworkID(), data.ivs(), data.evYield(), data.nature(), data.ability());
+            ClientPacketHandlers.handlePokemonDataPacket(data.pokemonNetworkID(), data.ivs(), data.evYield(), data.nature(), data.ability());
         }
         public static void handleServer(final PokemonDataPacket data, final IPayloadContext context) {}
     }
 
     public static class AlertDataPacketHandler {
         public static void handleClient(final AlertDataPacket data, final IPayloadContext context) {
-            PacketHandlers.handleAlertDataPacket(data);
+            ClientPacketHandlers.handleAlertDataPacket(data);
         }
         public static void handleServer(final AlertDataPacket data, final IPayloadContext context) {}
     }
 
     public static class DespawnDataPacketHandler {
         public static void handleClient(final DespawnDataPacket data, final IPayloadContext context) {
-            PacketHandlers.handleDespawnDataPacket(data);
+            ClientPacketHandlers.handleDespawnDataPacket(data);
         }
         public static void handleServer(final DespawnDataPacket data, final IPayloadContext context) {}
     }

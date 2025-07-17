@@ -90,4 +90,9 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public boolean doesServerHaveMod() {
         return CSANeoClient.doesServerHaveMod;
     }
+
+    @Override
+    public void sendGlowEffectPacket(io.github.stainlessstasis.network.GlowEffectPacket packet) {
+        CSANeoClient.sendGlowEffectPacket(packet);
+    }
 }

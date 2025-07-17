@@ -11,12 +11,17 @@ public record MainConfig (
     boolean alertAllNotInDex,
     boolean alertAllUncaught,
     boolean alertEverything,
+    boolean enableClickableGlow,
+    boolean enableDebugOutput,
+    boolean enableAutoGlow,
+    boolean alwaysShowIVsInHover,
+    boolean alwaysShowEVsInHover,
     IVHunting ivHunting,
     EVHunting evHunting
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig("1.8.1", true, true, true, true,
-                true, true,false, false, false,
+        return new MainConfig("1.10.1", true, true, true, true,
+                true, true,false, false, false, true, false, false, true, true,
                 IVHunting.createDefault(), EVHunting.createDefault()
                 );
     }

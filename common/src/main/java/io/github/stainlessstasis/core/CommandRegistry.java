@@ -1,8 +1,6 @@
 package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
-import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -35,16 +33,4 @@ public class CommandRegistry {
                 return 1;
         })));
     }
-
-    public static int handleReloadCommand() {
-        CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.reload();
-        return 1;
-    }
-
-    public static int handleOpenConfigCommand() {
-        ClientConfigManager.openDirectory();
-        return 1;
-    }
-
-
 }

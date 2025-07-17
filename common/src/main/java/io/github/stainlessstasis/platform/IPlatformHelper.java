@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.network.GlowEffectPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
@@ -56,4 +57,6 @@ public interface IPlatformHelper {
     };
 
     boolean doesServerHaveMod();
+    
+    void sendGlowEffectPacket(GlowEffectPacket packet);
 }
