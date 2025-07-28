@@ -24,14 +24,11 @@ import io.github.stainlessstasis.network.PokemonStats;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -39,8 +36,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
-    // i have no idea what to name this shit tbh
-    private static final List<String> SOUND_TRAITS = List.of("shiny", "legendary", "mythical", "ultrabeast", "paradox", "unregistered", "uncaught");
 
     public static void clearCache() {
         alreadyAlerted.clear();
@@ -112,12 +107,21 @@ public class AlertHandler {
             return;
         }
 
+        // Check pokemon traits for sounds & alerts
+        boolean isShiny = alertData.traits().isShiny();
+        boolean isLegend = alertData.traits().isLegendary();
+        boolean isMythical = alertData.traits().isMythical();
+        boolean isUltra = alertData.traits().isUltraBeast();
+        boolean isParadox = alertData.traits().isParadox();
+        boolean isInDex = false;
+        boolean isCaught = false;
+
         // Check if should alert for rarity/shiny
         boolean shouldAlertShiny =
                 isInConfig ?
-                        alertData.traits().isShiny() && pokemonConfig.alertShiny() || mainConfig.alertAllShinies()
+                        isShiny && pokemonConfig.alertShiny() || mainConfig.alertAllShinies()
                         :
-                        alertData.traits().isShiny() && mainConfig.alertAllShinies();
+                        isShiny && mainConfig.alertAllShinies();
         boolean shouldAlertLegend = alertData.traits().isLegendary() && mainConfig.alertAllLegendaries();
         boolean shouldAlertMythical = alertData.traits().isMythical() && mainConfig.alertAllMythicals();
         boolean shouldAlertUltra = alertData.traits().isUltraBeast() && mainConfig.alertAllUltraBeasts();
@@ -130,8 +134,10 @@ public class AlertHandler {
         SpeciesDexRecord record = dex.getSpeciesRecord(species.resourceIdentifier);
         if (record != null) {
             shouldAlertNotInDex = false;
+            isInDex = true;
             if (record.hasAtLeast(PokedexEntryProgress.CAUGHT)) {
                 shouldAlertUncaught = false;
+                isCaught = true;
             }
         }
 
@@ -216,25 +222,29 @@ public class AlertHandler {
 
         // play custom alert sound if one exists
         if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
-            SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.customAlertSound()), 32f);
-            player.playSound(sound);
+            SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.customAlertSound()), -1f);
+            player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
         }
         // play alert sounds if they exist
         else {
-            // this code probably sucks but oh well, if it works then it works
-            List<Boolean> traitBools = List.of(shouldAlertShiny, shouldAlertLegend, shouldAlertMythical, shouldAlertUltra,
-                    shouldAlertParadox, shouldAlertNotInDex, shouldAlertUncaught);
             HashMap<String, Boolean> traits = new HashMap<>();
-            int i = 0;
-            for (String trait : SOUND_TRAITS) {
-                traits.put(trait, traitBools.get(i));
-                        i++;
-            }
+            traits.put("shiny", isShiny);
+            traits.put("legendary", isLegend);
+            traits.put("mythical", isMythical);
+            traits.put("ultrabeast", isUltra);
+            traits.put("paradox", isParadox);
+            traits.put("unregistered", !isInDex);
+            traits.put("uncaught", !isCaught);
+            // TODO: change this if i ever add individual iv/ev hunting
+            traits.put("ivs", shouldAlertIVs);
+            traits.put("evs", shouldAlertEVs);
+            System.out.println(traits);
 
             for (String soundTrait : pokemonConfig.sounds().keySet()) {
                 if (traits.get(soundTrait)) {
-                    SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.sounds().get(soundTrait)), 32f);
-                    player.playSound(sound);
+                    System.out.println("SHOULD PLAY SOUND FOR TRAIT: "+soundTrait);
+                    SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.sounds().get(soundTrait)), -1f);
+                    player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                 }
             }
         }
