@@ -123,36 +123,9 @@ Show all stats in hover:<br>
 
 ```json
 {
-  "configVersion": 1.7,
+  "configVersion": "1.8.2",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
-      "enabled": true,
-      "alwaysAlert": true,
-      "alertShiny": true,
-      "showLegendary": true,
-      "statDisplayModes": {
-        "level": "HOVER",
-        "ivs": "HOVER",
-        "evs": "HOVER",
-        "nature": "HOVER",
-        "ability": "HOVER",
-        "gender": "HOVER",
-        "coordinates": "HOVER",
-        "biome": "HOVER"
-      },
-      "customAlertMessage": "",
-      "sounds": {
-        "shiny": "",
-        "legendary": "",
-        "mythical": "",
-        "ultrabeast": "",
-        "paradox": "",
-        "unregistered": "",
-        "uncaught": ""
-      },
-      "customAlertSound": ""
-    },
-    "charmander, charmeleon, charizard": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
@@ -165,7 +138,8 @@ Show all stats in hover:<br>
         "ability": "MAIN_MESSAGE",
         "gender": "MAIN_MESSAGE",
         "coordinates": "MAIN_MESSAGE",
-        "biome": "MAIN_MESSAGE"
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
       },
       "customAlertMessage": "",
       "sounds": {
@@ -175,7 +149,39 @@ Show all stats in hover:<br>
         "ultrabeast": "",
         "paradox": "",
         "unregistered": "",
-        "uncaught": ""
+        "uncaught": "",
+        "ivs": "",
+        "evs": ""
+      },
+      "customAlertSound": ""
+    },
+    "bidoof": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "MAIN_MESSAGE",
+        "ivs": "MAIN_MESSAGE",
+        "evs": "MAIN_MESSAGE",
+        "nature": "MAIN_MESSAGE",
+        "ability": "MAIN_MESSAGE",
+        "gender": "MAIN_MESSAGE",
+        "coordinates": "MAIN_MESSAGE",
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
+      },
+      "",
+      "sounds": {
+        "shiny": "",
+        "legendary": "",
+        "mythical": "",
+        "ultrabeast": "",
+        "paradox": "",
+        "unregistered": "",
+        "uncaught": "",
+        "ivs": "",
+        "evs": ""
       },
       "customAlertSound": ""
     }
@@ -430,4 +436,4 @@ I may also add these, but I'm unsure:
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the Cobblemon discord in #content-zone-help and search for Cobblemon Spawn Alerts. Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the Cobblemon discord in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
