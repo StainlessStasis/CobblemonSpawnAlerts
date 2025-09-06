@@ -131,14 +131,14 @@ Show all stats in hover:<br>
       "alertShiny": true,
       "showLegendary": true,
       "statDisplayModes": {
-        "level": "MAIN_MESSAGE",
-        "ivs": "MAIN_MESSAGE",
-        "evs": "MAIN_MESSAGE",
-        "nature": "MAIN_MESSAGE",
-        "ability": "MAIN_MESSAGE",
-        "gender": "MAIN_MESSAGE",
-        "coordinates": "MAIN_MESSAGE",
-        "biome": "MAIN_MESSAGE",
+        "level": "HOVER",
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "HOVER",
+        "coordinates": "HOVER",
+        "biome": "HOVER",
         "nearestPlayer": "MAIN_MESSAGE"
       },
       "customAlertMessage": "",
@@ -149,9 +149,7 @@ Show all stats in hover:<br>
         "ultrabeast": "",
         "paradox": "",
         "unregistered": "",
-        "uncaught": "",
-        "ivs": "",
-        "evs": ""
+        "uncaught": ""
       },
       "customAlertSound": ""
     },
@@ -162,16 +160,16 @@ Show all stats in hover:<br>
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
-        "ivs": "MAIN_MESSAGE",
-        "evs": "MAIN_MESSAGE",
-        "nature": "MAIN_MESSAGE",
-        "ability": "MAIN_MESSAGE",
-        "gender": "MAIN_MESSAGE",
-        "coordinates": "MAIN_MESSAGE",
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "HOVER",
+        "coordinates": "DISABLED",
         "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
       },
-      "customAlertMessage": "",
+      "customAlertMessage": "\u003crainbow\u003eA beautiful \u003cgradient:light_purple:white\u003e\u003cb\u003e{shiny_unformatted}\u003c/b\u003e\u003c/gradient\u003e\u003cu\u003e{name}\u003c/u\u003e spawned in a \u003cu\u003e{biome_unformatted}\u003c/u\u003e biome\u003c/rainbow\u003e\u003cwhite\u003e{coords}!\u003c/white\u003e",
       "sounds": {
         "shiny": "",
         "legendary": "",
@@ -179,9 +177,7 @@ Show all stats in hover:<br>
         "ultrabeast": "",
         "paradox": "",
         "unregistered": "",
-        "uncaught": "",
-        "ivs": "",
-        "evs": ""
+        "uncaught": ""
       },
       "customAlertSound": ""
     }
