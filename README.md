@@ -171,7 +171,7 @@ Show all stats in hover:<br>
         "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
       },
-      "",
+      "customAlertMessage": "",
       "sounds": {
         "shiny": "",
         "legendary": "",
