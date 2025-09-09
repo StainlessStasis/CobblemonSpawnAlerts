@@ -8,6 +8,7 @@ public record MainConfig (
     boolean alertAllMythicals,
     boolean alertAllUltraBeasts,
     boolean alertAllParadox,
+    boolean alertAllStarter,
     boolean alertAllNotInDex,
     boolean alertAllUncaught,
     boolean alertEverything,
@@ -16,7 +17,7 @@ public record MainConfig (
 ) {
     public static MainConfig createDefault() {
         return new MainConfig("1.8.2", true, true, true, true,
-                true, true,false, false, false,
+                true, true,false, false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault()
                 );
     }

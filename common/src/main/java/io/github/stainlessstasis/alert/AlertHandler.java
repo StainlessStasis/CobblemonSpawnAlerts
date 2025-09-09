@@ -77,7 +77,8 @@ public class AlertHandler {
                         RarityUtil.isLegendary(dexId),
                         RarityUtil.isMythical(dexId),
                         RarityUtil.isUltraBeast(dexId),
-                        RarityUtil.isParadox(dexId)),
+                        RarityUtil.isParadox(dexId),
+                        RarityUtil.isStarter(dexId)),
                 pokemon.getNature().getName().getPath(),
                 pokemon.getAbility().getName(),
                 pokemon.getGender().name()
@@ -113,6 +114,7 @@ public class AlertHandler {
         boolean isMythical = alertData.traits().isMythical();
         boolean isUltra = alertData.traits().isUltraBeast();
         boolean isParadox = alertData.traits().isParadox();
+        boolean isStarter = alertData.traits().isStarter();
         boolean isInDex = false;
         boolean isCaught = false;
 
@@ -126,6 +128,7 @@ public class AlertHandler {
         boolean shouldAlertMythical = alertData.traits().isMythical() && mainConfig.alertAllMythicals();
         boolean shouldAlertUltra = alertData.traits().isUltraBeast() && mainConfig.alertAllUltraBeasts();
         boolean shouldAlertParadox = alertData.traits().isParadox() && mainConfig.alertAllParadox();
+        boolean shouldAlertStarter = alertData.traits().isStarter() && mainConfig.alertAllStarter();
 
         // Check if should alert for dex
         boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
@@ -202,6 +205,7 @@ public class AlertHandler {
                         || shouldAlertMythical
                         || shouldAlertUltra
                         || shouldAlertParadox
+                        || shouldAlertStarter
                         || shouldAlertNotInDex
                         || shouldAlertUncaught
                         || mainConfig.alertEverything()

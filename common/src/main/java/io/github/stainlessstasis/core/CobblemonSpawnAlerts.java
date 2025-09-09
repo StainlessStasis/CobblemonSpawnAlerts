@@ -21,13 +21,14 @@ import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.BiomeUtil;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.PokemonNameUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.minecraft.world.entity.player.Player;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import io.github.stainlessstasis.util.RarityUtil;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -140,7 +141,8 @@ public class CobblemonSpawnAlerts {
                         shouldAlertLegend,
                         shouldAlertMythical,
                         shouldAlertUltra,
-                        shouldAlertParadox),
+                        shouldAlertParadox,
+                        RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())),
                 nature,
                 ability,
                 pokemon.getGender().name());
@@ -170,7 +172,8 @@ public class CobblemonSpawnAlerts {
                         shouldAlertLegend,
                         shouldAlertMythical,
                         shouldAlertUltra,
-                        shouldAlertParadox),
+                        shouldAlertParadox,
+                        RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())),
                 despawnReason.name()
         );
     }

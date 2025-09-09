@@ -142,6 +142,45 @@ public class RarityUtil {
             1023  // Iron Crown
     );
 
+    private static final Set<Integer> STARTER = Set.of(
+            // Generation I
+            1, 2, 3,    // Bulbasaur, Ivysaur, Venusaur
+            4, 5, 6,    // Charmander, Charmeleon, Charizard
+            7, 8, 9,    // Squirtle, Wartortle, Blastoise
+            // Generation II
+            152, 153, 154, // Chikorita, Bayleef, Meganium
+            155, 156, 157, // Cyndaquil, Quilava, Typhlosion
+            158, 159, 160, // Totodile, Croconaw, Feraligatr
+            // Generation III
+            252, 253, 254, // Treecko, Grovyle, Sceptile
+            255, 256, 257, // Torchic, Combusken, Blaziken
+            258, 259, 260, // Mudkip, Marshtomp, Swampert
+            // Generation IV
+            387, 388, 389, // Turtwig, Grotle, Torterra
+            390, 391, 392, // Chimchar, Monferno, Infernape
+            393, 394, 395, // Piplup, Prinplup, Empoleon
+            // Generation V
+            495, 496, 497, // Snivy, Servine, Serperior
+            498, 499, 500, // Tepig, Pignite, Emboar
+            501, 502, 503, // Oshawott, Dewott, Samurott
+            // Generation VI
+            650, 651, 652, // Chespin, Quilladin, Chesnaught
+            653, 654, 655, // Fennekin, Braixen, Delphox
+            656, 657, 658, // Froakie, Frogadier, Greninja
+            // Generation VII
+            722, 723, 724, // Rowlet, Dartrix, Decidueye
+            725, 726, 727, // Litten, Torracat, Incineroar
+            728, 729, 730, // Popplio, Brionne, Primarina
+            // Generation VIII
+            810, 811, 812, // Grookey, Thwackey, Rillaboom
+            813, 814, 815, // Scorbunny, Raboot, Cinderace
+            816, 817, 818, // Sobble, Drizzile, Inteleon
+            // Generation IX (Scarlet & Violet)
+            906, 907, 908, // Sprigatito, Floragato, Meowscarada
+            909, 910, 911, // Fuecoco, Crocalor, Skeledirge
+            912, 913, 914  // Quaxly, Quaxwell, Quaquaval
+    );
+
     public static boolean isLegendary(int dexId) {
         return LEGENDARIES.contains(dexId);
     }
@@ -155,4 +194,9 @@ public class RarityUtil {
     }
 
     public static boolean isParadox(int dexId) {return PARADOX.contains(dexId);}
+
+    public static boolean isStarter(int dexId) {
+        return STARTER.contains(dexId);
+    }
+
 }
