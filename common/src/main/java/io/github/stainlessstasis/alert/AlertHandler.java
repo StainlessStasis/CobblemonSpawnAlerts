@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
+import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
@@ -13,6 +14,7 @@ import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.*;
+import com.cobblemon.mod.common.pokemon.abilities.HiddenAbilityType;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
 import io.github.stainlessstasis.config.MainConfig;
@@ -33,6 +35,7 @@ import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
@@ -108,7 +111,6 @@ public class AlertHandler {
             return;
         }
 
-        // Check pokemon traits for sounds & alerts
         boolean isShiny = alertData.traits().isShiny();
         boolean isLegend = alertData.traits().isLegendary();
         boolean isMythical = alertData.traits().isMythical();
@@ -118,17 +120,19 @@ public class AlertHandler {
         boolean isInDex = false;
         boolean isCaught = false;
 
+
+
         // Check if should alert for rarity/shiny
         boolean shouldAlertShiny =
                 isInConfig ?
                         isShiny && pokemonConfig.alertShiny() || mainConfig.alertAllShinies()
                         :
                         isShiny && mainConfig.alertAllShinies();
-        boolean shouldAlertLegend = alertData.traits().isLegendary() && mainConfig.alertAllLegendaries();
-        boolean shouldAlertMythical = alertData.traits().isMythical() && mainConfig.alertAllMythicals();
-        boolean shouldAlertUltra = alertData.traits().isUltraBeast() && mainConfig.alertAllUltraBeasts();
-        boolean shouldAlertParadox = alertData.traits().isParadox() && mainConfig.alertAllParadox();
-        boolean shouldAlertStarter = alertData.traits().isStarter() && mainConfig.alertAllStarter();
+        boolean shouldAlertLegend = isLegend && mainConfig.alertAllLegendaries();
+        boolean shouldAlertMythical = isMythical && mainConfig.alertAllMythicals();
+        boolean shouldAlertUltra = isUltra && mainConfig.alertAllUltraBeasts();
+        boolean shouldAlertParadox = isParadox && mainConfig.alertAllParadox();
+        boolean shouldAlertStarter = isStarter && mainConfig.alertAllStarter();
 
         // Check if should alert for dex
         boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
@@ -143,6 +147,14 @@ public class AlertHandler {
                 isCaught = true;
             }
         }
+
+        // test
+        Set<PotentialAbility> hiddenAbility =
+                species.getAbilities().getMapping().values().stream()
+                .flatMap(List::stream)
+                .filter(ability -> ability.getType() == HiddenAbilityType.INSTANCE)
+                .collect(Collectors.toSet());
+        System.out.println(hiddenAbility);
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -208,7 +220,6 @@ public class AlertHandler {
             }
         }
 
-
         // Finalize alert check
         boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
         boolean shouldAlertNotInConfig =
@@ -244,6 +255,7 @@ public class AlertHandler {
             SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.customAlertSound()), -1f);
             player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
         }
+
         // play alert sounds if they exist
         else {
             HashMap<String, Boolean> traits = new HashMap<>();
@@ -257,11 +269,9 @@ public class AlertHandler {
             // TODO: change this if i ever add individual iv/ev hunting
             traits.put("ivs", shouldAlertIVs);
             traits.put("evs", shouldAlertEVs);
-            System.out.println(traits);
 
             for (String soundTrait : pokemonConfig.sounds().keySet()) {
                 if (traits.get(soundTrait)) {
-                    System.out.println("SHOULD PLAY SOUND FOR TRAIT: "+soundTrait);
                     SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.sounds().get(soundTrait)), -1f);
                     player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                 }
