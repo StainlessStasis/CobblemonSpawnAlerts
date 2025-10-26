@@ -6,12 +6,13 @@ public record ServerConfig (
     boolean alertMythicals,
     boolean alertUltraBeasts,
     boolean alertParadox,
+    boolean alertStarters,
     boolean broadcastIVs,
     boolean broadcastEVs,
     boolean broadcastNature,
     boolean broadcastAbility
 ) {
     public static ServerConfig createDefault() {
-        return new ServerConfig(true, true, true, true, true, true, true, true, true);
+        return new ServerConfig(true, true, true, true, true, false, true, true, true, true);
     }
 }

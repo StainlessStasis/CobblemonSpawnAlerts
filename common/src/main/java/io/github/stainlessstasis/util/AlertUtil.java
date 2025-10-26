@@ -16,6 +16,7 @@ public class AlertUtil {
         boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
         boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
         boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        return shouldAlertShiny || shouldAlertLegend || shouldAlertMythical || shouldAlertUltra || shouldAlertParadox;
+        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
+        return shouldAlertShiny || shouldAlertLegend || shouldAlertMythical || shouldAlertUltra || shouldAlertParadox || shouldAlertStarter;
     }
 }

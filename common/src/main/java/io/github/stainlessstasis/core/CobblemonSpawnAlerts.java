@@ -113,7 +113,7 @@ public class CobblemonSpawnAlerts {
         boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
         boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
         boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber());
+        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
 
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
         EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
@@ -158,7 +158,7 @@ public class CobblemonSpawnAlerts {
         boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
         boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
         boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber());
+        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
 
         return new DespawnDataPacket(
                 playerName,
