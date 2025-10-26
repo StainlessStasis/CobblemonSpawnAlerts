@@ -37,13 +37,13 @@ public class CSAFabricClient implements ClientModInitializer {
 
        ClientCommandRegistrationCallback.EVENT.register((dispatcher, context) -> {
            dispatcher.register(
-                   ClientCommandManager.literal("cobblemonspawnalerts")
+                   ClientCommandManager.literal("csa")
                            .then(ClientCommandManager.literal("reload")
                                    .executes(ctx -> {
                                        return CommandRegistry.handleReloadCommand();
                                    })));
            dispatcher.register(
-                   ClientCommandManager.literal("cobblemonspawnalerts")
+                   ClientCommandManager.literal("csa")
                            .then(ClientCommandManager.literal("openconfig")
                                    .executes(ctx -> {
                                        return CommandRegistry.handleOpenConfigCommand();

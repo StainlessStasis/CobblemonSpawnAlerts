@@ -13,12 +13,13 @@ public record MainConfig (
     boolean alertAllUncaught,
     boolean alertEverything,
     IVHunting ivHunting,
-    EVHunting evHunting
+    EVHunting evHunting,
+    LevelFilter levelFilter
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig("1.8.2", true, true, true, true,
+        return new MainConfig("1.9", true, true, true, true,
                 true, true,false, false, false, false,
-                IVHunting.createDefault(), EVHunting.createDefault()
+                IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
                 );
     }
 
@@ -32,5 +33,9 @@ public record MainConfig (
         public static EVHunting createDefault() {
             return new EVHunting(false, 0, 0, 0, 0, 0, 0);
         }
+    }
+
+    public record LevelFilter(boolean enabled, int minLevel, int maxLevel) {
+        public static LevelFilter createDefault() {return new LevelFilter(false, 1, 100);}
     }
 }

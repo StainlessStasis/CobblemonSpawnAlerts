@@ -197,20 +197,35 @@ public class AlertHandler {
                 || (evHunting.minSpeed() > 0 && evs.get(Stats.SPEED) >= evHunting.minSpeed());
         }
 
+        // Check level filter
+        final MainConfig.LevelFilter levelFilter = mainConfig.levelFilter();
+        boolean passesLevelFilter = true;
+
+        if (levelFilter.enabled()) {
+            int level = alertData.stats().level();
+            if (level < levelFilter.minLevel() || level > levelFilter.maxLevel()) {
+                passesLevelFilter = false;
+            }
+        }
+
+
         // Finalize alert check
         boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
         boolean shouldAlertNotInConfig =
-                shouldAlertShiny
-                        || shouldAlertLegend
-                        || shouldAlertMythical
-                        || shouldAlertUltra
-                        || shouldAlertParadox
-                        || shouldAlertStarter
-                        || shouldAlertNotInDex
-                        || shouldAlertUncaught
-                        || mainConfig.alertEverything()
-                        || shouldAlertIVs
-                        || shouldAlertEVs;
+                passesLevelFilter &&
+                        (
+                            shouldAlertShiny
+                            || shouldAlertLegend
+                            || shouldAlertMythical
+                            || shouldAlertUltra
+                            || shouldAlertParadox
+                            || shouldAlertStarter
+                            || shouldAlertNotInDex
+                            || shouldAlertUncaught
+                            || mainConfig.alertEverything()
+                            || shouldAlertIVs
+                            || shouldAlertEVs
+                        );
 
         if (isInConfig) {
             if (!shouldAlertInConfig) {

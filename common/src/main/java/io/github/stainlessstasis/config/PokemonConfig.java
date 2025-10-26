@@ -47,6 +47,6 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
     public static PokemonConfig createDefault() {
         Map<String, PokemonSpecificConfig> defaults = new LinkedHashMap<>();
         defaults.put(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, PokemonSpecificConfig.createDefault());
-        return new PokemonConfig("1.8.2", defaults);
+        return new PokemonConfig("1.9", defaults);
     }
 }

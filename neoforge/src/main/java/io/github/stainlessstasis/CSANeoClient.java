@@ -34,13 +34,13 @@ public class CSANeoClient {
         @SubscribeEvent
         public static void onCommandRegistration(RegisterClientCommandsEvent event) {
             event.getDispatcher().register(
-                    Commands.literal("cobblemonspawnalerts")
+                    Commands.literal("csa")
                             .then(Commands.literal("reload")
                                     .executes(ctx -> {
                                         return CommandRegistry.handleReloadCommand();
                                     })));
             event.getDispatcher().register(
-                    Commands.literal("cobblemonspawnalerts")
+                    Commands.literal("csa")
                             .then(Commands.literal("openconfig")
                                     .executes(ctx -> {
                                         return CommandRegistry.handleOpenConfigCommand();
