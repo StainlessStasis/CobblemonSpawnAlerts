@@ -11,6 +11,7 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             boolean enabled,
             boolean alwaysAlert,
             boolean alertShiny,
+            boolean alertHiddenAbility,
             boolean showLegendary,
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
@@ -35,12 +36,13 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             sounds.put("mythical", "");
             sounds.put("ultrabeast", "");
             sounds.put("paradox", "");
+            sounds.put("starter", "");
             sounds.put("unregistered", "");
             sounds.put("uncaught", "");
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
-            return new PokemonSpecificConfig(true, true, true, true, statDisplayModes, "", sounds, "");
+            return new PokemonSpecificConfig(true, true, true, true, true, statDisplayModes, "", sounds, "");
         }
     }
 

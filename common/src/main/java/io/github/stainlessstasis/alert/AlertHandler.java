@@ -120,8 +120,6 @@ public class AlertHandler {
         boolean isInDex = false;
         boolean isCaught = false;
 
-
-
         // Check if should alert for rarity/shiny
         boolean shouldAlertShiny =
                 isInConfig ?
@@ -148,13 +146,8 @@ public class AlertHandler {
             }
         }
 
-        // test
-        Set<PotentialAbility> hiddenAbility =
-                species.getAbilities().getMapping().values().stream()
-                .flatMap(List::stream)
-                .filter(ability -> ability.getType() == HiddenAbilityType.INSTANCE)
-                .collect(Collectors.toSet());
-        System.out.println(hiddenAbility);
+        // Check if should alert for HA
+        boolean shouldAlertHA = HiddenAbilityUtil.hasHiddenAbility(species, alertData.abilityID());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -236,6 +229,7 @@ public class AlertHandler {
                             || mainConfig.alertEverything()
                             || shouldAlertIVs
                             || shouldAlertEVs
+                            || shouldAlertHA
                         );
 
         if (isInConfig) {
@@ -264,6 +258,7 @@ public class AlertHandler {
             traits.put("mythical", isMythical);
             traits.put("ultrabeast", isUltra);
             traits.put("paradox", isParadox);
+            traits.put("starter", isStarter);
             traits.put("unregistered", !isInDex);
             traits.put("uncaught", !isCaught);
             // TODO: change this if i ever add individual iv/ev hunting
@@ -318,7 +313,6 @@ public class AlertHandler {
                         Natures.INSTANCE.getNAUGHTY().getName().getPath(),
                         Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName(),
                         Gender.GENDERLESS.name()
-
                 ));
         Component component = ComponentUtil.convertFromAdventure(message);
         player.sendSystemMessage(component);
@@ -510,6 +504,15 @@ public class AlertHandler {
         }
         message = message.replace("{ability}", "");
         message = message.replace("{ability_unformatted}", "");
+
+        // Hidden Ability
+        boolean shouldAlertHA = config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.abilityID());
+        if (shouldAlertHA) {
+            message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
+            message = message.replace("{HA_unformatted}", Component.translatable(messageTemplates.hidden_ability_unformatted()).getString());
+        }
+        message = message.replace("{HA}", "");
+        message = message.replace("{HA_unformatted}", "");
 
         // Gender
         if (genderDisplayMode != StatDisplayMode.DISABLED) {

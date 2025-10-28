@@ -45,7 +45,9 @@ public record MessageTemplates (
         String ultrabeast,
         String ultrabeast_unformatted,
         String paradox,
-        String paradox_unformatted
+        String paradox_unformatted,
+        String hidden_ability,
+        String hidden_ability_unformatted
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
@@ -93,7 +95,9 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.ultrabeast",
                 "cobblemon-spawn-alerts.ultrabeast_unformatted",
                 "cobblemon-spawn-alerts.paradox",
-                "cobblemon-spawn-alerts.paradox_unformatted"
+                "cobblemon-spawn-alerts.paradox_unformatted",
+                "cobblemon-spawn-alerts.hidden_ability",
+                "cobblemon-spawn-alerts.hidden_ability_unformatted"
         );
     }
 }
