@@ -1,12 +1,13 @@
 package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+
+import java.util.UUID;
 
 public class CommandRegistry {
     public static void registerServerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
@@ -46,5 +47,14 @@ public class CommandRegistry {
         return 1;
     }
 
+    public static int handleGlowCommand(String uuid_) {
+        UUID uuid = UUID.fromString(uuid_);
+        if (CobblemonSpawnAlerts.glowing.contains(uuid)) {
+            CobblemonSpawnAlerts.glowing.remove(uuid);
+        } else {
+            CobblemonSpawnAlerts.glowing.add(uuid);
+        }
 
+        return 1;
+    }
 }

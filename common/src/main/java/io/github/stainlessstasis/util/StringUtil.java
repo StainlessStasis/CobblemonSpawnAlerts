@@ -29,4 +29,11 @@ public class StringUtil {
         string = string.replace("-", " ");
         return string;
     }
+
+    public static String[] splitIdentifier(String identifier) {
+        int i = identifier.indexOf(":");
+        String namespace = identifier.substring(0, i);
+        String path = identifier.substring(i+1);
+        return new String[]{namespace, path};
+    }
 }

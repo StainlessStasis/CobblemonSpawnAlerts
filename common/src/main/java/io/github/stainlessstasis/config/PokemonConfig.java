@@ -16,7 +16,8 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
             Map<String, String> sounds,
-            String customAlertSound
+            String customAlertSound,
+            boolean autoGlow
     ) {
         public static PokemonSpecificConfig createDefault() {
             Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
@@ -42,7 +43,7 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
-            return new PokemonSpecificConfig(true, true, true, true, true, statDisplayModes, "", sounds, "");
+            return new PokemonSpecificConfig(true, true, true, true, true, statDisplayModes, "", sounds, "", false);
         }
     }
 

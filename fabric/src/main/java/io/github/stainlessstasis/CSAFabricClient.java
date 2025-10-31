@@ -1,12 +1,15 @@
 package io.github.stainlessstasis;
 
+import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
+import kotlin.Unit;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,13 +44,19 @@ public class CSAFabricClient implements ClientModInitializer {
                            .then(ClientCommandManager.literal("reload")
                                    .executes(ctx -> {
                                        return CommandRegistry.handleReloadCommand();
-                                   })));
-           dispatcher.register(
-                   ClientCommandManager.literal("csa")
+                                   }))
+
                            .then(ClientCommandManager.literal("openconfig")
                                    .executes(ctx -> {
                                        return CommandRegistry.handleOpenConfigCommand();
-                                   })));
+                                   }))
+
+                           .then(ClientCommandManager.literal("glow")
+                               .then(ClientCommandManager.argument("uuid", StringArgumentType.string())
+                                       .executes(ctx -> {
+                                           return CommandRegistry.handleGlowCommand(ctx.getArgument("uuid", String.class));
+                                       }))
+                           ));
        });
 
 
@@ -97,7 +106,10 @@ public class CSAFabricClient implements ClientModInitializer {
 
     private void onEntityLoad(Entity entity, ClientLevel clientLevel) {
         if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
-            AlertHandler.alertClientside(pe);
+            new ScheduledTask.Builder().delay(0.1f).execute(task -> {
+                AlertHandler.alertClientside(pe);
+                return Unit.INSTANCE;
+            });
         }
     }
 }

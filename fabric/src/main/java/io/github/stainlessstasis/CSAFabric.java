@@ -43,6 +43,7 @@ public class CSAFabric implements ModInitializer {
 			new ScheduledTask.Builder().delay(5f).execute(task -> {
 				if (CobblemonSpawnAlerts.despawned.contains(pokemonEntity.getPokemon().getUuid())) {
 					CobblemonSpawnAlerts.despawned.remove(pokemonEntity.getPokemon().getUuid());
+					CobblemonSpawnAlerts.glowing.remove(pokemonEntity.getPokemon().getUuid());
 					return Unit.INSTANCE;
 				}
 				Services.PLATFORM.onPokemonDespawned(serverLevel, pokemonEntity.getPokemon(), "N/A", DespawnReason.DESPAWNED);

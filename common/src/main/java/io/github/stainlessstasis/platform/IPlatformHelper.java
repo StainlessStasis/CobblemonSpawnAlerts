@@ -52,6 +52,7 @@ public interface IPlatformHelper {
             CobblemonSpawnAlerts.despawned.add(pokemon.getUuid());
         } else {
             CobblemonSpawnAlerts.despawned.remove(pokemon.getUuid());
+            CobblemonSpawnAlerts.glowing.remove(pokemon.getUuid());
         }
     };
 

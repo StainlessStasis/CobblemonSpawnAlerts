@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
-import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
@@ -14,7 +13,6 @@ import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.*;
-import com.cobblemon.mod.common.pokemon.abilities.HiddenAbilityType;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
 import io.github.stainlessstasis.config.MainConfig;
@@ -35,7 +33,6 @@ import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
@@ -246,7 +243,9 @@ public class AlertHandler {
 
         // play custom alert sound if one exists
         if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
-            SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.customAlertSound()), -1f);
+            String[] split = StringUtil.splitIdentifier(pokemonConfig.customAlertSound());
+            ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+            SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
             player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
         }
 
@@ -266,11 +265,19 @@ public class AlertHandler {
             traits.put("evs", shouldAlertEVs);
 
             for (String soundTrait : pokemonConfig.sounds().keySet()) {
-                if (traits.get(soundTrait)) {
-                    SoundEvent sound = SoundEvent.createFixedRangeEvent(ResourceLocation.withDefaultNamespace(pokemonConfig.sounds().get(soundTrait)), -1f);
+                String soundID = pokemonConfig.sounds().get(soundTrait);
+                if (traits.get(soundTrait) && !soundID.isEmpty()) {
+                    String[] split = StringUtil.splitIdentifier(soundID);
+                    ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                    SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                     player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                 }
             }
+        }
+
+        // Autoglow
+        if (pokemonConfig.autoGlow()) {
+            CobblemonSpawnAlerts.glowing.add(alertData.spawnData().pokemonUUID());
         }
 
         // send the custom alert if one exits
@@ -587,10 +594,12 @@ public class AlertHandler {
         message = message.replace("{nearest_player}", "");
         message = message.replace("{nearest_player_unformatted}", "");
 
+        // Glow click
+        message = "<click:run_command:/csa glow "+alertData.spawnData().pokemonUUID()+">"+message+"</click>";
+
         // Hover
-        if (!hoverText.isEmpty()) {
-            message = "<hover:show_text:\"" + hoverText+"\">" + message + "</hover>";
-        }
+        hoverText += "<green>Click to toggle glow</green>";
+        message = "<hover:show_text:\"" + hoverText + "\">" + message + "</hover>";
 
         return message;
     }

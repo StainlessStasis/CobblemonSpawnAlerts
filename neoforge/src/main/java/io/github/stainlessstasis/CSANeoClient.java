@@ -1,11 +1,15 @@
 package io.github.stainlessstasis;
 
+import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
+import kotlin.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
@@ -38,13 +42,20 @@ public class CSANeoClient {
                             .then(Commands.literal("reload")
                                     .executes(ctx -> {
                                         return CommandRegistry.handleReloadCommand();
-                                    })));
-            event.getDispatcher().register(
-                    Commands.literal("csa")
+                                    }))
+
                             .then(Commands.literal("openconfig")
                                     .executes(ctx -> {
                                         return CommandRegistry.handleOpenConfigCommand();
-                                    })));
+                                    }))
+
+                            .then(Commands.literal("glow")
+                                    .then(Commands.argument("uuid", StringArgumentType.string())
+                                            .executes(ctx -> {
+                                                String uuidString = ctx.getArgument("uuid", String.class);
+                                                return CommandRegistry.handleGlowCommand(uuidString);
+                                            })))
+            );
         }
 
         @SubscribeEvent
@@ -68,7 +79,10 @@ public class CSANeoClient {
             }
 
             if (event.getEntity() instanceof PokemonEntity pe && !doesServerHaveMod) {
-                AlertHandler.alertClientside(pe);
+                new ScheduledTask.Builder().delay(0.1f).execute(task -> {
+                    AlertHandler.alertClientside(pe);
+                    return Unit.INSTANCE;
+                });
             }
         }
     }

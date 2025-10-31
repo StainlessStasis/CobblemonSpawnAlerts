@@ -43,6 +43,7 @@ public class CobblemonSpawnAlerts {
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
     public static Set<UUID> globallyAlerted = new HashSet<>();
     public static Set<UUID> despawned = new HashSet<>();
+    public static Set<UUID> glowing = new HashSet<>();
 
     public static void initServer() {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
