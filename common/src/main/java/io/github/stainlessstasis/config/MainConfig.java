@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.config;
 
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+
 public record MainConfig (
     String configVersion,
     boolean multiplayerWarning,
@@ -17,7 +19,7 @@ public record MainConfig (
     LevelFilter levelFilter
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig("1.9", true, true, true, true,
+        return new MainConfig(CobblemonSpawnAlerts.MOD_VERSION, true, true, true, true,
                 true, true,false, false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
                 );

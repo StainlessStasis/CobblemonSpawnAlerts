@@ -83,6 +83,14 @@ public abstract class AbstractConfigManager {
             mergeJsonObjects(mergedJson, userConfigJson);
         }
 
+        // Auto update config version
+        if (mergedJson.has("configVersion")) {
+            String currentVersion = mergedJson.get("configVersion").getAsString();
+            if (!currentVersion.equals(CobblemonSpawnAlerts.MOD_VERSION)) {
+                mergedJson.add("configVersion", new JsonPrimitive(CobblemonSpawnAlerts.MOD_VERSION));
+            }
+        }
+
         if (config.equals(PokemonConfig.class)) {
             applyPokemonConfigMerge(fileName, mergedJson, userConfigJson, (PokemonConfig) defaultConfig);
         }

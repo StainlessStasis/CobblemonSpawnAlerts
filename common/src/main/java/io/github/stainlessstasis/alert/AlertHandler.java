@@ -21,6 +21,7 @@ import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
+import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
@@ -594,12 +595,18 @@ public class AlertHandler {
         message = message.replace("{nearest_player}", "");
         message = message.replace("{nearest_player_unformatted}", "");
 
-        // Glow click
-        message = "<click:run_command:/csa glow "+alertData.spawnData().pokemonUUID()+">"+message+"</click>";
-
         // Hover
         hoverText += "<green>Click to toggle glow</green>";
         message = "<hover:show_text:\"" + hoverText + "\">" + message + "</hover>";
+
+        // Glow click
+        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
+            message = "<click:run_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
+        } else {
+            // so yeah uh for some fucking reason i cant comprehend, neo SPECIFICALLY does not work with run_command for this command.
+            // i dont know why. i dont know how. i dont know where. i dont know when. i dont know who. i dont know what. i dont know.
+            message = "<click:suggest_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
+        }
 
         return message;
     }

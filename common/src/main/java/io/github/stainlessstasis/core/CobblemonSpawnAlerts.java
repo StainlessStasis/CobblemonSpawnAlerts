@@ -37,6 +37,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
+    public static final String MOD_VERSION = "1.9";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final ClientConfigManager CLIENT_CONFIG_MANAGER = new ClientConfigManager();

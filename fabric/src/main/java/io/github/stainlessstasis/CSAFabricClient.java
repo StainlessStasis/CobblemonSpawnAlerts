@@ -54,7 +54,8 @@ public class CSAFabricClient implements ClientModInitializer {
                            .then(ClientCommandManager.literal("glow")
                                .then(ClientCommandManager.argument("uuid", StringArgumentType.string())
                                        .executes(ctx -> {
-                                           return CommandRegistry.handleGlowCommand(ctx.getArgument("uuid", String.class));
+                                           String uuidString = ctx.getArgument("uuid", String.class);
+                                           return CommandRegistry.handleGlowCommand(uuidString);
                                        }))
                            ));
        });

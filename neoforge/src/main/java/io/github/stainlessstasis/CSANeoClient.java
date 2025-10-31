@@ -54,8 +54,8 @@ public class CSANeoClient {
                                             .executes(ctx -> {
                                                 String uuidString = ctx.getArgument("uuid", String.class);
                                                 return CommandRegistry.handleGlowCommand(uuidString);
-                                            })))
-            );
+                                            }))
+                            ));
         }
 
         @SubscribeEvent
