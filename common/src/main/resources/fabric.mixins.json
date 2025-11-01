@@ -3,12 +3,10 @@
   "package": "io.github.stainlessstasis.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PokemonSpawnCommandMixin"
+    "EntityMixinFabric"
   ],
+  "refmap": "common-common-refmap.json",
   "injectors": {
     "defaultRequire": 1
-  },
-  "client": [
-    "MinecraftMixin"
-  ]
+  }
 }

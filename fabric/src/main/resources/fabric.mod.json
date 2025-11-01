@@ -8,10 +8,11 @@
     "Stasis, the Shattered"
   ],
   "license": "MIT License",
-  "icon": "assets/cobblemon-spawn-alerts/icon.png",
+  "icon": "assets/cobblemon_spawn_alerts/icon.png",
   "environment": "*",
   "mixins": [
-    "cobblemon_spawn_alerts.mixins.json"
+    "common.mixins.json",
+    "fabric.mixins.json"
   ],
   "accessWidener": "cobblemon-spawn-alerts.accesswidener",
   "entrypoints": {

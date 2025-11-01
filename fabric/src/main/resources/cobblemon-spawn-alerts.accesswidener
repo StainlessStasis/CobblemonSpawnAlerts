@@ -4,3 +4,6 @@ accessWidener v2 named
 # but thats fine it can stay here
 accessible field net/minecraft/world/entity/Entity yRot F
 accessible field net/minecraft/world/entity/Entity xRot F
+
+# bullshit to make mixin work
+accessible method net/minecraft/class_1297 method_5851 ()Z

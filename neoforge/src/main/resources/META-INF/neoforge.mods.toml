@@ -35,4 +35,9 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config="cobblemon_spawn_alerts.mixins.json"
+config="common.mixins.json"
+[[mixins]]
+config="neo.mixins.json"
+
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"

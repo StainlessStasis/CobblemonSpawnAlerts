@@ -279,6 +279,7 @@ public class AlertHandler {
         // Autoglow
         if (pokemonConfig.autoGlow()) {
             CobblemonSpawnAlerts.glowing.add(alertData.spawnData().pokemonUUID());
+
         }
 
         // send the custom alert if one exits

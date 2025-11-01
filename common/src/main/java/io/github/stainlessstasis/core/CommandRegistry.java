@@ -3,6 +3,7 @@ package io.github.stainlessstasis.core;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -25,13 +26,13 @@ public class CommandRegistry {
                 }
 
                 ctx.getSource().sendSystemMessage(
-                        ComponentUtil.convertFromAdventure("<green>[CobblemonSpawnAlerts] </green><white>Server config reloading...</white>"));
+                        ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloading...</white>"));
                 if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.loadConfig()) {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CobblemonSpawnAlerts] </green><white>Server config reloaded!</white>"));
+                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloaded!</white>"));
                 } else {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CobblemonSpawnAlerts] </green><red>Server config reload failed.</red>"));
+                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><red>Server config reload failed.</red>"));
                 }
                 return 1;
         })));
