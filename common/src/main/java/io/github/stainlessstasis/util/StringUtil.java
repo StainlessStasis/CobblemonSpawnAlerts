@@ -31,6 +31,9 @@ public class StringUtil {
     }
 
     public static String[] splitIdentifier(String identifier) {
+        if (!identifier.contains(":")) {
+            return new String[]{"NO NAMESPACE", ""};
+        }
         int i = identifier.indexOf(":");
         String namespace = identifier.substring(0, i);
         String path = identifier.substring(i+1);

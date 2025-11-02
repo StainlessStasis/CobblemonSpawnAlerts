@@ -245,9 +245,13 @@ public class AlertHandler {
         // play custom alert sound if one exists
         if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
             String[] split = StringUtil.splitIdentifier(pokemonConfig.customAlertSound());
-            ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
-            SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
-            player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+            if (!split[0].equals("NO NAMESPACE")) {
+                ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
+                player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+            } else {
+                player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+            }
         }
 
         // play alert sounds if they exist
@@ -269,9 +273,13 @@ public class AlertHandler {
                 String soundID = pokemonConfig.sounds().get(soundTrait);
                 if (traits.get(soundTrait) && !soundID.isEmpty()) {
                     String[] split = StringUtil.splitIdentifier(soundID);
-                    ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
-                    SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
-                    player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+                    if (!split[0].equals("NO NAMESPACE")) {
+                        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                        SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
+                        player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+                    } else {
+                        player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                    }
                 }
             }
         }
