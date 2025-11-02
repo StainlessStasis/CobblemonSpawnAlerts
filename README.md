@@ -24,7 +24,7 @@ Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-sp
 <details>
 <summary>Config - Main (client)</summary>
   
-The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
+The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br><br>
 This file is called `main.json`
 
 ### Config Settings:<br>
@@ -33,20 +33,23 @@ This file is called `main.json`
 * **alertAllMythicals**: Alerts you when any mythical spawns, unless its config is disabled.<br>
 * **alertAllUltraBeasts**: Alerts you when any ultra beast spawns, unless its config is disabled.<br>
 * **alertAllParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
+* **alertAllParadox**: Alerts you when any starter spawns, unless its config is disabled.<br>
 * **alertAllNotInDex**: Alerts you when any Pokemon which is not already registered in your Pokedex spawns, unless its config is disabled.<br>
 * **alertAllUncaught**: Alerts you when any Pokemon which you have not caught spawns, unless its config is disabled.<br>
 * **alertEverything**: Alerts you to every single spawn near you, unless its config is disabled. Why would you want to do this? Idk.
 
+**Level filter**: Allows you to set min and max levels for triggering alerts.
+
 For IV/EV hunting, see the IV/EV Hunting tab under Config
 
 ### Reloading the Config:<br>
-You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts reload` to reload it. Leaving/entering a world will **NOT** reload the config. The command must be run to take effect.<br>
+You can edit the config while the game is running, and simply use the command `/csa reload` to reload it. Leaving/entering a world will **NOT** reload the config, but restarting the game will. The command must be run to take effect while the game is running.<br>
 </details>
 
 <details>
 <summary>Config - Pokemon (client)</summary>
 
-The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br>
+The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br>
 
 ### IMPORTANT:
 All custom configs must have the Pokemon's name in the language you are playing on! If you are playing Cobblemon on any language other than English, you must ensure that Pokemon names are written in that language, otherwise the configs will not work! This does not apply to the default config, that will work fine.
@@ -57,8 +60,10 @@ The name of each Pokemon's config can be formatted like "x, y, z" to include mul
 * **enabled**: Enables the spawn message for the Pokemon. If set to false, this setting will override every other config setting for the Pokemon and make its spawn message never display.
 * **alwaysAlert**: Whether to always alert the Pokemon's spawn message, assuming enabled is set to true. Setting this to false will only display a spawn message given some other condition is true (e.g. alertShiny).
 * **alertShiny**: Whether to alert a shiny Pokemon, or if the Pokemon is shiny. If alwaysAlert is set to false, this will ONLY alert that Pokemon's spawn if it is shiny. If alwaysAlert is set to true, then it will simply specify if the spawned Pokemon is shiny.
+* **alertHiddenAbility**: Whether to alert a shiny Pokemon, or if the Pokemon has a Hidden Ability. This requires the mod to be installed server side and the server must have abilities being broadcast in the server config.
 * **showLegendary**: Shows whether the Pokemon is legendary, mythical, paradox, or ultra beast.
 * **customAlertMessage**: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.
+* **autoGlow**: Makes a Pokemon glow when alerted. Click the alert to toggle the glow.
 <br><br>
 The following are a sub category of the config for displaying certain info about a Pokemon. These have 3 options -- `"MAIN_MESSAGE"`, `"HOVER"`, and `"DISABLED"`:
 * **level**: Shows the Pokemon's level.
@@ -79,6 +84,7 @@ Show all stats in message:<br>
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
+      "alertHiddenAbility": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -88,9 +94,9 @@ Show all stats in message:<br>
         "ability": "MAIN_MESSAGE",
         "gender": "MAIN_MESSAGE",
         "coordinates": "MAIN_MESSAGE",
-        "biome": "MAIN_MESSAGE"
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
       },
-      "customAlertMessage": ""
       ...other config stuff
 },
 ```
@@ -101,34 +107,7 @@ Show all stats in hover:<br>
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
-      "showLegendary": true,
-      "statDisplayModes": {
-        "level": "HOVER",
-        "ivs": "HOVER",
-        "evs": "HOVER",
-        "nature": "HOVER",
-        "ability": "HOVER",
-        "gender": "HOVER",
-        "coordinates": "HOVER",
-        "biome": "HOVER"
-      },
-      "customAlertMessage": ""
-      ...other config stuff
-},
-```
-![Hoverable stats](https://cdn.modrinth.com/data/cached_images/b5e4af0678a754053ae022708d1ab867846206a0.png)
-
-<details>
-  <summary>Full template example</summary>
-
-```json
-{
-  "configVersion": "1.8.2",
-  "pokemonConfigs": {
-    "default (You can modify anything BELOW this, but dont delete it!)": {
-      "enabled": true,
-      "alwaysAlert": true,
-      "alertShiny": true,
+      "alertHiddenAbility": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "HOVER",
@@ -139,6 +118,35 @@ Show all stats in hover:<br>
         "gender": "HOVER",
         "coordinates": "HOVER",
         "biome": "HOVER",
+        "nearestPlayer": "HOVER"
+      },
+      ...other config stuff
+},
+```
+![Hoverable stats](https://cdn.modrinth.com/data/cached_images/b5e4af0678a754053ae022708d1ab867846206a0.png)
+
+<details>
+  <summary>Full template example</summary>
+
+```json
+{
+  "configVersion": "1.9",
+  "pokemonConfigs": {
+    "default (You can modify anything BELOW this, but dont delete it!)": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "alertHiddenAbility": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "MAIN_MESSAGE",
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "DHOVER",
+        "coordinates": "DISABLED",
+        "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
       },
       "customAlertMessage": "",
@@ -148,15 +156,20 @@ Show all stats in hover:<br>
         "mythical": "",
         "ultrabeast": "",
         "paradox": "",
+        "starter": "",
         "unregistered": "",
-        "uncaught": ""
+        "uncaught": "",
+        "ivs": "",
+        "evs": ""
       },
-      "customAlertSound": ""
+      "customAlertSound": "",
+      "autoGlow": false
     },
     "bidoof": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
+      "alertHiddenAbility": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -164,22 +177,26 @@ Show all stats in hover:<br>
         "evs": "HOVER",
         "nature": "HOVER",
         "ability": "HOVER",
-        "gender": "HOVER",
+        "gender": "DHOVER",
         "coordinates": "DISABLED",
         "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
       },
-      "customAlertMessage": "\u003crainbow\u003eA beautiful \u003cgradient:light_purple:white\u003e\u003cb\u003e{shiny_unformatted}\u003c/b\u003e\u003c/gradient\u003e\u003cu\u003e{name}\u003c/u\u003e spawned in a \u003cu\u003e{biome_unformatted}\u003c/u\u003e biome\u003c/rainbow\u003e\u003cwhite\u003e{coords}!\u003c/white\u003e",
+      "customAlertMessage": "<rainbow>A beautiful <gradient:light_purple:white><b>{shiny_unformatted}</b></gradient><u>{name}</u> spawned in a <u>{biome_unformatted}</u> biome</rainbow><white>{coords}!</white>",
       "sounds": {
         "shiny": "",
         "legendary": "",
         "mythical": "",
         "ultrabeast": "",
         "paradox": "",
+        "starter": "",
         "unregistered": "",
-        "uncaught": ""
+        "uncaught": "",
+        "ivs": "",
+        "evs": ""
       },
-      "customAlertSound": ""
+      "customAlertSound": "",
+      "autoGlow": false
     }
   }
 }
@@ -190,7 +207,7 @@ Show all stats in hover:<br>
 <details>
 <summary>Config - Templates (client)</summary>
 
-  The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig`.<br><br>
+  The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br><br>
 
 `message_templates.json` is where you can find and edit the default messages, and message parts. These apply to EVERY spawn, with the exception of `fullSpawnMessage`, which is only used when a custom spawn message is not provided. These templates are what replace the dynamic replacement placeholders.<br>
 
@@ -202,20 +219,22 @@ The default values for the templates are found in your Minecraft instance's lang
   
 ```json
   {
-  "cobblemon-spawn-alerts.client_config_reloading": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloading...</white>",
-  "cobblemon-spawn-alerts.client_config_reloaded": "<green>[CobblemonSpawnAlerts] </green><white>Client config reloaded!</white>",
-  "cobblemon-spawn-alerts.client_config_reload_failed": "<green>[CobblemonSpawnAlerts] </green><red>Client config reload failed.</red>",
-  "cobblemon-spawn-alerts.config_load_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to load properly while loading `%s`.</red>",
-  "cobblemon-spawn-alerts.config_save_failed": "<green>[CobblemonSpawnAlerts] </green><red>Config failed to save properly while saving `%s`.</red>",
-  "cobblemon-spawn-alerts.multiplayer_warning": "<green>[CobblemonSpawnAlerts]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs, EV yield, or Nature, may be displayed incorrectly!",
+  "cobblemon-spawn-alerts.client_config_reloading": "<green>[CSA] </green><white>Client config reloading...</white>",
+  "cobblemon-spawn-alerts.client_config_reloaded": "<green>[CSA] </green><white>Client config reloaded!</white>",
+  "cobblemon-spawn-alerts.client_config_reload_failed": "<green>[CSA] </green><red>Client config reload failed.</red>",
+  "cobblemon-spawn-alerts.config_load_failed": "<green>[CSA] </green><red>Config failed to load properly while loading `%s`.</red>",
+  "cobblemon-spawn-alerts.config_save_failed": "<green>[CSA] </green><red>Config failed to save properly while saving `%s`.</red>",
+  "cobblemon-spawn-alerts.multiplayer_warning": "<green>[CSA]</green> <yellow>WARNING!</yellow> <white>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs, EV yield, or Nature, may be displayed incorrectly!",
 
-  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{gender}<white>{name}</white> {level}{ivs}{evs}{nature}{ability}has appeared{coords}{biome}!</green>",
-  "cobblemon-spawn-alerts.default_despawn_message": "<green>A {legendary}{shiny}<white>{name}</white> {despawned}.",
+  "cobblemon-spawn-alerts.default_spawn_message": "<green>A wild {legendary}{shiny}{HA}{gender}<white>{name}</white> {level}{ivs}{evs}{nature}{ability}has appeared{nearest_player}{coords}{biome}!</green>",
+  "cobblemon-spawn-alerts.default_despawn_message": "<green>A {legendary}{shiny}{HA}<white>{name}</white> {despawned}.",
   "cobblemon-spawn-alerts.despawn_reason_despawned": "despawned",
   "cobblemon-spawn-alerts.despawn_reason_captured": "was captured by %s",
   "cobblemon-spawn-alerts.despawn_reason_fainted": "was defeated by %s",
   "cobblemon-spawn-alerts.shiny": "<gold>Shiny </gold>",
   "cobblemon-spawn-alerts.shiny_unformatted": "Shiny ",
+  "cobblemon-spawn-alerts.hidden_ability": "<aqua>Hidden Ability </aqua>",
+  "cobblemon-spawn-alerts.hidden_ability_unformatted": "Hidden Ability ",
   "cobblemon-spawn-alerts.level": "<gray>(Lvl. %s) </gray>",
   "cobblemon-spawn-alerts.level_hover": "Level: <gray>%s</gray>",
   "cobblemon-spawn-alerts.level_unformatted": "%s",
@@ -243,6 +262,9 @@ The default values for the templates are found in your Minecraft instance's lang
   "cobblemon-spawn-alerts.biome": " in a <gray>%s</gray> biome",
   "cobblemon-spawn-alerts.biome_hover": "Biome: <gray>%s</gray>",
   "cobblemon-spawn-alerts.biome_unformatted": "%s",
+  "cobblemon-spawn-alerts.nearest_player": " near player: <gray>%s</gray>",
+  "cobblemon-spawn-alerts.nearest_player_hover": "Nearest Player: <gray>%s</gray>",
+  "cobblemon-spawn-alerts.nearest_player_unformatted": "%s",
   "cobblemon-spawn-alerts.legendary": "<light_purple>Legendary </light_purple>",
   "cobblemon-spawn-alerts.legendary_unformatted": "Legendary",
   "cobblemon-spawn-alerts.mythical": "<light_purple>Mythical </light_purple>",
@@ -276,7 +298,7 @@ Change the default spawn message for all Pokemon:
 <details>
 <summary>Config - Server</summary>
 
-The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/cobblemonspawnalerts openconfig` in singleplayer.<br><br>
+The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig` in singleplayer.<br><br>
 This file is called `server.json`
 
 ### Config Settings:<br>
@@ -285,14 +307,15 @@ This file is called `server.json`
 * **alertMythicals**: Alerts all players on the server when a mythical spawns.<br>
 * **alertUltraBeasts**: Alerts all players on the server when a ultra beast spawns.<br>
 * **alertParadox**: Alerts all players on the server when a paradox spawns.<br>
+* **alertStarters**: Alerts all players on the server when a starter spawns.<br>
 * **broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
 * **broadcastEVs**: Tells clients what EV Yield a spawned Pokemon has.<br>
 * **broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
 * **broadcastAbility**: Tells clients what Ability a spawned Pokemon has.<br>
-**Note:** Disabling these on your client instance will also stop things from displaying properly in singleplayer... so don't do that?
+**Note:** Disabling these on your own client will also stop things from displaying properly in singleplayer... so don't do that?
 
 ### Reloading the Config:<br>
-You can edit the config while the game is running, and simply use the command `/cobblemonspawnalerts-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
+You can edit the config while the game is running, and simply use the command `/csa-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
 
 </details>
 
@@ -304,6 +327,7 @@ Currently, the available dynamic replacements are:
 * **{name} / {name_lower} / {name_upper}**: Inserts the Pokemon's name
 * **{legendary} / {legendary_unformatted}**: Inserts the Pokemon's rarity (legendary/mythical/ultra beast/paradox) if `showLegendary` is enabled
 * **{shiny} / {shiny_unformatted}**: Inserts a shiny message if the Pokemon is shiny and `alertShiny` is enabled
+* **{HA} / {HA_unformatted}**: Inserts a Hidden Ability message if the Pokemon has a Hidden Ability and `alertHiddenAbility` is enabled
 * **{level} / {level_unformatted}**: Inserts the Pokemon's level if enabled
 * **{ivs} / {ivs_unformatted}**: Inserts the Pokemon's IVs if enabled
 * **{evs} / {evs_unformatted}**: Inserts the Pokemon's EV Yield if enabled
@@ -319,21 +343,24 @@ Currently, the available dynamic replacements are:
 Creating a custom alert message:<br>
 ```json
 "bidoof": {
-    "enabled": true,
-    "alwaysAlert": true,
-    "alertShiny": true,
-    "showLegendary": true,
-    "statDisplayModes": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "alertHiddenAbility": true,
+      "showLegendary": true,
+      "statDisplayModes": {
         "level": "MAIN_MESSAGE",
-        "ivs": "DISABLED",
-        "evs": "DISABLED",
-        "nature": "DISABLED",
-        "gender": "DISABLED",
-        "coordinates": "MAIN_MESSAGE",
-        "biome": "DISABLED"
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "DHOVER",
+        "coordinates": "DISABLED",
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
       },
-    "customAlertMessage": "<rainbow>A beautiful <gradient:light_purple:white><b>{shiny_unformatted}</b></gradient><u>{name}</u> spawned in a <u>{biome_unformatted}</u> biome</rainbow><white>{coords}!</white>",
-    ...other config stuff
+      "customAlertMessage": "<rainbow>A beautiful <gradient:light_purple:white><b>{shiny_unformatted}</b></gradient><u>{name}</u> spawned in a <u>{biome_unformatted}</u> biome</rainbow><white>{coords}!</white>",
+      ...other config stuff
 }
 ```
 **Note:** This can also be done by modifying the `fullSpawnMessage` template or the default Pokemon config if you want it to apply to all Pokemon.
@@ -367,41 +394,47 @@ Next up is adding your sound in the config, which is super simple. Whatever your
   This plays the Pokemon: Legends Arceus shiny sound when any shiny spawns
   ```json
 {
-  "configVersion": 1.7,
+  "configVersion": "1.9",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
+      "alertHiddenAbility": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
-        "ivs": "DISABLED",
-        "evs": "DISABLED",
-        "nature": "DISABLED",
-        "ability": "DISABLED",
-        "gender": "HOVER",
-        "coordinates": "HOVER",
-        "biome": "MAIN_MESSAGE"
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "DHOVER",
+        "coordinates": "DISABLED",
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
       },
       "customAlertMessage": "",
       "sounds": {
-        "shiny": "cobblemonspawnalerts.your_sound_here",
+        "shiny": "minecraft:cobblemonspawnalerts.your_sound_here",
         "legendary": "",
         "mythical": "",
         "ultrabeast": "",
         "paradox": "",
+        "starter": "",
         "unregistered": "",
-        "uncaught": ""
+        "uncaught": "",
+        "ivs": "",
+        "evs": ""
       },
-      "customAlertSound": ""
+      "customAlertSound": "",
+      "autoGlow": false
     }
   }
 }
 ```
 </details>
 
-Also, you can even use vanilla Minecraft sounds! E.g. `entity.warden.sonic_boom`.<br>
+Also, you can use sounds from vanilla Minecraft or any other mod! E.g. `minecraft:entity.warden.sonic_boom` or `cobblemon:pokemon.charmander.cry`.<br>
 </details>
 
 <details>
@@ -421,13 +454,13 @@ Lastly, for both IV and EV hunting, anything set to 0 will be ignored when deter
 
 ## More to come!
 I currently plan to add the following:
-* Ability/HA hunting
+* Colored glow
 * Nature hunting
+* Support for waypoints with mods like Journeymap/Xaero's minimap
+* Maybe individual IV hunting?
 
-I may also add these, but I'm unsure:
-* Alert to specific type or egg group
-* Alert to specific spawn bucket (unsure if possible, but very likely to add if so)
-* Ability to edit config in game
+As well as fix known issues:
+* Shiny alerts seem to conflict with another mod in the Cobblemon Academy modpack
 
 If you have any other ideas, feel free to share them with me!
 
