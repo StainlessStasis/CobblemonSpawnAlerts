@@ -107,10 +107,7 @@ public class CSAFabricClient implements ClientModInitializer {
 
     private void onEntityLoad(Entity entity, ClientLevel clientLevel) {
         if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
-            new ScheduledTask.Builder().delay(0.1f).execute(task -> {
-                AlertHandler.alertClientside(pe);
-                return Unit.INSTANCE;
-            });
+            AlertHandler.alertClientside(pe);
         }
     }
 }

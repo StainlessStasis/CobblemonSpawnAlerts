@@ -3,7 +3,6 @@ package io.github.stainlessstasis.core;
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.util.ComponentUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
