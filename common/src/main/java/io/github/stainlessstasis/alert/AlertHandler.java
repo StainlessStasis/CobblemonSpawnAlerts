@@ -145,7 +145,7 @@ public class AlertHandler {
         }
 
         // Check if should alert for HA
-        boolean shouldAlertHA = HiddenAbilityUtil.hasHiddenAbility(species, alertData.abilityID());
+        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(species, alertData.abilityID());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -229,6 +229,18 @@ public class AlertHandler {
                             || shouldAlertEVs
                             || shouldAlertHA
                         );
+
+        System.out.println("shouldAlertShiny "+shouldAlertShiny);
+        System.out.println("shouldAlertLegend "+shouldAlertLegend);
+        System.out.println("shouldAlertMythical "+shouldAlertMythical);
+        System.out.println("shouldAlertUltra "+shouldAlertUltra);
+        System.out.println("shouldAlertParadox "+shouldAlertParadox);
+        System.out.println("shouldAlertStarter "+shouldAlertStarter);
+        System.out.println("shouldAlertNotInDex "+shouldAlertNotInDex);
+        System.out.println("shouldAlertUncaught "+shouldAlertUncaught);
+        System.out.println("shouldAlertIVs "+shouldAlertIVs);
+        System.out.println("shouldAlertEVs "+shouldAlertEVs);
+        System.out.println("shouldAlertHA "+shouldAlertHA);
 
         if (isInConfig) {
             if (!shouldAlertInConfig) {
