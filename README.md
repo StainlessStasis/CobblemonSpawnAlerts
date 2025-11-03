@@ -386,7 +386,7 @@ Inside the resource pack, start by adding your sound (**this must be `.ogg`!**) 
 ```
 Also, an attenuation distance of 0 is set so that the sound stays a constant volume no matter your distance to the source. For more info, see the [Minecraft wiki page](https://minecraft.wiki/w/Sounds.json).<br>
 
-Next up is adding your sound in the config, which is super simple. Whatever your sound is called in the sounds file -- so `cobblemonspawnalerts.legendary` in this case -- you just put that directly in the config for whichever sound you desire. To add this sound for legendary spawns, it would be added like so: `"legendary": "cobblemonspawnalerts.legendary",`
+Next up is adding your sound in the config, which is super simple. Whatever your sound is called in the sounds file -- so `cobblemonspawnalerts.legendary` in this case -- you just put `minecraft:` then the sound. To add this sound for legendary spawns, it would be added like so: `"legendary": "minecraft:cobblemonspawnalerts.legendary",`
 
 <details>
   <summary>Full template using the default sounds provided in the pack</summary>
