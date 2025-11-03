@@ -230,18 +230,6 @@ public class AlertHandler {
                             || shouldAlertHA
                         );
 
-        System.out.println("shouldAlertShiny "+shouldAlertShiny);
-        System.out.println("shouldAlertLegend "+shouldAlertLegend);
-        System.out.println("shouldAlertMythical "+shouldAlertMythical);
-        System.out.println("shouldAlertUltra "+shouldAlertUltra);
-        System.out.println("shouldAlertParadox "+shouldAlertParadox);
-        System.out.println("shouldAlertStarter "+shouldAlertStarter);
-        System.out.println("shouldAlertNotInDex "+shouldAlertNotInDex);
-        System.out.println("shouldAlertUncaught "+shouldAlertUncaught);
-        System.out.println("shouldAlertIVs "+shouldAlertIVs);
-        System.out.println("shouldAlertEVs "+shouldAlertEVs);
-        System.out.println("shouldAlertHA "+shouldAlertHA);
-
         if (isInConfig) {
             if (!shouldAlertInConfig) {
                 return;
