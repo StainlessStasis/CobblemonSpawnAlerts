@@ -2,9 +2,7 @@
   "required": true,
   "package": "io.github.stainlessstasis.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "PokemonSpawnCommandMixin"
-  ],
+  "mixins": [],
   "injectors": {
     "defaultRequire": 1
   }
