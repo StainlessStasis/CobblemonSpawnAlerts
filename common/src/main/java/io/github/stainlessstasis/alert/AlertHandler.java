@@ -133,7 +133,7 @@ public class AlertHandler {
         // Check if should alert for dex
         boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
         boolean shouldAlertUncaught = mainConfig.alertAllUncaught();
-        Species species = PokemonSpecies.INSTANCE.getByPokedexNumber(alertData.spawnData().dexId(), Cobblemon.MODID);
+        Species species = PokemonSpecies.getByPokedexNumber(alertData.spawnData().dexId(), Cobblemon.MODID);
         SpeciesDexRecord record = dex.getSpeciesRecord(species.resourceIdentifier);
         if (record != null) {
             shouldAlertNotInDex = false;
@@ -327,8 +327,8 @@ public class AlertHandler {
                         despawnData.spawnData(),
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
                         despawnData.traits(),
-                        Natures.INSTANCE.getNAUGHTY().getName().getPath(),
-                        Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName(),
+                        Natures.NAUGHTY.getName().getPath(),
+                        Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
                         Gender.GENDERLESS.name()
                 ));
         Component component = ComponentUtil.convertFromAdventure(message);
@@ -369,8 +369,8 @@ public class AlertHandler {
         int level = alertData.stats().level();
         IVs ivs = alertData.stats().ivs();
         EVs evYield = alertData.stats().evYield();
-        Nature nature = Natures.INSTANCE.getNature(alertData.natureID());
-        AbilityTemplate ability = Abilities.INSTANCE.get(alertData.abilityID());
+        Nature nature = Natures.getNature(alertData.natureID());
+        AbilityTemplate ability = Abilities.get(alertData.abilityID());
         Gender gender = Gender.valueOf(alertData.genderID());
         String nearestPlayer = alertData.spawnData().nearestPlayerName();
 

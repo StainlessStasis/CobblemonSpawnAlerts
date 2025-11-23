@@ -45,7 +45,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void onPokemonSpawned(PokemonEntity pokemonEntity) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.05f).execute(task -> {
+        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             List<ServerPlayer> players = new ArrayList<>();

@@ -25,7 +25,7 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 public class CSANeoClient {
     public static boolean doesServerHaveMod = false;
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(value = Dist.CLIENT)
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onInit(FMLClientSetupEvent event) {
@@ -33,7 +33,7 @@ public class CSANeoClient {
         }
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+    @EventBusSubscriber(value = Dist.CLIENT)
     public static class GameBusEvents {
         @SubscribeEvent
         public static void onCommandRegistration(RegisterClientCommandsEvent event) {

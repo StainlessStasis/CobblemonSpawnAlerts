@@ -39,7 +39,7 @@ public class HiddenAbilityUtil {
                         .map(AbilityTemplate::getName)
                         .collect(Collectors.toSet());
 
-        AbilityTemplate ability = Abilities.INSTANCE.get(abilityID);
+        AbilityTemplate ability = Abilities.get(abilityID);
         if (ability == null) {
             return false;
         }
@@ -49,7 +49,7 @@ public class HiddenAbilityUtil {
     }
 
     public static boolean hasHiddenAbility(int dexID, String abilityID) {
-        Species species = PokemonSpecies.INSTANCE.getByPokedexNumber(dexID, Cobblemon.MODID);
+        Species species = PokemonSpecies.getByPokedexNumber(dexID, Cobblemon.MODID);
         if (species == null) {
             return false;
         }

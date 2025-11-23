@@ -1,12 +1,11 @@
 package io.github.stainlessstasis.mixin;
 
+import com.cobblemon.mod.common.PlayerSpawnerAccessor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.entity.SpawnEvent;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
-import com.cobblemon.mod.common.api.spawning.CobblemonWorldSpawnerManager;
 import com.cobblemon.mod.common.api.spawning.SpawnCause;
-import com.cobblemon.mod.common.api.spawning.WorldSlice;
-import com.cobblemon.mod.common.api.spawning.context.AreaSpawningContext;
+import com.cobblemon.mod.common.api.spawning.position.BasicSpawnablePosition;
 import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawner;
 import com.cobblemon.mod.common.command.SpawnPokemon;
 import com.cobblemon.mod.common.command.argument.PokemonPropertiesArgumentType;
@@ -15,6 +14,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -62,22 +62,28 @@ public abstract class PokemonSpawnCommandMixin {
         pokemonEntity.getEntityData().set(PokemonEntity.getSPAWN_DIRECTION(), pokemonEntity.getRandom().nextFloat() * 360F);
         pokemonEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(blockPos), MobSpawnType.COMMAND, null);
 
-        PlayerSpawner spawner = CobblemonWorldSpawnerManager.INSTANCE.getSpawnersForPlayers().get(context.getSource().getPlayer().getUUID());
-        SpawnCause cause = new SpawnCause(spawner, spawner.chooseBucket(), pokemonEntity);
-        WorldSlice slice = spawner.getProspector().prospect(spawner, spawner.getArea(cause));
-        AreaSpawningContext spawningContext = new AreaSpawningContext(
-                cause, world, blockPos, 15, 15, true,
-                new ArrayList<>(), 0, slice.nearbyBlocks(blockPos, 1, 1), slice);
+        PlayerSpawnerAccessor spawnerAccessor = (PlayerSpawnerAccessor) context.getSource().getPlayer();
+        if (spawnerAccessor == null) {
+            CobblemonSpawnAlerts.LOGGER.error("Could not obtain PlayerSpawnerAccessor for player "+context.getSource().getPlayer().getName().getString()+". No alert will be sent.");
+            cir.cancel();
+            return;
+        }
+        PlayerSpawner spawner = spawnerAccessor.getPlayerSpawner();
+        SpawnCause spawnCause = new SpawnCause(spawner, pokemonEntity);
+        BasicSpawnablePosition spawnablePosition = new BasicSpawnablePosition(
+                spawnCause, context.getSource().getLevel(),
+                blockPos, 15, 15, true, new ArrayList<>()
+        );
 
         AtomicBoolean idkWhatToCallThisButTheCommandDidntError = new AtomicBoolean(false);
-        CobblemonEvents.ENTITY_SPAWN.postThen(new SpawnEvent<>(pokemonEntity, spawningContext),
+        CobblemonEvents.ENTITY_SPAWN.postThen(new SpawnEvent<>(pokemonEntity, spawnablePosition),
                 cancelled -> {
                     idkWhatToCallThisButTheCommandDidntError.set(true);
                     return Unit.INSTANCE;
                 },
                 succeeded -> {
                     idkWhatToCallThisButTheCommandDidntError.set(true);
-                    spawningContext.getWorld().addFreshEntity(pokemonEntity);
+                    spawnablePosition.getWorld().addFreshEntity(pokemonEntity);
                     return Unit.INSTANCE;
                 });
 

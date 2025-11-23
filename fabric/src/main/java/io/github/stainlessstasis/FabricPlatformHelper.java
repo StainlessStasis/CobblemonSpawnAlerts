@@ -46,7 +46,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void onPokemonSpawned(PokemonEntity pokemonEntity) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.05f).execute(task -> {
+        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.

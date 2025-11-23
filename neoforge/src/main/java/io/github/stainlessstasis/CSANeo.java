@@ -26,7 +26,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 @Mod(value = CobblemonSpawnAlerts.MOD_ID)
 public class CSANeo {
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber()
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onInit(FMLCommonSetupEvent event) {
@@ -59,7 +59,7 @@ public class CSANeo {
         }
     }
 
-    @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
+    @EventBusSubscriber()
     public static class GameBusEvents {
         @SubscribeEvent
         public static void onCommandRegistration(RegisterCommandsEvent event) {

@@ -37,7 +37,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.9.2";
+    public static final String MOD_VERSION = "1.10.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final ClientConfigManager CLIENT_CONFIG_MANAGER = new ClientConfigManager();
@@ -94,8 +94,8 @@ public class CobblemonSpawnAlerts {
         Pokemon pokemon = pokemonEntity.getPokemon();
 
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : CobblemonStatProvider.INSTANCE.createEmptyIVs(0);
-        Nature nature = config.broadcastNature() ? pokemon.getNature() : Natures.INSTANCE.getNAUGHTY();
-        Ability ability = config.broadcastAbility() ? pokemon.getAbility() : Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST);
+        Nature nature = config.broadcastNature() ? pokemon.getNature() : Natures.NAUGHTY;
+        Ability ability = config.broadcastAbility() ? pokemon.getAbility() : Abilities.get("levitate").create(false, Priority.LOWEST);
 
         EVs finalEvYield = CobblemonStatProvider.INSTANCE.createEmptyEVs();
         if (config.broadcastEVs()) {
@@ -119,8 +119,8 @@ public class CobblemonSpawnAlerts {
 
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
         EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
-        String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.INSTANCE.getNAUGHTY().getName().getPath();
-        String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.INSTANCE.get("levitate").create(false, Priority.LOWEST).getName();
+        String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.NAUGHTY.getName().getPath();
+        String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.get("levitate").create(false, Priority.LOWEST).getName();
 
         String nearestPlayerName = "N/A";
         if (pokemonEntity.level().getNearestPlayer(pokemonEntity, 128d) instanceof Player player) {
