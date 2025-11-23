@@ -21,6 +21,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -38,16 +39,19 @@ import static com.cobblemon.mod.common.util.LocalizationUtilsKt.commandLang;
 @Mixin(value = SpawnPokemon.class)
 public abstract class PokemonSpawnCommandMixin {
     @Unique
-    private SimpleCommandExceptionType NO_SPECIES_EXCEPTION = new SimpleCommandExceptionType(commandLang("${NAME}.nospecies").withStyle(ChatFormatting.RED));
+    private final SimpleCommandExceptionType NO_SPECIES_EXCEPTION = new SimpleCommandExceptionType(commandLang("${NAME}.nospecies").withStyle(ChatFormatting.RED));
     @Unique
-    private SimpleCommandExceptionType INVALID_POS_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Invalid position").withStyle(ChatFormatting.RED));
+    private final SimpleCommandExceptionType INVALID_POS_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Invalid position").withStyle(ChatFormatting.RED));
     @Unique
-    private SimpleCommandExceptionType FAILED_SPAWN_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Unable to spawn at the given position").withStyle(ChatFormatting.RED));
+    private final SimpleCommandExceptionType FAILED_SPAWN_EXCEPTION = new SimpleCommandExceptionType(Component.literal("Unable to spawn at the given position").withStyle(ChatFormatting.RED));
 
-    // fabric breaks if i try using redirect instead of doing it this way. i dont know. but it works. and im mentally exhausted.
     // this is to make pokemon spawned via command be counted as a "natural" spawn or some shit so that the mod works with commands for testing
     @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
     private void execute(CommandContext<CommandSourceStack> context, Vec3 pos, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
+        if (!(context.getSource().getPlayer() instanceof ServerPlayer player)) {
+            return;
+        }
+
         ServerLevel world = context.getSource().getLevel();
         BlockPos blockPos = BlockPos.containing(pos);
         if (!Level.isInSpawnableBounds(blockPos)) {
@@ -62,12 +66,7 @@ public abstract class PokemonSpawnCommandMixin {
         pokemonEntity.getEntityData().set(PokemonEntity.getSPAWN_DIRECTION(), pokemonEntity.getRandom().nextFloat() * 360F);
         pokemonEntity.finalizeSpawn(world, world.getCurrentDifficultyAt(blockPos), MobSpawnType.COMMAND, null);
 
-        PlayerSpawnerAccessor spawnerAccessor = (PlayerSpawnerAccessor) context.getSource().getPlayer();
-        if (spawnerAccessor == null) {
-            CobblemonSpawnAlerts.LOGGER.error("Could not obtain PlayerSpawnerAccessor for player "+context.getSource().getPlayer().getName().getString()+". No alert will be sent.");
-            cir.cancel();
-            return;
-        }
+        PlayerSpawnerAccessor spawnerAccessor = (PlayerSpawnerAccessor) player;
         PlayerSpawner spawner = spawnerAccessor.getPlayerSpawner();
         SpawnCause spawnCause = new SpawnCause(spawner, pokemonEntity);
         BasicSpawnablePosition spawnablePosition = new BasicSpawnablePosition(
