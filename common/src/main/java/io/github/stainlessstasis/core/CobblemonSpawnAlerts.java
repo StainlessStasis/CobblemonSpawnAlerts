@@ -63,6 +63,9 @@ public class CobblemonSpawnAlerts {
         });
 
         CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, evt -> {
+            if (evt.getKilled().getEntity() == null) {
+                return Unit.INSTANCE;
+            }
             Pokemon pokemon = evt.getKilled().getEntity().getPokemon();
 
             if (pokemon.getOwnerUUID() != null || !evt.getBattle().isPvW() || !CobblemonSpawnAlerts.globallyAlerted.contains(pokemon.getUuid())) {
