@@ -130,7 +130,7 @@ Show all stats in hover:<br>
 
 ```json
 {
-  "configVersion": "1.9",
+  "configVersion": "1.10.0",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
       "enabled": true,
@@ -394,7 +394,7 @@ Next up is adding your sound in the config, which is super simple. Whatever your
   This plays the Pokemon: Legends Arceus shiny sound when any shiny spawns
   ```json
 {
-  "configVersion": "1.9",
+  "configVersion": "1.10.0",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
       "enabled": true,
