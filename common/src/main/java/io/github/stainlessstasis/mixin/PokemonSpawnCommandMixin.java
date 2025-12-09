@@ -14,6 +14,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;
@@ -49,6 +50,11 @@ public abstract class PokemonSpawnCommandMixin {
     @Inject(method = "execute", at = @At("HEAD"), cancellable = true)
     private void execute(CommandContext<CommandSourceStack> context, Vec3 pos, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if (!(context.getSource().getPlayer() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
+        if (!config.enableSpawnCommandAlerts()) {
             return;
         }
 

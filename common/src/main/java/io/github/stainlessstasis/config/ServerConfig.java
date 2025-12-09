@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.config;
 
 public record ServerConfig (
+    boolean enableSpawnCommandAlerts,
     boolean alertShinies,
     boolean alertLegendaries,
     boolean alertMythicals,
@@ -14,6 +15,6 @@ public record ServerConfig (
     boolean broadcastAbility
 ) {
     public static ServerConfig createDefault() {
-        return new ServerConfig(true, true, true, true, true, false, false, true, true, true, true);
+        return new ServerConfig(false, true, true, true, true, true, false, false, true, true, true, true);
     }
 }

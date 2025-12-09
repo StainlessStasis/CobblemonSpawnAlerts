@@ -28,7 +28,6 @@ import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.stainlessstasis.util.RarityUtil;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -37,7 +36,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.10.0";
+    public static final String MOD_VERSION = "1.10.1";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final ClientConfigManager CLIENT_CONFIG_MANAGER = new ClientConfigManager();
