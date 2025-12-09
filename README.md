@@ -302,6 +302,7 @@ The config is found in your server folder under `config -> cobblemon-spawn-alert
 This file is called `server.json`
 
 ### Config Settings:<br>
+* **enableSpawnCommandAlerts**: Enables alerts for Pokemon spawned via commands. IMPORTANT - This can break other addons, such as Cobblemon: Path to Legends! Only enable this if you know what you're doing, or if you know the addon is compatible with this option.<br>
 * **alertShinies**: Alerts all players on the server when a shiny spawns.<br>
 * **alertLegendaries**: Alerts all players on the server when a legendary spawns.<br>
 * **alertMythicals**: Alerts all players on the server when a mythical spawns.<br>
