@@ -38,7 +38,7 @@ public class CommandRegistry {
     }
 
     public static int handleReloadCommand() {
-        CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.reload();
+        CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.reload();
         return 1;
     }
 
@@ -49,10 +49,10 @@ public class CommandRegistry {
 
     public static int handleGlowCommand(String uuid_) {
         UUID uuid = UUID.fromString(uuid_);
-        if (CobblemonSpawnAlerts.glowing.contains(uuid)) {
-            CobblemonSpawnAlerts.glowing.remove(uuid);
+        if (CobblemonSpawnAlertsClient.glowing.contains(uuid)) {
+            CobblemonSpawnAlertsClient.glowing.remove(uuid);
         } else {
-            CobblemonSpawnAlerts.glowing.add(uuid);
+            CobblemonSpawnAlertsClient.glowing.add(uuid);
         }
 
         return 1;

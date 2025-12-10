@@ -54,11 +54,6 @@ public interface IPlatformHelper {
         } else {
             CobblemonSpawnAlerts.despawned.remove(pokemon.getUuid());
         }
-
-        CobblemonSpawnAlerts.glowing.remove(pokemon.getUuid());
-        if (isModLoaded("journeymap")) {
-            JourneymapCompat.removeWaypoint(pokemon.getUuid());
-        }
     };
 
     boolean doesServerHaveMod();

@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.util.EvsUtil;
@@ -31,7 +32,7 @@ public class CSAFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        CobblemonSpawnAlerts.initClient();
+        CobblemonSpawnAlertsClient.initClient();
 
         ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
         ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
@@ -88,7 +89,7 @@ public class CSAFabricClient implements ClientModInitializer {
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
-        if (!minecraft.isSingleplayer() && CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
+        if (!minecraft.isSingleplayer() && CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
             MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
         }
     }

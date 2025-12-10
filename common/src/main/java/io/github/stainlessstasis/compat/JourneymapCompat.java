@@ -2,6 +2,7 @@ package io.github.stainlessstasis.compat;
 
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.util.DimensionUtil;
 import journeymap.api.v2.client.IClientAPI;
@@ -36,18 +37,18 @@ public class JourneymapCompat {
             waypoint.setColor(color.getRGB());
         }
 
-        CobblemonSpawnAlerts.waypoints.put(alertData.spawnData().pokemonUUID(), waypoint.getGuid());
+        CobblemonSpawnAlertsClient.waypoints.put(alertData.spawnData().pokemonUUID(), waypoint.getGuid());
 
         api.addWaypoint(CobblemonSpawnAlerts.MOD_ID, waypoint);
     }
 
     public static void removeWaypoint(UUID uuid) {
-        Waypoint waypoint = api.getWaypoint(CobblemonSpawnAlerts.MOD_ID, CobblemonSpawnAlerts.waypoints.get(uuid));
+        Waypoint waypoint = api.getWaypoint(CobblemonSpawnAlerts.MOD_ID, CobblemonSpawnAlertsClient.waypoints.get(uuid));
         if (waypoint == null) {
-            CobblemonSpawnAlerts.waypoints.remove(uuid);
+            CobblemonSpawnAlertsClient.waypoints.remove(uuid);
             return;
         }
         api.removeWaypoint(CobblemonSpawnAlerts.MOD_ID, waypoint);
-        CobblemonSpawnAlerts.waypoints.remove(uuid);
+        CobblemonSpawnAlertsClient.waypoints.remove(uuid);
     }
 }

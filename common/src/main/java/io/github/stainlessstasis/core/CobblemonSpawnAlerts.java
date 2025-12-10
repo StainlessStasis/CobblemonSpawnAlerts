@@ -35,12 +35,9 @@ public class CobblemonSpawnAlerts {
     public static final String MOD_VERSION = "1.11.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
-    public static final ClientConfigManager CLIENT_CONFIG_MANAGER = new ClientConfigManager();
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
     public static Set<UUID> globallyAlerted = new HashSet<>();
     public static Set<UUID> despawned = new HashSet<>();
-    public static Set<UUID> glowing = new HashSet<>();
-    public static Map<UUID, String> waypoints = new HashMap<>(); // Maps entity uuids to waypoint guids
 
     public static void initServer() {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
@@ -81,11 +78,6 @@ public class CobblemonSpawnAlerts {
 
             return Unit.INSTANCE;
         });
-    }
-
-    public static void initClient() {
-        LOGGER.info("CobblemonSpawnAlerts client initializing...");
-        CLIENT_CONFIG_MANAGER.loadConfig();
     }
 
     public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity) {

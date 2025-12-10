@@ -22,6 +22,7 @@ import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
 import io.github.stainlessstasis.platform.Platform;
@@ -100,14 +101,14 @@ public class AlertHandler {
         if (!(Minecraft.getInstance().player instanceof Player player)) {
             return;
         }
-        if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.isReloading()) {
+        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) {
             return;
         }
         if (alreadyAlerted.contains(alertData.spawnData().pokemonUUID())) {
             return;
         }
 
-        MainConfig mainConfig = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig();
+        MainConfig mainConfig = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
@@ -297,7 +298,7 @@ public class AlertHandler {
 
         // Autoglow
         if (pokemonConfig.autoGlow()) {
-            CobblemonSpawnAlerts.glowing.add(alertData.spawnData().pokemonUUID());
+            CobblemonSpawnAlertsClient.glowing.add(alertData.spawnData().pokemonUUID());
         }
 
         // send the custom alert if one exits
@@ -307,7 +308,7 @@ public class AlertHandler {
             MessageUtils.sendTranslated(message);
         } else {
             // use the default message if no custom one is provided
-            message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
+            message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
             message = applyDynamicReplacements(message, pokemonConfig, alertData);
             Component component = ComponentUtil.convertFromAdventure(message);
             player.sendSystemMessage(component);
@@ -326,8 +327,13 @@ public class AlertHandler {
         if (!(Minecraft.getInstance().player instanceof Player player)) {
             return;
         }
-        if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.isReloading()) {
+        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) {
             return;
+        }
+
+        CobblemonSpawnAlertsClient.glowing.remove(despawnData.spawnData().pokemonUUID());
+        if (Services.PLATFORM.isModLoaded("journeymap")) {
+            JourneymapCompat.removeWaypoint(despawnData.spawnData().pokemonUUID());
         }
 
         PokemonConfig.PokemonSpecificConfig pokemonConfig = getConfigForPokemon(despawnData.spawnData().translatedPokemonName(), despawnData.spawnData().dexId()).getSecond();
@@ -335,8 +341,8 @@ public class AlertHandler {
             return;
         }
 
-        MessageTemplates messageTemplates = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates();
-        String message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().despawnMessage());
+        MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
+        String message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().despawnMessage());
 
         message = switch (DespawnReason.valueOf(despawnData.despawnReason())) {
             case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), despawnData.playerName()).getString());
@@ -361,7 +367,7 @@ public class AlertHandler {
     }
 
     public static Pair<Boolean, PokemonConfig.PokemonSpecificConfig> getConfigForPokemon(String pokemonName, int dexID) {
-        Set<String> pokemonNames = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().keySet();
+        Set<String> pokemonNames = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().keySet();
         String fixedPokemonName = PokemonNameUtil.fixName(pokemonName);
 
         for (String name : pokemonNames) {
@@ -371,14 +377,14 @@ public class AlertHandler {
 
             String fixedName = name.toLowerCase().replaceAll("[ _-]", "");
             if (fixedName.contains(fixedPokemonName) || fixedName.contains(String.valueOf(dexID))) {
-                if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().get(name)
+                if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().get(name)
                         instanceof PokemonConfig.PokemonSpecificConfig _config) {
                     return Pair.of(true, _config);
                 }
             }
         }
 
-        if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().get(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME)
+        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().get(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME)
                 instanceof PokemonConfig.PokemonSpecificConfig _config) {
             return Pair.of(false, _config);
         } else {
@@ -389,7 +395,7 @@ public class AlertHandler {
     }
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
-        MessageTemplates messageTemplates = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates();
+        MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
 
         System.out.println(alertData.spawnData().dimensionKey());
 

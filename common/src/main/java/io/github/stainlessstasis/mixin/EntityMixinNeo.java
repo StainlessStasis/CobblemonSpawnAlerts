@@ -3,6 +3,7 @@ package io.github.stainlessstasis.mixin;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,6 +21,6 @@ public abstract class EntityMixinNeo {
             return false;
         }
 
-        return entity instanceof PokemonEntity pe && CobblemonSpawnAlerts.glowing.contains(pe.getPokemon().getUuid());
+        return entity instanceof PokemonEntity pe && CobblemonSpawnAlertsClient.glowing.contains(pe.getPokemon().getUuid());
     }
 }

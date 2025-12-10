@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import io.github.stainlessstasis.alert.AlertHandler;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
@@ -29,7 +30,7 @@ public class CSANeoClient {
     public static class ModBusEvents {
         @SubscribeEvent
         public static void onInit(FMLClientSetupEvent event) {
-            CobblemonSpawnAlerts.initClient();
+            CobblemonSpawnAlertsClient.initClient();
         }
     }
 
@@ -60,7 +61,7 @@ public class CSANeoClient {
 
         @SubscribeEvent
         public static void onConnect(ClientPlayerNetworkEvent.LoggingIn event) {
-            if (!Minecraft.getInstance().isSingleplayer() && CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
+            if (!Minecraft.getInstance().isSingleplayer() && CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
                 MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
             }
         }
