@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public abstract class AbstractConfigManager {
-    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    protected static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     protected static final Path MOD_CONFIG_DIR = Services.PLATFORM.getConfigDir().resolve("cobblemon-spawn-alerts");
     protected boolean isReloading;
 

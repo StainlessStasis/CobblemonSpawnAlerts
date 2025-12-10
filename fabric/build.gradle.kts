@@ -11,6 +11,11 @@ architectury {
 
 val shadowCommon = configurations.create("shadowCommon")
 
+repositories {
+    maven("https://maven.blamejared.com") // Journeymap API
+    maven("https://www.cursemaven.com")
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${property("minecraft_version")}")
     mappings(loom.officialMojangMappings())
@@ -19,11 +24,12 @@ dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
     modImplementation(fabricApi.module("fabric-command-api-v2", property("fabric_api_version").toString()))
 
-    //needed for cobblemon
     modImplementation("net.fabricmc:fabric-language-kotlin:${property("fabric_kotlin")}")
     modImplementation("com.cobblemon:fabric:${property("cobblemon_version")}") { isTransitive = false }
 
     modImplementation(include("net.kyori:adventure-platform-fabric:5.14.1")!!)
+    modCompileOnlyApi("info.journeymap", "journeymap-api-fabric", property("journeymap_api_version") as String?)
+    modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentFabric"(project(":common", configuration = "namedElements"))

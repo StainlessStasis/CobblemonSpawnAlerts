@@ -7,7 +7,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
 
 public class BiomeUtil {
-    public static String getBiomeKeyFromCoords(Level level, Vec3 position) {
+    public static String getBiomeKey(Level level, Vec3 position) {
         BlockPos blockPos = BlockPos.containing(position);
         Holder<Biome> biomeHolder = level.getBiome(blockPos);
         if (biomeHolder.unwrapKey().isEmpty()) {

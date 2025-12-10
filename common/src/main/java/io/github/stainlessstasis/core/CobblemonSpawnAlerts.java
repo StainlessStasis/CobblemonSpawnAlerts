@@ -18,12 +18,11 @@ import io.github.stainlessstasis.config.CommonConfigManager;
 import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.platform.Services;
-import io.github.stainlessstasis.util.BiomeUtil;
-import io.github.stainlessstasis.util.EvsUtil;
-import io.github.stainlessstasis.util.PokemonNameUtil;
-import io.github.stainlessstasis.util.RarityUtil;
+import io.github.stainlessstasis.util.*;
 import kotlin.Unit;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.10.1";
+    public static final String MOD_VERSION = "1.11.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final ClientConfigManager CLIENT_CONFIG_MANAGER = new ClientConfigManager();
@@ -136,24 +135,27 @@ public class CobblemonSpawnAlerts {
                         pokemonEntity.position().toVector3f(),
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
-                        BiomeUtil.getBiomeKeyFromCoords(pokemonEntity.level(), pokemonEntity.position())),
+                        BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
+                        DimensionUtil.getDimensionKey(pokemonEntity)),
                 new PokemonStats(
                         pokemon.getLevel(),
                         ivs,
                         evYield),
-                new PokemonTraits(
+                new PokemonRarity(
                         shouldAlertShiny,
                         shouldAlertLegend,
                         shouldAlertMythical,
                         shouldAlertUltra,
                         shouldAlertParadox,
                         shouldAlertStarter),
-                nature,
-                ability,
-                pokemon.getGender().name());
+                new PokemonTraits(
+                        nature,
+                        ability,
+                        pokemon.getGender().name())
+                );
     }
 
-    public static DespawnDataPacket createDespawnData(Pokemon pokemon, String playerName, DespawnReason despawnReason) {
+    public static DespawnDataPacket createDespawnData(Level level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
@@ -172,14 +174,16 @@ public class CobblemonSpawnAlerts {
                         new Vector3f(0, 0, 0),
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         "N/A",
-                        "N/A"),
-                new PokemonTraits(
+                        "N/A",
+                        DimensionUtil.getDimensionKey(level)),
+                new PokemonRarity(
                         shouldAlertShiny,
                         shouldAlertLegend,
                         shouldAlertMythical,
                         shouldAlertUltra,
                         shouldAlertParadox,
-                        shouldAlertStarter),
+                        shouldAlertStarter
+                ),
                 despawnReason.name()
         );
     }

@@ -83,7 +83,10 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         IPlatformHelper.super.onPokemonDespawned(_level, pokemon, playerName, despawnReason);
-        PacketDistributor.sendToAllPlayers(CobblemonSpawnAlerts.createDespawnData(pokemon, playerName, despawnReason));
+        if (_level instanceof ServerLevel level) {
+            PacketDistributor.sendToAllPlayers(CobblemonSpawnAlerts.createDespawnData(level, pokemon, playerName, despawnReason));
+
+        }
     }
 
     @Override

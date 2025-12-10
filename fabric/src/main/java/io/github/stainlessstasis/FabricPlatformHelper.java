@@ -82,7 +82,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
         if (_level instanceof ServerLevel level) {
             for (ServerPlayer player : level.players()) {
-                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createDespawnData(pokemon, playerName, despawnReason));
+                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createDespawnData(level, pokemon, playerName, despawnReason));
             }
         }
     }

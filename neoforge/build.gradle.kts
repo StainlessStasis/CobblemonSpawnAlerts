@@ -21,6 +21,8 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/groups/public/")
     maven("https://thedarkcolour.github.io/KotlinForForge/")
     maven("https://maven.neoforged.net")
+    maven("https://maven.blamejared.com") // Journeymap API
+    maven("https://www.cursemaven.com")
 }
 
 val shadowBundle = configurations.create("shadowBundle") {
@@ -34,13 +36,15 @@ dependencies {
     neoForge("net.neoforged:neoforge:${property("neoforge_version")}")
 
     modImplementation("com.cobblemon:neoforge:${property("cobblemon_version")}") { isTransitive = false }
-    //Needed for cobblemon
     forgeRuntimeLibrary("thedarkcolour:kotlinforforge-neoforge:${property("kotlin_for_forge_version")}") {
         exclude("net.neoforged.fancymodloader", "loader")
     }
 
     implementation("net.kyori:adventure-platform-neoforge:6.0.0")
     include("net.kyori:adventure-platform-neoforge:6.0.0")
+
+    compileOnly("info.journeymap", "journeymap-api-neoforge", property("journeymap_api_version") as String?)
+    modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_neo_file_id")}")
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {

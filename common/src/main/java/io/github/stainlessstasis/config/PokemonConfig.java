@@ -17,7 +17,8 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             String customAlertMessage,
             Map<String, String> sounds,
             String customAlertSound,
-            boolean autoGlow
+            boolean autoGlow,
+            JourneymapConfig journeyMap
     ) {
         public static PokemonSpecificConfig createDefault() {
             Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
@@ -43,7 +44,10 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
-            return new PokemonSpecificConfig(true, true, true, true, true, statDisplayModes, "", sounds, "", false);
+            return new PokemonSpecificConfig(true, true, true, true, true,
+                    statDisplayModes, "", sounds, "", false,
+                    new JourneymapConfig(false, "", "", false)
+            );
         }
     }
 
@@ -52,4 +56,6 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
         defaults.put(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, PokemonSpecificConfig.createDefault());
         return new PokemonConfig(CobblemonSpawnAlerts.MOD_VERSION, defaults);
     }
+
+    public record JourneymapConfig(boolean enableWaypoint, String waypointName, String waypointHexColor, boolean persistent) {}
 }

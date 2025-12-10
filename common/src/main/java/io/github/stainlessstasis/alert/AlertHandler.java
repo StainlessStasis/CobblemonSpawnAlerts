@@ -15,6 +15,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
+import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.config.MainConfig;
 import io.github.stainlessstasis.config.MessageTemplates;
 import io.github.stainlessstasis.config.PokemonConfig;
@@ -25,6 +26,8 @@ import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -68,21 +71,25 @@ public class AlertHandler {
                         pokemonEntity.position().toVector3f(),
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
-                        BiomeUtil.getBiomeKeyFromCoords(pokemonEntity.level(), pokemonEntity.position())),
+                        BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
+                        DimensionUtil.getDimensionKey(pokemonEntity)),
                 new PokemonStats(
                         pokemon.getLevel(),
                         pokemon.getIvs(),
-                        evYield),
-                new PokemonTraits(
+                        evYield
+                ),
+                new PokemonRarity(
                         pokemon.getShiny(),
                         RarityUtil.isLegendary(dexId),
                         RarityUtil.isMythical(dexId),
                         RarityUtil.isUltraBeast(dexId),
                         RarityUtil.isParadox(dexId),
                         RarityUtil.isStarter(dexId)),
-                pokemon.getNature().getName().getPath(),
-                pokemon.getAbility().getName(),
-                pokemon.getGender().name()
+                new PokemonTraits(
+                        pokemon.getNature().getName().getPath(),
+                        pokemon.getAbility().getName(),
+                        pokemon.getGender().name()
+                )
         ));
     }
 
@@ -101,7 +108,7 @@ public class AlertHandler {
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
-        Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(pokemonName);
+        Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(pokemonName, alertData.spawnData().dexId());
         boolean isInConfig = result.getFirst();
         PokemonConfig.PokemonSpecificConfig pokemonConfig = result.getSecond();
 
@@ -109,12 +116,12 @@ public class AlertHandler {
             return;
         }
 
-        boolean isShiny = alertData.traits().isShiny();
-        boolean isLegend = alertData.traits().isLegendary();
-        boolean isMythical = alertData.traits().isMythical();
-        boolean isUltra = alertData.traits().isUltraBeast();
-        boolean isParadox = alertData.traits().isParadox();
-        boolean isStarter = alertData.traits().isStarter();
+        boolean isShiny = alertData.rarity().isShiny();
+        boolean isLegend = alertData.rarity().isLegendary();
+        boolean isMythical = alertData.rarity().isMythical();
+        boolean isUltra = alertData.rarity().isUltraBeast();
+        boolean isParadox = alertData.rarity().isParadox();
+        boolean isStarter = alertData.rarity().isStarter();
         boolean isInDex = false;
         boolean isCaught = false;
 
@@ -145,7 +152,7 @@ public class AlertHandler {
         }
 
         // Check if should alert for HA
-        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(species, alertData.abilityID());
+        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(species, alertData.traits().abilityID());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -287,7 +294,6 @@ public class AlertHandler {
         // Autoglow
         if (pokemonConfig.autoGlow()) {
             CobblemonSpawnAlerts.glowing.add(alertData.spawnData().pokemonUUID());
-
         }
 
         // send the custom alert if one exits
@@ -295,14 +301,21 @@ public class AlertHandler {
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
             message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData);
             MessageUtils.sendTranslated(message);
-            return;
+        } else {
+            // use the default message if no custom one is provided
+            message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
+            message = applyDynamicReplacements(message, pokemonConfig, alertData);
+            Component component = ComponentUtil.convertFromAdventure(message);
+            player.sendSystemMessage(component);
         }
 
-        // use the default message if no custom one is provided
-        message = MessageUtils.getTranslated(CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
-        message = applyDynamicReplacements(message, pokemonConfig, alertData);
-        Component component = ComponentUtil.convertFromAdventure(message);
-        player.sendSystemMessage(component);
+        // journeymap compat
+        PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();
+        if (Services.PLATFORM.isModLoaded("journeymap") && jmConfig.enableWaypoint()) {
+            Vector3f pos = alertData.spawnData().position();
+            BlockPos blockPos = new BlockPos((int)pos.x, (int)pos.y, (int)pos.z);
+            JourneymapCompat.createWaypoint(blockPos, pokemonName, alertData.spawnData().dimensionKey(), jmConfig);
+        }
     }
 
     public static void alertDespawned(DespawnDataPacket despawnData) {
@@ -322,20 +335,22 @@ public class AlertHandler {
             case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
         };
 
-        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().translatedPokemonName()).getSecond(),
+        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().translatedPokemonName(), despawnData.spawnData().dexId()).getSecond(),
                 new AlertDataPacket(
                         despawnData.spawnData(),
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
-                        despawnData.traits(),
-                        Natures.NAUGHTY.getName().getPath(),
-                        Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
-                        Gender.GENDERLESS.name()
+                        despawnData.rarity(),
+                        new PokemonTraits(
+                                Natures.NAUGHTY.getName().getPath(),
+                                Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
+                                Gender.GENDERLESS.name()
+                        )
                 ));
         Component component = ComponentUtil.convertFromAdventure(message);
         player.sendSystemMessage(component);
     }
 
-    public static Pair<Boolean, PokemonConfig.PokemonSpecificConfig> getConfigForPokemon(String pokemonName) {
+    public static Pair<Boolean, PokemonConfig.PokemonSpecificConfig> getConfigForPokemon(String pokemonName, int dexID) {
         Set<String> pokemonNames = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().keySet();
         String fixedPokemonName = PokemonNameUtil.fixName(pokemonName);
 
@@ -345,7 +360,7 @@ public class AlertHandler {
             }
 
             String fixedName = name.toLowerCase().replaceAll("[ _-]", "");
-            if (fixedName.contains(fixedPokemonName)) {
+            if (fixedName.contains(fixedPokemonName) || fixedName.contains(String.valueOf(dexID))) {
                 if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getPokemonConfig().pokemonConfigs().get(name)
                         instanceof PokemonConfig.PokemonSpecificConfig _config) {
                     return Pair.of(true, _config);
@@ -366,12 +381,14 @@ public class AlertHandler {
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
         MessageTemplates messageTemplates = CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.getMessageTemplates();
 
+        System.out.println(alertData.spawnData().dimensionKey());
+
         int level = alertData.stats().level();
         IVs ivs = alertData.stats().ivs();
         EVs evYield = alertData.stats().evYield();
-        Nature nature = Natures.getNature(alertData.natureID());
-        AbilityTemplate ability = Abilities.get(alertData.abilityID());
-        Gender gender = Gender.valueOf(alertData.genderID());
+        Nature nature = Natures.getNature(alertData.traits().natureID());
+        AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
+        Gender gender = Gender.valueOf(alertData.traits().genderID());
         String nearestPlayer = alertData.spawnData().nearestPlayerName();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
@@ -393,7 +410,7 @@ public class AlertHandler {
         StatDisplayMode nearestPlayerDisplayMode = displayModes.get("nearestPlayer");
 
         // Shiny
-        boolean shouldAlertShiny = config.alertShiny() && alertData.traits().isShiny();
+        boolean shouldAlertShiny = config.alertShiny() && alertData.rarity().isShiny();
         if (shouldAlertShiny) {
             message = message.replace("{shiny}", Component.translatable(messageTemplates.shiny()).getString());
             message = message.replace("{shiny_unformatted}", Component.translatable(messageTemplates.shiny_unformatted()).getString());
@@ -523,7 +540,7 @@ public class AlertHandler {
         message = message.replace("{ability_unformatted}", "");
 
         // Hidden Ability
-        boolean shouldAlertHA = config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.abilityID());
+        boolean shouldAlertHA = config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().abilityID());
         if (shouldAlertHA) {
             message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
             message = message.replace("{HA_unformatted}", Component.translatable(messageTemplates.hidden_ability_unformatted()).getString());
@@ -555,7 +572,7 @@ public class AlertHandler {
         message = message.replace("{gender_unformatted}", "");
 
         // Coordinates
-        Vector3f coords = new Vector3f(alertData.spawnData().position().x, alertData.spawnData().position().y, alertData.spawnData().position().z);
+        Vector3f coords = alertData.spawnData().position();
         if (coordinatesDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = coordinatesDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
