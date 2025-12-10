@@ -9,7 +9,7 @@ Also, while the serverside mod is optional, all clients must have the mod if the
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
 
 ## Speaking of minimaps...
-CSA is fully compatible with Journeymap and can automatically create and remove waypoints when Pokemon spawn/despawn. More details below in the Journeymap tab.
+CSA is fully compatible with Journeymap and can automatically create and remove waypoints when Pokemon spawn/despawn. More details below in the Journeymap Integration tab.
 
 ## Complete the Pokedex!
 By simply editing the config, you can be alerted whenever an unregistered or uncaught Pokemon spawns near you!
@@ -22,6 +22,12 @@ But can be modified to look like this, or however you want!
 
 ## Global Alerts!
 Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification), all players will be alerted when a rare Pokemon (such as a shiny or legendary) spawns. This can be disabled in the server's `server.json` config for the mod. The server simply sends a packet to all clients, so that each player can individually customize their messages.
+
+## FAQ:
+### Support for Xaero's Minimap waypoints?
+Unfortunately, no. While it is technically already possible via modifying templates and using custom MiniMessage scripts in your alerts, I will not be adding direct compatibility to the mod. Xaero's is completely closed source, offering no API, no wiki, and no Discord server. I am not going to go through the effort of trying to figure out how to integrate someone's mod when they provide no resources for doing such. However, if someone wants to PR this, I'd love to make compatibility possible.
+### Rarity bucket alerts?
+No promises on *when*, but yes. It happens when I feel like getting around to it instead of making black hole shaders. Soon™.
 
 ## Config:
 <details>
