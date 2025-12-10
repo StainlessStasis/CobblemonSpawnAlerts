@@ -8,6 +8,9 @@ Also, while the serverside mod is optional, all clients must have the mod if the
 ## No more staring at the minimap!
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
 
+## Speaking of minimaps...
+CSA is fully compatible with Journeymap and can automatically create and remove waypoints when Pokemon spawn/despawn. More details below in the Journeymap tab.
+
 ## Complete the Pokedex!
 By simply editing the config, you can be alerted whenever an unregistered or uncaught Pokemon spawns near you!
 
@@ -85,6 +88,7 @@ Show all stats in message:<br>
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -108,6 +112,7 @@ Show all stats in hover:<br>
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "HOVER",
@@ -130,13 +135,14 @@ Show all stats in hover:<br>
 
 ```json
 {
-  "configVersion": "1.10.0",
+  "configVersion": "1.11.0",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -163,13 +169,20 @@ Show all stats in hover:<br>
         "evs": ""
       },
       "customAlertSound": "",
-      "autoGlow": false
+      "autoGlow": false,
+      "journeyMap": {
+        "enableWaypoint": true,
+        "waypointName": "",
+        "waypointHexColor": "",
+        "persistent": false
+      }
     },
     "bidoof": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -196,7 +209,13 @@ Show all stats in hover:<br>
         "evs": ""
       },
       "customAlertSound": "",
-      "autoGlow": false
+      "autoGlow": false,
+      "journeyMap": {
+        "enableWaypoint": true,
+        "waypointName": "",
+        "waypointHexColor": "",
+        "persistent": false
+      }
     }
   }
 }
@@ -348,6 +367,7 @@ Creating a custom alert message:<br>
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -395,13 +415,14 @@ Next up is adding your sound in the config, which is super simple. Whatever your
   This plays the Pokemon: Legends Arceus shiny sound when any shiny spawns
   ```json
 {
-  "configVersion": "1.10.0",
+  "configVersion": "1.11.0",
   "pokemonConfigs": {
     "default (You can modify anything BELOW this, but dont delete it!)": {
       "enabled": true,
       "alwaysAlert": true,
       "alertShiny": true,
       "alertHiddenAbility": true,
+      "alertDespawned": true,
       "showLegendary": true,
       "statDisplayModes": {
         "level": "MAIN_MESSAGE",
@@ -428,7 +449,13 @@ Next up is adding your sound in the config, which is super simple. Whatever your
         "evs": ""
       },
       "customAlertSound": "",
-      "autoGlow": false
+      "autoGlow": false,
+      "journeyMap": {
+        "enableWaypoint": true,
+        "waypointName": "",
+        "waypointHexColor": "",
+        "persistent": false
+      }
     }
   }
 }
@@ -453,17 +480,24 @@ Lastly, for both IV and EV hunting, anything set to 0 will be ignored when deter
 
 </details>
 
+<details>
+  <summary>Journeymap Integration</summary>
+
+In `pokemon.json`, there are a few options for Journeymap waypoints:
+* **enableWaypoint**: Enables waypoints for the config. <br>
+* **waypointName**: Sets the name of the waypoint. Default's to the Pokemon's name if left blank.<br>
+* **waypointHexColor**: Sets the color of the waypoint. Formatted using hexadecimal (e.g. #FFFFFF for white). You can use an [online tool](https://htmlcolorcodes.com/color-picker/) to help with creating the color code.<br>
+* **persistent**: Determines whether the waypoint should persist when leaving/rejoining the world.<br>
+</details>
+
 ## More to come!
 I currently plan to add the following:
-* Colored glow
+* In-game editable config using ForgeConfigAPIPort
+* Alerts for rarity buckets
 * Nature hunting
-* Support for waypoints with mods like Journeymap/Xaero's minimap
 * Maybe individual IV hunting?
-
-As well as fix known issues:
-* Shiny alerts seem to conflict with another mod in the Cobblemon Academy modpack
 
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the Cobblemon discord in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
