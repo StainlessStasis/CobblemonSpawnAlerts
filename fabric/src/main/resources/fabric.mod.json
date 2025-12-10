@@ -23,7 +23,7 @@
       "io.github.stainlessstasis.CSAFabricClient"
     ],
     "journeymap": [
-      "io.github.stainlessstasis.compat.JourneymapFabricPlugin"
+      "io.github.stainlessstasis.JourneymapFabricPlugin"
     ]
   },
   "depends": {

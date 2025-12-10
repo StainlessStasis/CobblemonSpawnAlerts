@@ -27,10 +27,7 @@ import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
@@ -43,6 +40,7 @@ public class CobblemonSpawnAlerts {
     public static Set<UUID> globallyAlerted = new HashSet<>();
     public static Set<UUID> despawned = new HashSet<>();
     public static Set<UUID> glowing = new HashSet<>();
+    public static Map<UUID, String> waypoints = new HashMap<>(); // Maps entity uuids to waypoint guids
 
     public static void initServer() {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
@@ -151,8 +149,10 @@ public class CobblemonSpawnAlerts {
                 new PokemonTraits(
                         nature,
                         ability,
-                        pokemon.getGender().name())
-                );
+                        pokemon.getGender().name(),
+                        pokemon.getForm().getName()
+                )
+            );
     }
 
     public static DespawnDataPacket createDespawnData(Level level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {

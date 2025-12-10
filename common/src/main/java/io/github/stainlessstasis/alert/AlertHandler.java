@@ -4,9 +4,11 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
+import com.cobblemon.mod.common.api.pokedex.FormDexRecord;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
@@ -88,7 +90,8 @@ public class AlertHandler {
                 new PokemonTraits(
                         pokemon.getNature().getName().getPath(),
                         pokemon.getAbility().getName(),
-                        pokemon.getGender().name()
+                        pokemon.getGender().name(),
+                        pokemon.getForm().getName()
                 )
         ));
     }
@@ -152,7 +155,8 @@ public class AlertHandler {
         }
 
         // Check if should alert for HA
-        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(species, alertData.traits().abilityID());
+        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() &&
+                HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -314,7 +318,7 @@ public class AlertHandler {
         if (Services.PLATFORM.isModLoaded("journeymap") && jmConfig.enableWaypoint()) {
             Vector3f pos = alertData.spawnData().position();
             BlockPos blockPos = new BlockPos((int)pos.x, (int)pos.y, (int)pos.z);
-            JourneymapCompat.createWaypoint(blockPos, pokemonName, alertData.spawnData().dimensionKey(), jmConfig);
+            JourneymapCompat.createWaypoint(blockPos, alertData, jmConfig);
         }
     }
 
@@ -323,6 +327,11 @@ public class AlertHandler {
             return;
         }
         if (CobblemonSpawnAlerts.CLIENT_CONFIG_MANAGER.isReloading()) {
+            return;
+        }
+
+        PokemonConfig.PokemonSpecificConfig pokemonConfig = getConfigForPokemon(despawnData.spawnData().translatedPokemonName(), despawnData.spawnData().dexId()).getSecond();
+        if (!pokemonConfig.alertDespawned()) {
             return;
         }
 
@@ -335,7 +344,7 @@ public class AlertHandler {
             case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
         };
 
-        message = applyDynamicReplacements(message, getConfigForPokemon(despawnData.spawnData().translatedPokemonName(), despawnData.spawnData().dexId()).getSecond(),
+        message = applyDynamicReplacements(message, pokemonConfig,
                 new AlertDataPacket(
                         despawnData.spawnData(),
                         new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
@@ -343,7 +352,8 @@ public class AlertHandler {
                         new PokemonTraits(
                                 Natures.NAUGHTY.getName().getPath(),
                                 Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
-                                Gender.GENDERLESS.name()
+                                Gender.GENDERLESS.name(),
+                                "Normal"
                         )
                 ));
         Component component = ComponentUtil.convertFromAdventure(message);
@@ -540,7 +550,8 @@ public class AlertHandler {
         message = message.replace("{ability_unformatted}", "");
 
         // Hidden Ability
-        boolean shouldAlertHA = config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().abilityID());
+        boolean shouldAlertHA = config.alertHiddenAbility() &&
+                HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID());
         if (shouldAlertHA) {
             message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
             message = message.replace("{HA_unformatted}", Component.translatable(messageTemplates.hidden_ability_unformatted()).getString());

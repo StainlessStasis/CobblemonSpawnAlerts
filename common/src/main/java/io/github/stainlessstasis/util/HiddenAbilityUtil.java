@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.pokemon.FormData;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.abilities.HiddenAbilityType;
 
@@ -14,10 +15,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HiddenAbilityUtil {
-    public static boolean hasHiddenAbility(Species species, String abilityID) {
+    public static boolean hasHiddenAbility(FormData form, String abilityID) {
         final int[] numAbilities = {0};
         Set<String> abilities = new HashSet<>();
-        species.getAbilities().iterator().forEachRemaining(potentialAbility -> {
+        form.getAbilities().iterator().forEachRemaining(potentialAbility -> {
             String abilityName = potentialAbility.getTemplate().getName();
             if (abilities.contains(abilityName)) {
                 return;
@@ -32,7 +33,7 @@ public class HiddenAbilityUtil {
         }
 
         Set<String> hiddenAbilityNames =
-                species.getAbilities().getMapping().values().stream()
+                form.getAbilities().getMapping().values().stream()
                         .flatMap(List::stream)
                         .filter(ability -> ability.getType() == HiddenAbilityType.INSTANCE)
                         .map(PotentialAbility::getTemplate)
@@ -48,12 +49,12 @@ public class HiddenAbilityUtil {
         return hiddenAbilityNames.contains(abilityName);
     }
 
-    public static boolean hasHiddenAbility(int dexID, String abilityID) {
+    public static boolean hasHiddenAbility(int dexID, String formID, String abilityID) {
         Species species = PokemonSpecies.getByPokedexNumber(dexID, Cobblemon.MODID);
         if (species == null) {
             return false;
         }
 
-        return hasHiddenAbility(species, abilityID);
+        return hasHiddenAbility(species.getFormByName(formID), abilityID);
     }
 }

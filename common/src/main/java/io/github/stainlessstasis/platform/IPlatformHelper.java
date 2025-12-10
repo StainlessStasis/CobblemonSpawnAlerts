@@ -3,6 +3,7 @@ package io.github.stainlessstasis.platform;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
+import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -52,7 +53,11 @@ public interface IPlatformHelper {
             CobblemonSpawnAlerts.despawned.add(pokemon.getUuid());
         } else {
             CobblemonSpawnAlerts.despawned.remove(pokemon.getUuid());
-            CobblemonSpawnAlerts.glowing.remove(pokemon.getUuid());
+        }
+
+        CobblemonSpawnAlerts.glowing.remove(pokemon.getUuid());
+        if (isModLoaded("journeymap")) {
+            JourneymapCompat.removeWaypoint(pokemon.getUuid());
         }
     };
 

@@ -2,6 +2,7 @@ package io.github.stainlessstasis.compat;
 
 import io.github.stainlessstasis.config.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.util.DimensionUtil;
 import journeymap.api.v2.client.IClientAPI;
 import journeymap.api.v2.common.waypoint.Waypoint;
@@ -11,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 import java.awt.*;
+import java.util.UUID;
 
 public class JourneymapCompat {
     private static IClientAPI api;
@@ -23,9 +25,9 @@ public class JourneymapCompat {
         JourneymapCompat.api = api;
     }
 
-    public static void createWaypoint(BlockPos pos, String name, String dimensionKey, PokemonConfig.JourneymapConfig jmConfig) {
-        ResourceKey<Level> dimension = DimensionUtil.getDimension(dimensionKey);
-        String waypointName = jmConfig.waypointName().isEmpty() ? name : jmConfig.waypointName();
+    public static void createWaypoint(BlockPos pos, AlertDataPacket alertData, PokemonConfig.JourneymapConfig jmConfig) {
+        ResourceKey<Level> dimension = DimensionUtil.getDimension(alertData.spawnData().dimensionKey());
+        String waypointName = jmConfig.waypointName().isEmpty() ? alertData.spawnData().translatedPokemonName() : jmConfig.waypointName();
 
         Waypoint waypoint = WaypointFactory.createClientWaypoint(CobblemonSpawnAlerts.MOD_ID, pos, waypointName, dimension, jmConfig.persistent());
 
@@ -34,6 +36,18 @@ public class JourneymapCompat {
             waypoint.setColor(color.getRGB());
         }
 
+        CobblemonSpawnAlerts.waypoints.put(alertData.spawnData().pokemonUUID(), waypoint.getGuid());
+
         api.addWaypoint(CobblemonSpawnAlerts.MOD_ID, waypoint);
+    }
+
+    public static void removeWaypoint(UUID uuid) {
+        Waypoint waypoint = api.getWaypoint(CobblemonSpawnAlerts.MOD_ID, CobblemonSpawnAlerts.waypoints.get(uuid));
+        if (waypoint == null) {
+            CobblemonSpawnAlerts.waypoints.remove(uuid);
+            return;
+        }
+        api.removeWaypoint(CobblemonSpawnAlerts.MOD_ID, waypoint);
+        CobblemonSpawnAlerts.waypoints.remove(uuid);
     }
 }

@@ -6,12 +6,13 @@ import io.github.stainlessstasis.alert.StatDisplayMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public record PokemonConfig (String configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs){
+public record PokemonConfig (String configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs) {
     public record PokemonSpecificConfig (
             boolean enabled,
             boolean alwaysAlert,
             boolean alertShiny,
             boolean alertHiddenAbility,
+            boolean alertDespawned,
             boolean showLegendary,
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
@@ -44,7 +45,7 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
-            return new PokemonSpecificConfig(true, true, true, true, true,
+            return new PokemonSpecificConfig(true, true, true, true, true, true,
                     statDisplayModes, "", sounds, "", false,
                     new JourneymapConfig(false, "", "", false)
             );
