@@ -28,6 +28,8 @@ Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-sp
 Unfortunately, no. While it is technically already possible via modifying templates and using custom MiniMessage scripts in your alerts, I will not be adding direct compatibility to the mod. Xaero's is completely closed source, offering no API, no wiki, and no Discord server. I am not going to go through the effort of trying to figure out how to integrate someone's mod when they provide no resources for doing such. However, if someone wants to PR this, I'd love to make compatibility possible.
 ### Rarity bucket alerts?
 No promises on *when*, but yes. It happens when I feel like getting around to it instead of making black hole shaders. Soon™.
+### In-game config editing?
+Again, I can't say when I'll get around to it. The plan right now though is to have it be after rarity buckets, so it's gonna be a bit. It will also require a full rewrite of the config system as well as a system to migrate to the new system, so it won't be any time soon.
 
 ## Config:
 <details>
