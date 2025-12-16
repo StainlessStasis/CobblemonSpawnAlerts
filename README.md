@@ -89,54 +89,6 @@ The following are a sub category of the config for displaying certain info about
 You will also see sounds listed below the stat displays. See the Custom Sounds tab under Config.
 
 ### Examples: <br>
-Show all stats in message:<br>
-```json
-"bidoof": {
-      "enabled": true,
-      "alwaysAlert": true,
-      "alertShiny": true,
-      "alertHiddenAbility": true,
-      "alertDespawned": true,
-      "showLegendary": true,
-      "statDisplayModes": {
-        "level": "MAIN_MESSAGE",
-        "ivs": "MAIN_MESSAGE",
-        "evs": "MAIN_MESSAGE",
-        "nature": "MAIN_MESSAGE",
-        "ability": "MAIN_MESSAGE",
-        "gender": "MAIN_MESSAGE",
-        "coordinates": "MAIN_MESSAGE",
-        "biome": "MAIN_MESSAGE",
-        "nearestPlayer": "MAIN_MESSAGE"
-      },
-      ...other config stuff
-},
-```
-![All stats in main message](https://cdn.modrinth.com/data/cached_images/91a4c7f5079243efff2aba7e84f7044c5f8048c4.png)
-Show all stats in hover:<br>
-```json
-"bidoof": {
-      "enabled": true,
-      "alwaysAlert": true,
-      "alertShiny": true,
-      "alertHiddenAbility": true,
-      "alertDespawned": true,
-      "showLegendary": true,
-      "statDisplayModes": {
-        "level": "HOVER",
-        "ivs": "HOVER",
-        "evs": "HOVER",
-        "nature": "HOVER",
-        "ability": "HOVER",
-        "gender": "HOVER",
-        "coordinates": "HOVER",
-        "biome": "HOVER",
-        "nearestPlayer": "HOVER"
-      },
-      ...other config stuff
-},
-```
-![Hoverable stats](https://cdn.modrinth.com/data/cached_images/b5e4af0678a754053ae022708d1ab867846206a0.png)
 
 <details>
   <summary>Full template example</summary>
@@ -229,6 +181,56 @@ Show all stats in hover:<br>
 }
 ```
 </details>
+
+Show all stats in message:<br>
+```json
+"bidoof": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "alertHiddenAbility": true,
+      "alertDespawned": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "MAIN_MESSAGE",
+        "ivs": "MAIN_MESSAGE",
+        "evs": "MAIN_MESSAGE",
+        "nature": "MAIN_MESSAGE",
+        "ability": "MAIN_MESSAGE",
+        "gender": "MAIN_MESSAGE",
+        "coordinates": "MAIN_MESSAGE",
+        "biome": "MAIN_MESSAGE",
+        "nearestPlayer": "MAIN_MESSAGE"
+      },
+      ...other config stuff
+},
+```
+![All stats in main message](https://cdn.modrinth.com/data/cached_images/91a4c7f5079243efff2aba7e84f7044c5f8048c4.png)
+Show all stats in hover:<br>
+```json
+"bidoof": {
+      "enabled": true,
+      "alwaysAlert": true,
+      "alertShiny": true,
+      "alertHiddenAbility": true,
+      "alertDespawned": true,
+      "showLegendary": true,
+      "statDisplayModes": {
+        "level": "HOVER",
+        "ivs": "HOVER",
+        "evs": "HOVER",
+        "nature": "HOVER",
+        "ability": "HOVER",
+        "gender": "HOVER",
+        "coordinates": "HOVER",
+        "biome": "HOVER",
+        "nearestPlayer": "HOVER"
+      },
+      ...other config stuff
+},
+```
+![Hoverable stats](https://cdn.modrinth.com/data/cached_images/b5e4af0678a754053ae022708d1ab867846206a0.png)
+
 </details>
 
 <details>
@@ -508,4 +510,5 @@ I currently plan to add the following:
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.<br>
+*Note: Please do not send a friend request, I will ignore it. If DMs don't work for some reason then join the Cobblemon server and try again, or ping me in the CSA support channel.*
