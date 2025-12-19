@@ -4,8 +4,10 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 public record MainConfig (
     String configVersion,
+    boolean debug,
     boolean multiplayerWarning,
     boolean alertAllShinies,
+    boolean alertAllHA,
     boolean alertAllLegendaries,
     boolean alertAllMythicals,
     boolean alertAllUltraBeasts,
@@ -19,7 +21,7 @@ public record MainConfig (
     LevelFilter levelFilter
 ) {
     public static MainConfig createDefault() {
-        return new MainConfig(CobblemonSpawnAlerts.MOD_VERSION, true, true, true, true,
+        return new MainConfig(CobblemonSpawnAlerts.MOD_VERSION, false, true, true, true, true, true,
                 true, true,false, false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
                 );

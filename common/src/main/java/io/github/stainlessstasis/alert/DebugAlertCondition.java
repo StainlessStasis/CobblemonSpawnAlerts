@@ -1,0 +1,20 @@
+package io.github.stainlessstasis.alert;
+
+public enum DebugAlertCondition {
+    ALERT_EVERYTHING,
+    ALWAYS_ALERT,
+    ALERT_ALL_SHINY,
+    ALERT_SHINY,
+    ALERT_ALL_HIDDEN_ABILITY,
+    ALERT_HIDDEN_ABILITY,
+    ALERT_ALL_LEGENDARY,
+    ALERT_ALL_MYTHICAL,
+    ALERT_ALL_ULTRA_BEAST,
+    ALERT_ALL_PARADOX,
+    ALERT_ALL_STARTER,
+    IV_HUNTING,
+    EV_HUNTING,
+    ALERT_ALL_UNCAUGHT,
+    ALERT_ALL_NOT_IN_DEX,
+    NONE
+}

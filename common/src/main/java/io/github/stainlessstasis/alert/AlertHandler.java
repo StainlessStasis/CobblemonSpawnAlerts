@@ -132,7 +132,7 @@ public class AlertHandler {
         // Check if should alert for rarity/shiny
         boolean shouldAlertShiny =
                 isInConfig ?
-                        isShiny && pokemonConfig.alertShiny() || mainConfig.alertAllShinies()
+                        isShiny && (pokemonConfig.alertShiny() || mainConfig.alertAllShinies())
                         :
                         isShiny && mainConfig.alertAllShinies();
         boolean shouldAlertLegend = isLegend && mainConfig.alertAllLegendaries();
@@ -156,8 +156,9 @@ public class AlertHandler {
         }
 
         // Check if should alert for HA
-        boolean shouldAlertHA = pokemonConfig.alertHiddenAbility() &&
-                HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID());
+        boolean shouldAlertHA =
+                HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())
+        && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHA());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -224,7 +225,7 @@ public class AlertHandler {
         }
 
         // Finalize alert check
-        boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny;
+        boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny || shouldAlertHA;
         boolean shouldAlertNotInConfig =
                 passesLevelFilter &&
                         (
@@ -241,6 +242,41 @@ public class AlertHandler {
                             || shouldAlertEVs
                             || shouldAlertHA
                         );
+
+        // Debug
+        if (mainConfig.debug()) {
+            DebugAlertCondition alertCondition = DebugAlertCondition.NONE;
+            if (mainConfig.alertEverything()) alertCondition = DebugAlertCondition.ALERT_EVERYTHING;
+            if (pokemonConfig.alwaysAlert()) alertCondition = DebugAlertCondition.ALWAYS_ALERT;
+            if (shouldAlertShiny) {
+                if (mainConfig.alertAllShinies()) {
+                    alertCondition = DebugAlertCondition.ALERT_ALL_SHINY;
+                } else {
+                    alertCondition = DebugAlertCondition.ALERT_SHINY;
+                }
+            }
+            if (shouldAlertHA) {
+                if (mainConfig.alertAllHA()) {
+                    alertCondition = DebugAlertCondition.ALERT_ALL_HIDDEN_ABILITY;
+                } else {
+                    alertCondition = DebugAlertCondition.ALERT_HIDDEN_ABILITY;
+                }
+            }
+            if (shouldAlertLegend) alertCondition = DebugAlertCondition.ALERT_ALL_LEGENDARY;
+            if (shouldAlertMythical) alertCondition = DebugAlertCondition.ALERT_ALL_MYTHICAL;
+            if (shouldAlertUltra) alertCondition = DebugAlertCondition.ALERT_ALL_ULTRA_BEAST;
+            if (shouldAlertParadox) alertCondition = DebugAlertCondition.ALERT_ALL_PARADOX;
+            if (shouldAlertStarter) alertCondition = DebugAlertCondition.ALERT_ALL_STARTER;
+            if (shouldAlertIVs) alertCondition = DebugAlertCondition.IV_HUNTING;
+            if (shouldAlertEVs) alertCondition = DebugAlertCondition.EV_HUNTING;
+            if (shouldAlertUncaught) alertCondition = DebugAlertCondition.ALERT_ALL_UNCAUGHT;
+            if (shouldAlertNotInDex) alertCondition = DebugAlertCondition.ALERT_ALL_NOT_IN_DEX;
+
+            String message = MessageUtils.getTranslated("cobblemon-spawn-alerts.debug_alert_condition", alertCondition.name());
+            message = applyDynamicReplacements(message, pokemonConfig, alertData);
+            Component component = ComponentUtil.convertFromAdventure(message);
+            player.sendSystemMessage(component);
+        }
 
         if (isInConfig) {
             if (!shouldAlertInConfig) {
@@ -396,8 +432,6 @@ public class AlertHandler {
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
-
-        System.out.println(alertData.spawnData().dimensionKey());
 
         int level = alertData.stats().level();
         IVs ivs = alertData.stats().ivs();
