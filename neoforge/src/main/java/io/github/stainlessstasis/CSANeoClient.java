@@ -12,6 +12,7 @@ import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import kotlin.Unit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
 @Mod(value = CobblemonSpawnAlerts.MOD_ID, dist = Dist.CLIENT)
 public class CSANeoClient {
@@ -56,6 +58,11 @@ public class CSANeoClient {
                                                 String uuidString = ctx.getArgument("uuid", String.class);
                                                 return CommandRegistry.handleGlowCommand(uuidString);
                                             }))
+                                    .then(Commands.literal("clear")
+                                            .executes(ctx -> {
+                                                return CommandRegistry.handleGlowClearCommand();
+                                            })
+                                    )
                             ));
         }
 
@@ -82,6 +89,15 @@ public class CSANeoClient {
             if (event.getEntity() instanceof PokemonEntity pe && !doesServerHaveMod) {
                 AlertHandler.alertClientside(pe);
             }
+        }
+
+        @SubscribeEvent
+        public static void onEntityUnload(EntityLeaveLevelEvent event) {
+            if (!(event.getLevel().isClientSide)) {
+                return;
+            }
+
+            CobblemonSpawnAlertsClient.onUnload(event.getEntity(), event.getLevel());
         }
     }
 }

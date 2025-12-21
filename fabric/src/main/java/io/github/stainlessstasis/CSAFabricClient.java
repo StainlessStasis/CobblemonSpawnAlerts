@@ -38,6 +38,7 @@ public class CSAFabricClient implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
         ClientPlayConnectionEvents.JOIN.register(this::onJoin);
         ClientEntityEvents.ENTITY_LOAD.register(this::onEntityLoad);
+        ClientEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
 
        ClientCommandRegistrationCallback.EVENT.register((dispatcher, context) -> {
            dispatcher.register(
@@ -58,6 +59,11 @@ public class CSAFabricClient implements ClientModInitializer {
                                            String uuidString = ctx.getArgument("uuid", String.class);
                                            return CommandRegistry.handleGlowCommand(uuidString);
                                        }))
+                               .then(ClientCommandManager.literal("clear")
+                                       .executes(ctx -> {
+                                           return CommandRegistry.handleGlowClearCommand();
+                                       })
+                               )
                            ));
        });
 
@@ -110,5 +116,9 @@ public class CSAFabricClient implements ClientModInitializer {
         if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
             AlertHandler.alertClientside(pe);
         }
+    }
+
+    private void onEntityUnload(Entity entity, ClientLevel clientLevel) {
+        CobblemonSpawnAlertsClient.onUnload(entity, clientLevel);
     }
 }

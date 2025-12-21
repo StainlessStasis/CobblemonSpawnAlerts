@@ -57,4 +57,9 @@ public class CommandRegistry {
 
         return 1;
     }
+
+    public static int handleGlowClearCommand() {
+        CobblemonSpawnAlertsClient.glowing.clear();
+        return 1;
+    }
 }

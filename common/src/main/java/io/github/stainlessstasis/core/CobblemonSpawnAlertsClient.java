@@ -1,6 +1,11 @@
 package io.github.stainlessstasis.core;
 
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.config.ClientConfigManager;
+import io.github.stainlessstasis.platform.Services;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,5 +21,16 @@ public class CobblemonSpawnAlertsClient {
     public static void initClient() {
         LOGGER.info("CobblemonSpawnAlerts client initializing...");
         CLIENT_CONFIG_MANAGER.loadConfig();
+    }
+
+    public static void onUnload(Entity entity, Level level) {
+        if (Services.PLATFORM.doesServerHaveMod()) return;
+        if (!(entity instanceof PokemonEntity pokemonEntity)) return;
+
+        UUID uuid = pokemonEntity.getPokemon().getUuid();
+        glowing.remove(uuid);
+        if (Services.PLATFORM.isModLoaded("journeymap")) {
+            JourneymapCompat.removeWaypoint(uuid);
+        }
     }
 }
