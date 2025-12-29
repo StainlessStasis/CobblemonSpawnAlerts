@@ -440,7 +440,7 @@ Next up is adding your sound in the config, which is super simple. Whatever your
         "evs": "HOVER",
         "nature": "HOVER",
         "ability": "HOVER",
-        "gender": "DHOVER",
+        "gender": "HOVER",
         "coordinates": "DISABLED",
         "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
