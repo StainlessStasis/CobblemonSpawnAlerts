@@ -24,6 +24,9 @@ But can be modified to look like this, or however you want!
 Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification), all players will be alerted when a rare Pokemon (such as a shiny or legendary) spawns. This can be disabled in the server's `server.json` config for the mod. The server simply sends a packet to all clients, so that each player can individually customize their messages.
 
 ## FAQ:
+### My alerts don't work when using commands?
+This is intended behavior, which I still need to find a better solution for (if one exists). You *can* use `enableSpawnCommandAlerts` in `server.json`, but **use this at your own risk**. This can break spawning of some Pokemon, such as in Cobblemon: Path to Legends.<br>
+*Technical details: This mixins to SpawnPokemon#execute and uses the player spawner system to forcibly post a spawn event.*
 ### Support for Xaero's Minimap waypoints?
 Unfortunately, no. While it is technically already possible via modifying templates and using custom MiniMessage scripts in your alerts, I will not be adding direct compatibility to the mod. Xaero's is completely closed source, offering no API, no wiki, and no Discord server. I am not going to go through the effort of trying to figure out how to integrate someone's mod when they provide no resources for doing such. However, if someone wants to PR this, I'd love to make compatibility possible.
 ### Rarity bucket alerts?
