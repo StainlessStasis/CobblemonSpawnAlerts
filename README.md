@@ -86,8 +86,9 @@ The following are a sub category of the config for displaying certain info about
 * **nature**: Shows the Pokemon's nature.
 * **ability**: Shows the Pokemon's ability.
 * **gender**: Shows the Pokemon's gender.
-* **coordinates**: Shows the Pokemon's coordinates (x/y/z).<br>
+* **coordinates**: Shows the Pokemon's coordinates (x/y/z).
 * **biome**: Shows the biome the Pokemon spawned in.
+* **nearestPlayer**: Shows the nearest player to the spawned Pokemon.
 <br><br>
 You will also see sounds listed below the stat displays. See the Custom Sounds tab under Config.
 
