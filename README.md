@@ -514,5 +514,5 @@ I currently plan to add the following:
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts (ping me so I see your message!). Or, if you'd like, message me directly. I'm looking to make this mod as polished as I can, so hit me up with any bugs or suggestions.<br>
-*Note: Please do not send a friend request, I will ignore it. If DMs don't work for some reason then join the Cobblemon server and try again, or ping me in the CSA support channel.*
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts. Feel free to ping so I see your message.
+*Note: Please do not send a friend request or DM, I will ignore it and redirect you to the Cobblemon server. Only reason I'm choosing to do this now is so future problems can be solved by searching in that channel.*
