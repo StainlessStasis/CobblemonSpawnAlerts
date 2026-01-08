@@ -17,7 +17,7 @@ public class PokemonNameUtil {
     }
 
     public static String getTranslationKey (Pokemon pokemon) {
-        String name = pokemon.getSpecies().getName();
+        String name = fixName(pokemon.getSpecies().getName());
         return "cobblemon.species."+name.toLowerCase()+".name";
     }
 
