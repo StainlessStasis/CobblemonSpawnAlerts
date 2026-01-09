@@ -66,7 +66,8 @@ You can edit the config while the game is running, and simply use the command `/
 The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br>
 
 ### IMPORTANT:
-All custom configs must have the Pokemon's name in the language you are playing on! If you are playing Cobblemon on any language other than English, you must ensure that Pokemon names are written in that language, otherwise the configs will not work! This does not apply to the default config, that will work fine.
+All custom configs must have the Pokemon's name in the language you are playing on! If you are playing Cobblemon on any language other than English, you must ensure that Pokemon names are written in that language, otherwise the configs will not work! This does not apply to the default config, that will work fine.<br>
+Alternatively, you can also use the Pokedex number.
 
 `pokemon.json` is where the bulk of the config is at. By default, the config will come with a default set of options that will be applied to any alert for a Pokemon that is not added to the config. **DO NOT DELETE OR RENAME THIS.** You can freely edit its contents, but leave the name as it is *exactly*. You can copy the formatting and change the name of the Pokemon to add a new spawn message for any other Pokemon.<br>
 ### Config Parameters:<br>
@@ -514,5 +515,5 @@ I currently plan to add the following:
 If you have any other ideas, feel free to share them with me!
 
 ## Feedback | Contact me
-You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts. Feel free to ping so I see your message.
+You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts. Feel free to ping so I see your message.<br>
 *Note: Please do not send a friend request or DM, I will ignore it and redirect you to the Cobblemon server. Only reason I'm choosing to do this now is so future problems can be solved by searching in that channel.*
