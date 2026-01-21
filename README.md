@@ -117,7 +117,7 @@ You will also see sounds listed below the stat displays. See the Custom Sounds t
         "evs": "HOVER",
         "nature": "HOVER",
         "ability": "HOVER",
-        "gender": "DHOVER",
+        "gender": "HOVER",
         "coordinates": "DISABLED",
         "biome": "MAIN_MESSAGE",
         "nearestPlayer": "MAIN_MESSAGE"
