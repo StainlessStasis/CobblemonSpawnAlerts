@@ -1,6 +1,7 @@
 package io.github.stainlessstasis.config;
 
 public record MessageTemplates (
+        String[] comment,
         String fullSpawnMessage,
         String despawnMessage,
         String despawnReason_Despawned,
@@ -51,6 +52,12 @@ public record MessageTemplates (
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
+                new String[]{
+                        "This config is only on your client. It determines how each piece of an alert is displayed, giving you full control over displaying them.",
+                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
+                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
+                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                },
                 "cobblemon-spawn-alerts.default_spawn_message",
                 "cobblemon-spawn-alerts.default_despawn_message",
                 "cobblemon-spawn-alerts.despawn_reason_despawned",

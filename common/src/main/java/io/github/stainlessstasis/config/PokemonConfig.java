@@ -6,7 +6,7 @@ import io.github.stainlessstasis.alert.StatDisplayMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public record PokemonConfig (String configVersion, Map<String, PokemonSpecificConfig> pokemonConfigs) {
+public record PokemonConfig (String configVersion, String[] comment, Map<String, PokemonSpecificConfig> pokemonConfigs) {
     public record PokemonSpecificConfig (
             boolean enabled,
             boolean alwaysAlert,
@@ -45,7 +45,8 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
-            return new PokemonSpecificConfig(true, true, true, true, true, true,
+            return new PokemonSpecificConfig(
+                    true, true, true, true, true, true,
                     statDisplayModes, "", sounds, "", false,
                     new JourneymapConfig(false, "", "", false)
             );
@@ -55,7 +56,16 @@ public record PokemonConfig (String configVersion, Map<String, PokemonSpecificCo
     public static PokemonConfig createDefault() {
         Map<String, PokemonSpecificConfig> defaults = new LinkedHashMap<>();
         defaults.put(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME, PokemonSpecificConfig.createDefault());
-        return new PokemonConfig(CobblemonSpawnAlerts.MOD_VERSION, defaults);
+        return new PokemonConfig(
+                CobblemonSpawnAlerts.MOD_VERSION,
+                new String[]{
+                        "This config is only on your client. It determines which Pokemon are alerted, and how that alert is displayed.",
+                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
+                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
+                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                },
+                defaults
+        );
     }
 
     public record JourneymapConfig(boolean enableWaypoint, String waypointName, String waypointHexColor, boolean persistent) {}

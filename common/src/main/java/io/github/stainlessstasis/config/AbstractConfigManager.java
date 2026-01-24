@@ -61,41 +61,41 @@ public abstract class AbstractConfigManager {
                 return defaultConfig;
             }
 
-        JsonObject userConfigJson = null;
-        try (FileReader reader = new FileReader(file)) {
-            JsonElement json = JsonParser.parseReader(reader);
-            if (json.isJsonObject()) {
-                userConfigJson = json.getAsJsonObject();
-            } else {
-                CobblemonSpawnAlerts.LOGGER.warn("Config file `"+fileName+"` is not a valid JSON object. Overwriting with default.");
+            JsonObject userConfigJson = null;
+            try (FileReader reader = new FileReader(file)) {
+                JsonElement json = JsonParser.parseReader(reader);
+                if (json.isJsonObject()) {
+                    userConfigJson = json.getAsJsonObject();
+                } else {
+                    CobblemonSpawnAlerts.LOGGER.warn("Config file `"+fileName+"` is not a valid JSON object. Overwriting with default.");
+                }
+            } catch (JsonSyntaxException e) {
+                CobblemonSpawnAlerts.LOGGER.error("Config file `"+fileName+"` is corrupted or malformed JSON. Error: " + e.getMessage());
+                return null;
+            } catch (IOException e) {
+                CobblemonSpawnAlerts.LOGGER.error("Failed to read config file `"+fileName+"`. Error: " + e.getMessage());
+                return null;
             }
-        } catch (JsonSyntaxException e) {
-            CobblemonSpawnAlerts.LOGGER.error("Config file `"+fileName+"` is corrupted or malformed JSON. Error: " + e.getMessage());
-            return null;
-        } catch (IOException e) {
-            CobblemonSpawnAlerts.LOGGER.error("Failed to read config file `"+fileName+"`. Error: " + e.getMessage());
-            return null;
-        }
 
-        JsonObject mergedJson = GSON.toJsonTree(defaultConfig).getAsJsonObject();
+            JsonObject mergedJson = GSON.toJsonTree(defaultConfig).getAsJsonObject();
 
-        if (userConfigJson != null) {
-            mergeJsonObjects(mergedJson, userConfigJson);
-        }
-
-        // Auto update config version
-        if (mergedJson.has("configVersion")) {
-            String currentVersion = mergedJson.get("configVersion").getAsString();
-            if (!currentVersion.equals(CobblemonSpawnAlerts.MOD_VERSION)) {
-                mergedJson.add("configVersion", new JsonPrimitive(CobblemonSpawnAlerts.MOD_VERSION));
+            if (userConfigJson != null) {
+                mergeJsonObjects(mergedJson, userConfigJson);
             }
-        }
 
-        if (config.equals(PokemonConfig.class)) {
-            applyPokemonConfigMerge(fileName, mergedJson, userConfigJson, (PokemonConfig) defaultConfig);
-        }
+            // Auto update config version
+            if (mergedJson.has("configVersion")) {
+                String currentVersion = mergedJson.get("configVersion").getAsString();
+                if (!currentVersion.equals(CobblemonSpawnAlerts.MOD_VERSION)) {
+                    mergedJson.add("configVersion", new JsonPrimitive(CobblemonSpawnAlerts.MOD_VERSION));
+                }
+            }
 
-        finalConfig = GSON.fromJson(mergedJson, config);
+            if (config.equals(PokemonConfig.class)) {
+                applyPokemonConfigMerge(fileName, mergedJson, userConfigJson, (PokemonConfig) defaultConfig);
+            }
+
+            finalConfig = GSON.fromJson(mergedJson, config);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             CobblemonSpawnAlerts.LOGGER.error("Something went VERY wrong while trying to load `"+fileName+"`. Error:", e);
@@ -151,19 +151,28 @@ public abstract class AbstractConfigManager {
             for (Map.Entry<String, JsonElement> entry : userPokemonConfigs.entrySet()) {
                 String pokemonName = entry.getKey();
 
-                if (pokemonName.equals(CobblemonSpawnAlerts.DEFAULT_POKEMON_CONFIG_NAME)) {
-                    continue;
-                }
-
                 JsonElement userSpecificConfigElement = entry.getValue();
                 if (userSpecificConfigElement.isJsonObject()) {
                     JsonObject userSpecificConfig = userSpecificConfigElement.getAsJsonObject();
                     JsonObject specificPokemonDefault = GSON.toJsonTree(PokemonConfig.PokemonSpecificConfig.createDefault()).getAsJsonObject();
 
                     mergeJsonObjects(specificPokemonDefault, userSpecificConfig);
+                    fixHexColor(specificPokemonDefault);
                     mergedPokemonConfigs.add(pokemonName, specificPokemonDefault);
                 } else {
                     CobblemonSpawnAlerts.LOGGER.warn("Invalid entry for Pokemon '"+pokemonName+"' in config file `"+fileName+"`. Skipping.");
+                }
+            }
+        }
+    }
+
+    private void fixHexColor(JsonObject configObject) {
+        if (configObject.has("journeyMap") && configObject.get("journeyMap").isJsonObject()) {
+            JsonObject journeymap = configObject.getAsJsonObject("journeyMap");
+            if (journeymap.has("waypointHexColor")) {
+                String hex = journeymap.get("waypointHexColor").getAsString();
+                if (!hex.isEmpty() && !hex.startsWith("#")) {
+                    journeymap.addProperty("waypointHexColor", "#" + hex);
                 }
             }
         }

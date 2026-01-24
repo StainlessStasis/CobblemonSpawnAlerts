@@ -33,7 +33,13 @@ public class JourneymapCompat {
         Waypoint waypoint = WaypointFactory.createClientWaypoint(CobblemonSpawnAlerts.MOD_ID, pos, waypointName, dimension, jmConfig.persistent());
 
         if (!jmConfig.waypointHexColor().isEmpty()) {
-            Color color = Color.decode(jmConfig.waypointHexColor());
+            Color color = Color.WHITE;
+            try {
+                color = Color.decode(jmConfig.waypointHexColor());
+            } catch (NumberFormatException e) {
+                CobblemonSpawnAlerts.LOGGER.error("Cannot create color for waypoint. Check that your hex color is properly formatted (must begin with `#`).");
+                e.printStackTrace();
+            }
             waypoint.setColor(color.getRGB());
         }
 
