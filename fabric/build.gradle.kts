@@ -28,8 +28,9 @@ dependencies {
     modImplementation("com.cobblemon:fabric:${property("cobblemon_version")}") { isTransitive = false }
 
     modImplementation(include("net.kyori:adventure-platform-fabric:5.14.1")!!)
-    modCompileOnlyApi("info.journeymap", "journeymap-api-fabric", property("journeymap_api_version") as String?)
+    modImplementation("info.journeymap", "journeymap-api-fabric", property("journeymap_api_version") as String?)
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
+    modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentFabric"(project(":common", configuration = "namedElements"))

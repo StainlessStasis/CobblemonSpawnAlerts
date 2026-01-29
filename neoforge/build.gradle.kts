@@ -43,8 +43,9 @@ dependencies {
     implementation("net.kyori:adventure-platform-neoforge:6.0.0")
     include("net.kyori:adventure-platform-neoforge:6.0.0")
 
-    compileOnly("info.journeymap", "journeymap-api-neoforge", property("journeymap_api_version") as String?)
+    modImplementation("info.journeymap", "journeymap-api-neoforge", property("journeymap_api_version") as String?)
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_neo_file_id")}")
+    modRuntimeOnly("mysticdrew:common-networking-neoforge:${property("common_networking_version")}")
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {
