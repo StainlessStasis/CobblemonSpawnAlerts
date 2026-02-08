@@ -36,6 +36,10 @@ See above.
 ### In-game editable config?
 See above.
 
+## Known Incompatibilities:
+- BlueMap, or any other mod which bundles the Adventure library. Won't fix - feel free to PR if you know how.
+- Cobblemon Academy 2.0 makes some changes to the configs, causing shinies not to alert by default. In the CSA `main.json` config (use `/csa openconfig` to open the directory), set `alertAllShinies` to true. Then run `/csa reload`. Shiny alerts should work now.
+
 ## Config:
 <details>
 <summary>Config - Main (client)</summary>
