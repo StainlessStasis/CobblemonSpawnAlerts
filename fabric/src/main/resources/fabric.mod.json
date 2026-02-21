@@ -28,6 +28,7 @@
   },
   "depends": {
     "minecraft": "1.21.1",
-    "cobblemon": ">=1.7.0"
+    "cobblemon": ">=1.7.0",
+    "emberstextapi": "*"
   }
 }
