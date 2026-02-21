@@ -27,6 +27,11 @@ public class JourneymapCompat {
     }
 
     public static void createWaypoint(BlockPos pos, AlertDataPacket alertData, PokemonConfig.JourneymapConfig jmConfig) {
+        if (api == null) {
+            CobblemonSpawnAlerts.LOGGER.error("Cannot create waypoint: IClientAPI is null.");
+            return;
+        }
+
         ResourceKey<Level> dimension = DimensionUtil.getDimension(alertData.spawnData().dimensionKey());
         String waypointName = jmConfig.waypointName().isEmpty() ? alertData.spawnData().translatedPokemonName() : jmConfig.waypointName();
 

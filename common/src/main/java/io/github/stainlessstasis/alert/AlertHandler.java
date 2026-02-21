@@ -31,7 +31,10 @@ import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -273,9 +276,17 @@ public class AlertHandler {
             if (shouldAlertNotInDex) alertCondition = DebugAlertCondition.ALERT_ALL_NOT_IN_DEX;
 
             String message = MessageUtils.getTranslated("cobblemon-spawn-alerts.debug_alert_condition", alertCondition.name());
-            message = applyDynamicReplacements(message, pokemonConfig, alertData);
-            Component component = ComponentUtil.convertFromAdventure(message);
-            player.sendSystemMessage(component);
+            StringBuilder debugHoverBuilder = new StringBuilder();
+            message = applyDynamicReplacements(message, pokemonConfig, alertData, debugHoverBuilder);
+            Component messageComponent = ComponentUtil.parseMarkup(message);
+            String debugHoverMarkup = debugHoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
+            Component hoverComponent = ComponentUtil.parseMarkup(debugHoverMarkup);
+            ClickEvent.Action debugClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
+                    ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
+            messageComponent = messageComponent.copy().withStyle(Style.EMPTY
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
+                    .withClickEvent(new ClickEvent(debugClickAction, "/csa glow " + alertData.spawnData().pokemonUUID())));
+            player.sendSystemMessage(messageComponent);
         }
 
         if (isInConfig) {
@@ -298,7 +309,7 @@ public class AlertHandler {
                 SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                 player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
             } else {
-                player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
             }
         }
 
@@ -326,7 +337,7 @@ public class AlertHandler {
                         SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                         player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                     } else {
-                        player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                        player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
                     }
                 }
             }
@@ -339,16 +350,23 @@ public class AlertHandler {
 
         // send the custom alert if one exits
         String message;
+        StringBuilder hoverBuilder = new StringBuilder();
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
-            message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData);
-            MessageUtils.sendTranslated(message);
+            message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData, hoverBuilder);
         } else {
             // use the default message if no custom one is provided
             message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
-            message = applyDynamicReplacements(message, pokemonConfig, alertData);
-            Component component = ComponentUtil.convertFromAdventure(message);
-            player.sendSystemMessage(component);
+            message = applyDynamicReplacements(message, pokemonConfig, alertData, hoverBuilder);
         }
+        Component spawnComponent = ComponentUtil.parseMarkup(message);
+        String spawnHoverMarkup = hoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
+        Component spawnHoverComponent = ComponentUtil.parseMarkup(spawnHoverMarkup);
+        ClickEvent.Action spawnClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
+                ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
+        spawnComponent = spawnComponent.copy().withStyle(Style.EMPTY
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, spawnHoverComponent))
+                .withClickEvent(new ClickEvent(spawnClickAction, "/csa glow " + alertData.spawnData().pokemonUUID())));
+        player.sendSystemMessage(spawnComponent);
 
         // journeymap compat
         PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();
@@ -386,20 +404,28 @@ public class AlertHandler {
             case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
         };
 
-        message = applyDynamicReplacements(message, pokemonConfig,
-                new AlertDataPacket(
-                        despawnData.spawnData(),
-                        new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
-                        despawnData.rarity(),
-                        new PokemonTraits(
-                                Natures.NAUGHTY.getName().getPath(),
-                                Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
-                                Gender.GENDERLESS.name(),
-                                "Normal"
-                        )
-                ));
-        Component component = ComponentUtil.convertFromAdventure(message);
-        player.sendSystemMessage(component);
+        AlertDataPacket despawnAlertData = new AlertDataPacket(
+                despawnData.spawnData(),
+                new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
+                despawnData.rarity(),
+                new PokemonTraits(
+                        Natures.NAUGHTY.getName().getPath(),
+                        Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
+                        Gender.GENDERLESS.name(),
+                        "Normal"
+                )
+        );
+        StringBuilder despawnHoverBuilder = new StringBuilder();
+        message = applyDynamicReplacements(message, pokemonConfig, despawnAlertData, despawnHoverBuilder);
+        Component despawnComponent = ComponentUtil.parseMarkup(message);
+        String despawnHoverMarkup = despawnHoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
+        Component despawnHoverComponent = ComponentUtil.parseMarkup(despawnHoverMarkup);
+        ClickEvent.Action despawnClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
+                ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
+        despawnComponent = despawnComponent.copy().withStyle(Style.EMPTY
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, despawnHoverComponent))
+                .withClickEvent(new ClickEvent(despawnClickAction, "/csa glow " + despawnAlertData.spawnData().pokemonUUID())));
+        player.sendSystemMessage(despawnComponent);
     }
 
     public static Pair<Boolean, PokemonConfig.PokemonSpecificConfig> getConfigForPokemon(String pokemonName, int dexID) {
@@ -430,7 +456,7 @@ public class AlertHandler {
 
     }
 
-    public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
+    public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
 
         int level = alertData.stats().level();
@@ -447,7 +473,6 @@ public class AlertHandler {
         message = message.replace("{name_lower}", pokemonName.toLowerCase());
         message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
-        String hoverText = "";
         Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
         StatDisplayMode levelDisplayMode = displayModes.get("level");
         StatDisplayMode ivsDisplayMode = displayModes.get("ivs");
@@ -495,7 +520,7 @@ public class AlertHandler {
             String levelMessage = Component.translatable(configMessage, level).getString();
 
             if (isHoverEnabled) {
-                hoverText += levelMessage + "\n";
+                hoverBuilder.append(levelMessage).append("\n");
             } else {
                 message = message.replace("{level}", levelMessage);
             }
@@ -516,7 +541,7 @@ public class AlertHandler {
                     Component.translatable(configMessage,
                             "-", "-", "-", "-", "-", "-").getString();
             if (isHoverEnabled) {
-                hoverText += ivsMessage + "\n";
+                hoverBuilder.append(ivsMessage).append("\n");
             } else {
                 message = message.replace("{ivs}", ivsMessage);
             }
@@ -540,7 +565,7 @@ public class AlertHandler {
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
                             evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
-                hoverText += evsMessage + "\n";
+                hoverBuilder.append(evsMessage).append("\n");
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
@@ -561,7 +586,7 @@ public class AlertHandler {
             natureString = replaceIfNotAvailable(natureString);
             String natureMessage = Component.translatable(configMessage, natureString).getString();
             if (isHoverEnabled) {
-                hoverText += natureMessage + "\n";
+                hoverBuilder.append(natureMessage).append("\n");
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
@@ -579,7 +604,7 @@ public class AlertHandler {
             abilityString = replaceIfNotAvailable(abilityString);
             String abilityMessage = Component.translatable(configMessage, abilityString).getString();
             if (isHoverEnabled) {
-                hoverText += abilityMessage + "\n";
+                hoverBuilder.append(abilityMessage).append("\n");
             } else {
                 message = message.replace("{ability}", abilityMessage);
             }
@@ -612,7 +637,7 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
             String genderMessage = Component.translatable(configMessage, genderString).getString();
             if (isHoverEnabled) {
-                hoverText += genderMessage + "\n";
+                hoverBuilder.append(genderMessage).append("\n");
             } else {
                 message = message.replace("{gender}", genderMessage);
             }
@@ -629,7 +654,7 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
             String coordsMessage = Component.translatable(configMessage, (int)coords.x, (int)coords.y, (int)coords.z).getString();
             if (isHoverEnabled) {
-                hoverText += coordsMessage + "\n";
+                hoverBuilder.append(coordsMessage).append("\n");
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
@@ -647,7 +672,7 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
             String biomeMessage = Component.translatable(configMessage, biomeName).getString();
             if (isHoverEnabled) {
-                hoverText += biomeMessage + "\n";
+                hoverBuilder.append(biomeMessage).append("\n");
             } else {
                 message = message.replace("{biome}", biomeMessage);
             }
@@ -663,7 +688,7 @@ public class AlertHandler {
             String nearestPlayerMessage = Component.translatable(configMessage, nearestPlayer).getString();
 
             if (isHoverEnabled) {
-                hoverText += nearestPlayerMessage + "\n";
+                hoverBuilder.append(nearestPlayerMessage).append("\n");
             } else {
                 message = message.replace("{nearest_player}", nearestPlayerMessage);
             }
@@ -671,19 +696,6 @@ public class AlertHandler {
         }
         message = message.replace("{nearest_player}", "");
         message = message.replace("{nearest_player_unformatted}", "");
-
-        // Hover
-        hoverText += "<green>Click to toggle glow</green>";
-        message = "<hover:show_text:\"" + hoverText + "\">" + message + "</hover>";
-
-        // Glow click
-        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
-            message = "<click:run_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
-        } else {
-            // so yeah uh for some fucking reason i cant comprehend, neo SPECIFICALLY does not work with run_command for this command.
-            // i dont know why. i dont know how. i dont know where. i dont know when. i dont know who. i dont know what. i dont know.
-            message = "<click:suggest_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
-        }
 
         return message;
     }

@@ -9,6 +9,9 @@ import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.util.AlertUtil;
 import kotlin.Unit;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +20,9 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
+import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
+import net.tysontheember.emberstextapi.util.StyleUtil;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -92,5 +98,20 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     @Override
     public boolean doesServerHaveMod() {
         return CSANeoClient.doesServerHaveMod;
+    }
+
+    @Override
+    public Component parseMarkup(String markup) {
+        List<TextSpan> spans = MarkupParser.parse(markup);
+        MutableComponent result = Component.empty();
+        for (TextSpan span : spans) {
+            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
+            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
+            if (span.getColor() != null) {
+                style = style.withColor(span.getColor());
+            }
+            result.append(Component.literal(span.getContent()).withStyle(style));
+        }
+        return result;
     }
 }
