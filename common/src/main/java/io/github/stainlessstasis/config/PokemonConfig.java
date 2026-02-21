@@ -16,6 +16,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             boolean showLegendary,
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
+            String customAlertTooltip,
+            String customAlertClickEvent,
             Map<String, String> sounds,
             String customAlertSound,
             boolean autoGlow,
@@ -47,7 +49,7 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
 
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true,
-                    statDisplayModes, "", sounds, "", false,
+                    statDisplayModes, "", "", "", sounds, "", false,
                     new JourneymapConfig(false, "", "", false)
             );
         }

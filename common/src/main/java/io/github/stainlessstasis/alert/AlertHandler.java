@@ -4,11 +4,9 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
-import com.cobblemon.mod.common.api.pokedex.FormDexRecord;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
@@ -30,8 +28,10 @@ import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -43,6 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AlertHandler {
     private static final HashSet<UUID> alreadyAlerted = new HashSet<>();
+    private record FormattedMessage(String message, String hoverText) {}
 
     public static void clearCache() {
         alreadyAlerted.clear();
@@ -158,7 +159,7 @@ public class AlertHandler {
         // Check if should alert for HA
         boolean shouldAlertHA =
                 HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())
-        && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHA());
+                        && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHA());
 
         // Check if should alert for IV and EV hunting
         final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -171,23 +172,23 @@ public class AlertHandler {
             boolean meetsMinReqs = false;
             if (ivHunting.requireAllMinimumsMet()) {
                 if (
-                    (ivHunting.minHp() <= 0 || ivs.get(Stats.HP) >= ivHunting.minHp())
-                    && (ivHunting.minAtk() <= 0 || ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
-                    && (ivHunting.minDef() <= 0 || ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
-                    && (ivHunting.minSpAtk() <= 0 || ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
-                    && (ivHunting.minSpDef() <= 0 || ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
-                    && (ivHunting.minSpeed() <= 0 || ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
+                        (ivHunting.minHp() <= 0 || ivs.get(Stats.HP) >= ivHunting.minHp())
+                                && (ivHunting.minAtk() <= 0 || ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
+                                && (ivHunting.minDef() <= 0 || ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
+                                && (ivHunting.minSpAtk() <= 0 || ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
+                                && (ivHunting.minSpDef() <= 0 || ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
+                                && (ivHunting.minSpeed() <= 0 || ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
                 ) {
                     meetsMinReqs = true;
                 }
             } else {
                 if (
-                    (ivHunting.minHp() > 0 && ivs.get(Stats.HP) >= ivHunting.minHp())
-                    || (ivHunting.minAtk() > 0 && ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
-                    || (ivHunting.minDef() > 0 && ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
-                    || (ivHunting.minSpAtk() > 0 && ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
-                    || (ivHunting.minSpDef() > 0 && ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
-                    || (ivHunting.minSpeed() > 0 && ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
+                        (ivHunting.minHp() > 0 && ivs.get(Stats.HP) >= ivHunting.minHp())
+                                || (ivHunting.minAtk() > 0 && ivs.get(Stats.ATTACK) >= ivHunting.minAtk())
+                                || (ivHunting.minDef() > 0 && ivs.get(Stats.DEFENCE) >= ivHunting.minDef())
+                                || (ivHunting.minSpAtk() > 0 && ivs.get(Stats.SPECIAL_ATTACK) >= ivHunting.minSpAtk())
+                                || (ivHunting.minSpDef() > 0 && ivs.get(Stats.SPECIAL_DEFENCE) >= ivHunting.minSpDef())
+                                || (ivHunting.minSpeed() > 0 && ivs.get(Stats.SPEED) >= ivHunting.minSpeed())
                 ) {
                     meetsMinReqs = true;
                 }
@@ -205,12 +206,12 @@ public class AlertHandler {
             final EVs evs = alertData.stats().evYield();
 
             shouldAlertEVs =
-                (evHunting.minHp() > 0 && evs.get(Stats.HP) >= evHunting.minHp())
-                || (evHunting.minAtk() > 0 && evs.get(Stats.ATTACK) >= evHunting.minAtk())
-                || (evHunting.minDef() > 0 && evs.get(Stats.DEFENCE) >= evHunting.minDef())
-                || (evHunting.minSpAtk() > 0 && evs.get(Stats.SPECIAL_ATTACK) >= evHunting.minSpAtk())
-                || (evHunting.minSpDef() > 0 && evs.get(Stats.SPECIAL_DEFENCE) >= evHunting.minSpDef())
-                || (evHunting.minSpeed() > 0 && evs.get(Stats.SPEED) >= evHunting.minSpeed());
+                    (evHunting.minHp() > 0 && evs.get(Stats.HP) >= evHunting.minHp())
+                            || (evHunting.minAtk() > 0 && evs.get(Stats.ATTACK) >= evHunting.minAtk())
+                            || (evHunting.minDef() > 0 && evs.get(Stats.DEFENCE) >= evHunting.minDef())
+                            || (evHunting.minSpAtk() > 0 && evs.get(Stats.SPECIAL_ATTACK) >= evHunting.minSpAtk())
+                            || (evHunting.minSpDef() > 0 && evs.get(Stats.SPECIAL_DEFENCE) >= evHunting.minSpDef())
+                            || (evHunting.minSpeed() > 0 && evs.get(Stats.SPEED) >= evHunting.minSpeed());
         }
 
         // Check level filter
@@ -229,18 +230,18 @@ public class AlertHandler {
         boolean shouldAlertNotInConfig =
                 passesLevelFilter &&
                         (
-                            shouldAlertShiny
-                            || shouldAlertLegend
-                            || shouldAlertMythical
-                            || shouldAlertUltra
-                            || shouldAlertParadox
-                            || shouldAlertStarter
-                            || shouldAlertNotInDex
-                            || shouldAlertUncaught
-                            || mainConfig.alertEverything()
-                            || shouldAlertIVs
-                            || shouldAlertEVs
-                            || shouldAlertHA
+                                shouldAlertShiny
+                                        || shouldAlertLegend
+                                        || shouldAlertMythical
+                                        || shouldAlertUltra
+                                        || shouldAlertParadox
+                                        || shouldAlertStarter
+                                        || shouldAlertNotInDex
+                                        || shouldAlertUncaught
+                                        || mainConfig.alertEverything()
+                                        || shouldAlertIVs
+                                        || shouldAlertEVs
+                                        || shouldAlertHA
                         );
 
         // Debug
@@ -337,18 +338,18 @@ public class AlertHandler {
             CobblemonSpawnAlertsClient.glowing.add(alertData.spawnData().pokemonUUID());
         }
 
-        // send the custom alert if one exits
-        String message;
+        // send the custom alert if one exists
+        String messageTemplate;
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
-            message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData);
-            MessageUtils.sendTranslated(message);
+            messageTemplate = pokemonConfig.customAlertMessage();
         } else {
             // use the default message if no custom one is provided
-            message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
-            message = applyDynamicReplacements(message, pokemonConfig, alertData);
-            Component component = ComponentUtil.convertFromAdventure(message);
-            player.sendSystemMessage(component);
+            messageTemplate = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
         }
+
+        FormattedMessage formattedMessage = applyDynamicReplacementsWithHover(messageTemplate, pokemonConfig, alertData);
+        Component component = ComponentUtil.convertFromAdventure(formattedMessage.message());
+        player.sendSystemMessage(applyMessageInteractions(component, formattedMessage.hoverText(), pokemonConfig, alertData));
 
         // journeymap compat
         PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();
@@ -431,6 +432,10 @@ public class AlertHandler {
     }
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
+        return applyDynamicReplacementsWithHover(message, config, alertData).message();
+    }
+
+    private static FormattedMessage applyDynamicReplacementsWithHover(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
 
         int level = alertData.stats().level();
@@ -537,16 +542,16 @@ public class AlertHandler {
             boolean isHoverEnabled = evsDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
             String evsMessage = Component.translatable(configMessage,
-                            evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
+                    evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
+                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
                 hoverText += evsMessage + "\n";
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
             String evsUnformatted = Component.translatable(messageTemplates.evs_unformatted(),
-                            evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                            evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
+                    evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
+                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             message = message.replace("{evs_unformatted}", evsUnformatted);
         }
         message = message.replace("{evs}", "");
@@ -672,20 +677,80 @@ public class AlertHandler {
         message = message.replace("{nearest_player}", "");
         message = message.replace("{nearest_player_unformatted}", "");
 
-        // Hover
-        hoverText += "<green>Click to toggle glow</green>";
-        message = "<hover:show_text:\"" + hoverText + "\">" + message + "</hover>";
+        return new FormattedMessage(message, hoverText);
+    }
 
-        // Glow click
-        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
-            message = "<click:run_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
+    private static Component applyMessageInteractions(
+            Component component,
+            String hoverText,
+            PokemonConfig.PokemonSpecificConfig config,
+            AlertDataPacket alertData
+    ) {
+        String customTooltip = config.customAlertTooltip();
+        String finalHoverText;
+        if (customTooltip != null && !customTooltip.isEmpty()) {
+            finalHoverText = applyDynamicReplacements(customTooltip, config, alertData);
         } else {
-            // so yeah uh for some fucking reason i cant comprehend, neo SPECIFICALLY does not work with run_command for this command.
-            // i dont know why. i dont know how. i dont know where. i dont know when. i dont know who. i dont know what. i dont know.
-            message = "<click:suggest_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
+            if (!hoverText.isEmpty() && !hoverText.endsWith("\n")) {
+                hoverText += "\n";
+            }
+            finalHoverText = hoverText + "<green>Click to toggle glow</green>";
         }
 
-        return message;
+        ClickEvent clickEvent = getDefaultGlowClickEvent(alertData);
+        String customClickEvent = config.customAlertClickEvent();
+        if (customClickEvent != null && !customClickEvent.isEmpty()) {
+            String replacedClickEvent = applyDynamicReplacements(customClickEvent, config, alertData);
+            ClickEvent parsedClickEvent = parseClickEvent(replacedClickEvent);
+            if (parsedClickEvent != null) {
+                clickEvent = parsedClickEvent;
+            } else {
+                CobblemonSpawnAlerts.LOGGER.warn("Invalid customAlertClickEvent '{}'. Falling back to glow toggle click.", replacedClickEvent);
+            }
+        }
+
+        MutableComponent output = component.copy();
+        if (!finalHoverText.isEmpty()) {
+            Component hoverComponent = ComponentUtil.convertFromAdventure(finalHoverText);
+            output = output.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent)));
+        }
+
+        final ClickEvent finalClickEvent = clickEvent;
+        return output.withStyle(style -> style.withClickEvent(finalClickEvent));
+    }
+
+    private static ClickEvent getDefaultGlowClickEvent(AlertDataPacket alertData) {
+        String glowCommand = "/csa glow " + alertData.spawnData().pokemonUUID();
+        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
+            return new ClickEvent(ClickEvent.Action.RUN_COMMAND, glowCommand);
+        }
+
+        // Neo specifically does not run this command from RUN_COMMAND reliably.
+        return new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, glowCommand);
+    }
+
+    private static ClickEvent parseClickEvent(String eventDefinition) {
+        String[] split = eventDefinition.split(":", 2);
+        if (split.length != 2 || split[1].isEmpty()) {
+            return null;
+        }
+
+        String action = split[0].trim().toLowerCase(Locale.ROOT);
+        String value = split[1];
+        ClickEvent.Action clickAction = switch (action) {
+            case "open_url" -> ClickEvent.Action.OPEN_URL;
+            case "open_file" -> ClickEvent.Action.OPEN_FILE;
+            case "run_command" -> ClickEvent.Action.RUN_COMMAND;
+            case "suggest_command" -> ClickEvent.Action.SUGGEST_COMMAND;
+            case "change_page" -> ClickEvent.Action.CHANGE_PAGE;
+            case "copy_to_clipboard" -> ClickEvent.Action.COPY_TO_CLIPBOARD;
+            default -> null;
+        };
+
+        if (clickAction == null) {
+            return null;
+        }
+        return new ClickEvent(clickAction, value);
     }
 
     private static String replaceIfNotAvailable(String string) {

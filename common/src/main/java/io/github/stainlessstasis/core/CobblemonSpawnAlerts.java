@@ -6,6 +6,9 @@ import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
+import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools;
+import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
+import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
@@ -13,14 +16,12 @@ import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.stat.CobblemonStatProvider;
 import io.github.stainlessstasis.alert.DespawnReason;
-import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.config.CommonConfigManager;
 import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import kotlin.Unit;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
@@ -43,38 +45,38 @@ public class CobblemonSpawnAlerts {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
         COMMON_CONFIG_MANAGER.loadConfig();
 
-        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, evt -> {
-            Services.PLATFORM.onPokemonSpawned(evt.getEntity());
+        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
+            Services.PLATFORM.onPokemonSpawned(event.getEntity());
             return Unit.INSTANCE;
         });
 
-        CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, evt -> {
-            if (CobblemonSpawnAlerts.globallyAlerted.contains(evt.getPokemon().getUuid())) {
-                Services.PLATFORM.onPokemonDespawned(evt.getPlayer().level(), evt.getPokemon(), evt.getPlayer().getName().getString(), DespawnReason.CAPTURED);
+        CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, event -> {
+            if (CobblemonSpawnAlerts.globallyAlerted.contains(event.getPokemon().getUuid())) {
+                Services.PLATFORM.onPokemonDespawned(event.getPlayer().level(), event.getPokemon(), event.getPlayer().getName().getString(), DespawnReason.CAPTURED);
             }
             return Unit.INSTANCE;
         });
 
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, evt -> {
-            if (evt.getKilled().getEntity() == null) {
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, event -> {
+            if (event.getKilled().getEntity() == null) {
                 return Unit.INSTANCE;
             }
-            Pokemon pokemon = evt.getKilled().getEntity().getPokemon();
+            Pokemon pokemon = event.getKilled().getEntity().getPokemon();
 
-            if (pokemon.getOwnerUUID() != null || !evt.getBattle().isPvW() || !CobblemonSpawnAlerts.globallyAlerted.contains(pokemon.getUuid())) {
+            if (pokemon.getOwnerUUID() != null || !event.getBattle().isPvW() || !CobblemonSpawnAlerts.globallyAlerted.contains(pokemon.getUuid())) {
                 return Unit.INSTANCE;
             }
 
-            Optional<UUID> uuid = StreamSupport.stream(evt.getBattle().getPlayerUUIDs().spliterator(), false).findFirst();
+            Optional<UUID> uuid = StreamSupport.stream(event.getBattle().getPlayerUUIDs().spliterator(), false).findFirst();
             String playerName = "N/A";
             if (uuid.isPresent()) {
-                Player player = evt.getKilled().getEntity().level().getPlayerByUUID(uuid.get());
+                Player player = event.getKilled().getEntity().level().getPlayerByUUID(uuid.get());
                 if (player != null) {
                     playerName = player.getName().getString();
                 }
             }
 
-            Services.PLATFORM.onPokemonDespawned(evt.getKilled().getEntity().level(), pokemon, playerName, DespawnReason.FAINTED);
+            Services.PLATFORM.onPokemonDespawned(event.getKilled().getEntity().level(), pokemon, playerName, DespawnReason.FAINTED);
 
             return Unit.INSTANCE;
         });
