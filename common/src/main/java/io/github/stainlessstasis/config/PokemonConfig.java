@@ -53,7 +53,7 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
 
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true, true,
-                    statDisplayModes, "", "", "", sounds, "", false, "#FFFFFF",
+                    statDisplayModes, "", "", "", sounds, "", false, "#FFFFFFFF",
                     new JourneymapConfig(false, "", "", false)
             );
         }
