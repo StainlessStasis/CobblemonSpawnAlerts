@@ -44,7 +44,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void onPokemonSpawned(PokemonEntity pokemonEntity) {
+    public void onPokemonSpawned(PokemonEntity pokemonEntity, String bucketName) {
         ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
@@ -55,12 +55,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : players) {
-                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity));
+                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucketName));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont overload the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity)) {
+            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucketName)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
