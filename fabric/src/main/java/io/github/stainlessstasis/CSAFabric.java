@@ -29,26 +29,11 @@ public class CSAFabric implements ModInitializer {
 
 		CommandRegistrationCallback.EVENT.register(CommandRegistry::registerServerCommands);
 		ServerPlayConnectionEvents.JOIN.register(this::onPlayerJoin);
-		ServerEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
 
 		PayloadTypeRegistry.playS2C().register(PokemonDataPacket.ID, PokemonDataPacket.STREAM_CODEC);
 		PayloadTypeRegistry.playS2C().register(AlertDataPacket.ID, AlertDataPacket.STREAM_CODEC);
 		PayloadTypeRegistry.playS2C().register(DespawnDataPacket.ID, DespawnDataPacket.STREAM_CODEC);
 		PayloadTypeRegistry.playS2C().register(ModLoadedPacket.ID, ModLoadedPacket.STREAM_CODEC);
-	}
-
-	private void onEntityUnload(Entity entity, ServerLevel serverLevel) {
-		if (entity instanceof PokemonEntity pokemonEntity && pokemonEntity.getOwnerUUID() == null
-				&& CobblemonSpawnAlerts.globallyAlerted.contains(pokemonEntity.getPokemon().getUuid())) {
-			new ScheduledTask.Builder().delay(5f).execute(task -> {
-				if (CobblemonSpawnAlerts.despawned.contains(pokemonEntity.getPokemon().getUuid())) {
-					CobblemonSpawnAlerts.despawned.remove(pokemonEntity.getPokemon().getUuid());
-					return Unit.INSTANCE;
-				}
-				Services.PLATFORM.onPokemonDespawned(serverLevel, pokemonEntity.getPokemon(), "N/A", DespawnReason.DESPAWNED);
-				return Unit.INSTANCE;
-			}).build();
-		}
 	}
 
 	private void onPlayerJoin(ServerGamePacketListenerImpl serverGamePacketListener, PacketSender packetSender, MinecraftServer minecraftServer) {

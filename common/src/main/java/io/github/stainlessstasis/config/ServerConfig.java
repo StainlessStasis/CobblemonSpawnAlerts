@@ -1,15 +1,21 @@
 package io.github.stainlessstasis.config;
 
+import io.github.stainlessstasis.util.RarityUtil;
+
+import java.util.Set;
+
 public record ServerConfig (
     String[] comment,
     boolean enableSpawnCommandAlerts,
     boolean alertShinies,
+    boolean broadcastShiny,
     boolean alertLegendaries,
     boolean alertMythicals,
     boolean alertUltraBeasts,
     boolean alertParadox,
     boolean alertStarters,
     boolean alertHiddenAbility,
+    Set<RarityUtil.Bucket> bucketsToAlert,
     boolean broadcastIVs,
     boolean broadcastEVs,
     boolean broadcastNature,
@@ -25,8 +31,8 @@ public record ServerConfig (
                         "https://modrinth.com/mod/cobblemon-spawn-alerts",
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
-                false, true, true, true, true, true,
-                false, false, true, true, true, true
+                false, true, true, true, true, true, true,
+                false, false, Set.of(RarityUtil.Bucket.ULTRA_RARE), true, true, true, true
         );
     }
 }

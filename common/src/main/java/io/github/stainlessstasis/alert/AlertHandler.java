@@ -4,11 +4,9 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
-import com.cobblemon.mod.common.api.pokedex.FormDexRecord;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
@@ -25,12 +23,10 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
-import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -375,6 +371,9 @@ public class AlertHandler {
         if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) {
             return;
         }
+        if (!alreadyAlerted.contains(despawnData.spawnData().pokemonUUID())) {
+            return;
+        }
 
         CobblemonSpawnAlertsClient.glowing.remove(despawnData.spawnData().pokemonUUID());
         if (Services.PLATFORM.isModLoaded("journeymap")) {
@@ -393,6 +392,7 @@ public class AlertHandler {
             case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), despawnData.playerName()).getString());
             case DESPAWNED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Despawned()).getString());
             case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
+            case DIED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Died()).getString());
         };
 
         AlertDataPacket despawnAlertData = new AlertDataPacket(
@@ -486,6 +486,7 @@ public class AlertHandler {
                 case UNCOMMON -> messageTemplates.uncommon();
                 case RARE -> messageTemplates.rare();
                 case ULTRA_RARE -> messageTemplates.ultra_rare();
+                case NONE -> "";
             };
 
             bucketMessage = Component.translatable(bucketMessage).getString();
@@ -586,14 +587,14 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
             String natureString = nature != null ? MiscUtilsKt.asTranslated(nature.getDisplayName()).getString() : "N/A";
             natureString = StringUtil.capitalize(natureString);
-            natureString = replaceIfNotAvailable(natureString);
+            natureString = AlertUtil.replaceIfNotAvailable(natureString);
             String natureMessage = Component.translatable(configMessage, natureString).getString();
             if (isHoverEnabled) {
                 hoverBuilder.append(natureMessage).append("\n");
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
-            String natureUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
+            String natureUnformatted = AlertUtil.replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
             message = message.replace("{nature_unformatted}", natureUnformatted);
         }
         message = message.replace("{nature}", "");
@@ -604,14 +605,14 @@ public class AlertHandler {
             boolean isHoverEnabled = abilityDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.ability_hover() : messageTemplates.ability();
             String abilityString = ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A";
-            abilityString = replaceIfNotAvailable(abilityString);
+            abilityString = AlertUtil.replaceIfNotAvailable(abilityString);
             String abilityMessage = Component.translatable(configMessage, abilityString).getString();
             if (isHoverEnabled) {
                 hoverBuilder.append(abilityMessage).append("\n");
             } else {
                 message = message.replace("{ability}", abilityMessage);
             }
-            String abilityUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
+            String abilityUnformatted = AlertUtil.replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
             message = message.replace("{ability_unformatted}", abilityUnformatted);
         }
         message = message.replace("{ability}", "");
@@ -720,11 +721,11 @@ public class AlertHandler {
             finalHoverText = hoverText + "<color value=#55FF55>Click to toggle glow</color>";
         }
 
-        ClickEvent clickEvent = getDefaultGlowClickEvent(alertData);
+        ClickEvent clickEvent = AlertUtil.getDefaultGlowClickEvent(alertData);
         String customClickEvent = config.customAlertClickEvent();
         if (customClickEvent != null && !customClickEvent.isEmpty()) {
             String replacedClickEvent = applyDynamicReplacements(customClickEvent, config, alertData, new StringBuilder(hoverText));
-            ClickEvent parsedClickEvent = parseClickEvent(replacedClickEvent);
+            ClickEvent parsedClickEvent = AlertUtil.parseClickEvent(replacedClickEvent);
             if (parsedClickEvent != null) {
                 clickEvent = parsedClickEvent;
             } else {
@@ -740,46 +741,5 @@ public class AlertHandler {
 
         final ClickEvent finalClickEvent = clickEvent;
         return output.withStyle(style -> style.withClickEvent(finalClickEvent));
-    }
-
-    private static ClickEvent getDefaultGlowClickEvent(AlertDataPacket alertData) {
-        String glowCommand = "/csa glow " + alertData.spawnData().pokemonUUID();
-        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
-            return new ClickEvent(ClickEvent.Action.RUN_COMMAND, glowCommand);
-        }
-
-        // Neo specifically does not run this command from RUN_COMMAND reliably.
-        return new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, glowCommand);
-    }
-
-    private static ClickEvent parseClickEvent(String eventDefinition) {
-        String[] split = eventDefinition.split(":", 2);
-        if (split.length != 2 || split[1].isEmpty()) {
-            return null;
-        }
-
-        String action = split[0].trim().toLowerCase(Locale.ROOT);
-        String value = split[1];
-        ClickEvent.Action clickAction = switch (action) {
-            case "open_url" -> ClickEvent.Action.OPEN_URL;
-            case "open_file" -> ClickEvent.Action.OPEN_FILE;
-            case "run_command" -> ClickEvent.Action.RUN_COMMAND;
-            case "suggest_command" -> ClickEvent.Action.SUGGEST_COMMAND;
-            case "change_page" -> ClickEvent.Action.CHANGE_PAGE;
-            case "copy_to_clipboard" -> ClickEvent.Action.COPY_TO_CLIPBOARD;
-            default -> null;
-        };
-
-        if (clickAction == null) {
-            return null;
-        }
-        return new ClickEvent(clickAction, value);
-    }
-
-    private static String replaceIfNotAvailable(String string) {
-        if (!Services.PLATFORM.doesServerHaveMod()) {
-            return "N/A";
-        }
-        return string;
     }
 }

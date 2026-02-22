@@ -24,7 +24,8 @@ public class RarityUtil {
         COMMON("common", 0),
         UNCOMMON("uncommon", 1),
         RARE("rare", 2),
-        ULTRA_RARE("ultra_rare", 3);
+        ULTRA_RARE("ultra_rare", 3),
+        NONE("none", 4);
 
         private final String name;
         private final int id;

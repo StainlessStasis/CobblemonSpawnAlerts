@@ -105,13 +105,6 @@ public class CobblemonSpawnAlerts {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
-        boolean shouldAlertShiny = pokemon.getShiny() && config.alertShinies();
-        boolean shouldAlertLegend = pokemon.isLegendary() && config.alertLegendaries();
-        boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
-        boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
-        boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
-
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
         EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
         String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.NAUGHTY.getName().getPath();
@@ -139,12 +132,12 @@ public class CobblemonSpawnAlerts {
                         evYield
                 ),
                 new PokemonRarity(
-                        shouldAlertShiny,
-                        shouldAlertLegend,
-                        shouldAlertMythical,
-                        shouldAlertUltra,
-                        shouldAlertParadox,
-                        shouldAlertStarter
+                        pokemon.getShiny() && config.broadcastShiny(),
+                        pokemon.isLegendary(),
+                        pokemon.isMythical(),
+                        pokemon.isUltraBeast(),
+                        pokemon.hasLabels(CobblemonPokemonLabels.PARADOX),
+                        RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())
                 ),
                 new PokemonTraits(
                         nature,
@@ -176,7 +169,7 @@ public class CobblemonSpawnAlerts {
                         "N/A",
                         "N/A",
                         DimensionUtil.getDimensionKey(level),
-                        RarityUtil.Bucket.COMMON
+                        RarityUtil.Bucket.NONE
                 ),
                 new PokemonRarity(
                         shouldAlertShiny,

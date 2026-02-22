@@ -72,25 +72,6 @@ public class CSANeo {
                 PacketDistributor.sendToPlayer(player, new ModLoadedPacket(true));
             }
         }
-
-        @SubscribeEvent
-        public static void onEntityDespawned(EntityLeaveLevelEvent event) {
-            if (!(event.getLevel() instanceof ServerLevel level)) {
-                return;
-            }
-
-            if (event.getEntity() instanceof PokemonEntity pokemonEntity && pokemonEntity.getOwnerUUID() == null
-                    && CobblemonSpawnAlerts.globallyAlerted.contains(pokemonEntity.getPokemon().getUuid())) {
-                new ScheduledTask.Builder().delay(5f).execute(task -> {
-                    if (CobblemonSpawnAlerts.despawned.contains(pokemonEntity.getPokemon().getUuid())) {
-                        CobblemonSpawnAlerts.despawned.remove(pokemonEntity.getPokemon().getUuid());
-                        return Unit.INSTANCE;
-                    }
-                    Services.PLATFORM.onPokemonDespawned(level, pokemonEntity.getPokemon(), "N/A", DespawnReason.DESPAWNED);
-                    return Unit.INSTANCE;
-                }).build();
-            }
-        }
     }
 
     public static class PokemonDataPacketHandler {
