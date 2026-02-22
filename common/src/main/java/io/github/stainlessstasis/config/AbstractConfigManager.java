@@ -176,6 +176,12 @@ public abstract class AbstractConfigManager {
                 }
             }
         }
+        if (configObject.has("glowColor")) {
+            String hex = configObject.get("glowColor").getAsString();
+            if (!hex.isEmpty() && !hex.startsWith("#")) {
+                configObject.addProperty("glowColor", "#" + hex);
+            }
+        }
     }
 
     public <T> void saveConfigFile(File file, T config) {

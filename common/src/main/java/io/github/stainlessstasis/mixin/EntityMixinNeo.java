@@ -21,6 +21,6 @@ public abstract class EntityMixinNeo {
             return false;
         }
 
-        return entity instanceof PokemonEntity pe && CobblemonSpawnAlertsClient.glowing.contains(pe.getPokemon().getUuid());
+        return entity instanceof PokemonEntity pe && CobblemonSpawnAlertsClient.glowing.containsKey(pe.getPokemon().getUuid());
     }
 }

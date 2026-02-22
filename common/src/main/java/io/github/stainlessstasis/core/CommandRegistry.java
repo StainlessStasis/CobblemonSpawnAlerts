@@ -53,10 +53,10 @@ public class CommandRegistry {
 
     public static int handleGlowCommand(String uuid_) {
         UUID uuid = UUID.fromString(uuid_);
-        if (CobblemonSpawnAlertsClient.glowing.contains(uuid)) {
+        if (CobblemonSpawnAlertsClient.glowing.containsKey(uuid)) {
             CobblemonSpawnAlertsClient.glowing.remove(uuid);
         } else {
-            CobblemonSpawnAlertsClient.glowing.add(uuid);
+            CobblemonSpawnAlertsClient.glowing.put(uuid, 0xffffff);
         }
 
         return 1;

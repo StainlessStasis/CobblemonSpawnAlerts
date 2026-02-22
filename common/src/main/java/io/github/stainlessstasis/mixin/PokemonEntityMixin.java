@@ -20,7 +20,6 @@ public class PokemonEntityMixin {
         PokemonEntity pokemonEntity = (PokemonEntity)(Object)this;
 
         if (pokemonEntity.level() instanceof ServerLevel level && CobblemonSpawnAlerts.globallyAlerted.contains(pokemonEntity.getPokemon().getUuid())) {
-            System.out.println(pokemonEntity.getName().getString()+" DESPAWNED");
             new ScheduledTask.Builder().delay(3f).execute(task -> {
                 if (CobblemonSpawnAlerts.despawned.contains(pokemonEntity.getPokemon().getUuid())) {
                     CobblemonSpawnAlerts.despawned.remove(pokemonEntity.getPokemon().getUuid());

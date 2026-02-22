@@ -22,6 +22,7 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             Map<String, String> sounds,
             String customAlertSound,
             boolean autoGlow,
+            String glowColor,
             JourneymapConfig journeyMap
     ) {
         public static PokemonSpecificConfig createDefault() {
@@ -48,10 +49,11 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             sounds.put("uncaught", "");
             sounds.put("ivs", "");
             sounds.put("evs", "");
+            sounds.put("despawned", "");
 
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true, true,
-                    statDisplayModes, "", "", "", sounds, "", false,
+                    statDisplayModes, "", "", "", sounds, "", false, "#FFFFFF",
                     new JourneymapConfig(false, "", "", false)
             );
         }
