@@ -48,7 +48,13 @@ public record MessageTemplates (
         String paradox,
         String paradox_unformatted,
         String hidden_ability,
-        String hidden_ability_unformatted
+        String hidden_ability_unformatted,
+        String bucket,
+        String bucket_unformatted,
+        String common,
+        String uncommon,
+        String rare,
+        String ultra_rare
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
@@ -104,7 +110,13 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.paradox",
                 "cobblemon-spawn-alerts.paradox_unformatted",
                 "cobblemon-spawn-alerts.hidden_ability",
-                "cobblemon-spawn-alerts.hidden_ability_unformatted"
+                "cobblemon-spawn-alerts.hidden_ability_unformatted",
+                "cobblemon-spawn-alerts.bucket",
+                "cobblemon-spawn-alerts.bucket_unformatted",
+                "cobblemon-spawn-alerts.common",
+                "cobblemon-spawn-alerts.uncommon",
+                "cobblemon-spawn-alerts.rare",
+                "cobblemon-spawn-alerts.ultra_rare"
         );
     }
 }

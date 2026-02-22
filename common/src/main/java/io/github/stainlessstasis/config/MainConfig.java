@@ -1,6 +1,9 @@
 package io.github.stainlessstasis.config;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.util.RarityUtil;
+
+import java.util.Set;
 
 public record MainConfig (
     String configVersion,
@@ -14,7 +17,7 @@ public record MainConfig (
     boolean alertAllUltraBeasts,
     boolean alertAllParadox,
     boolean alertAllStarter,
-    String bucketsToAlert,
+    Set<RarityUtil.Bucket> bucketsToAlert,
     boolean alertAllNotInDex,
     boolean alertAllUncaught,
     boolean alertEverything,
@@ -31,7 +34,7 @@ public record MainConfig (
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
                 false, true, true, true, true, true,
-                true, true,false, "ultra-rare", false, false, false,
+                true, true,false, Set.of(RarityUtil.Bucket.ULTRA_RARE), false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
                 );
     }

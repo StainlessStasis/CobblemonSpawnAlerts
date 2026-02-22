@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.util.RarityUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -45,7 +46,7 @@ public interface IPlatformHelper {
 
     Path getConfigDir();
 
-    void onPokemonSpawned(PokemonEntity pokemonEntity, String bucketName);
+    void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket);
 
     default void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         CobblemonSpawnAlerts.globallyAlerted.remove(pokemon.getUuid());

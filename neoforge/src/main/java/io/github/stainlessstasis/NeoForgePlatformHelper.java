@@ -8,6 +8,7 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -50,7 +51,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void onPokemonSpawned(PokemonEntity pokemonEntity, String bucketName) {
+    public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
@@ -61,12 +62,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : players) {
-                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucketName));
+                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont overload the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucketName)) {
+            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
@@ -78,7 +79,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity));
+                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
                 }
             }
 

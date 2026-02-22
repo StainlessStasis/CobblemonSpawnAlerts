@@ -84,7 +84,7 @@ public class CobblemonSpawnAlerts {
         });
     }
 
-    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity, String bucketName) {
+    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
 
@@ -97,10 +97,10 @@ public class CobblemonSpawnAlerts {
             finalEvYield = EvsUtil.getEVsFromYield(pokemon.getForm().getEvYield());
         }
 
-        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability);
+        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability, bucket);
     }
 
-    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity) {
+    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
@@ -130,18 +130,22 @@ public class CobblemonSpawnAlerts {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
                         BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
-                        DimensionUtil.getDimensionKey(pokemonEntity)),
+                        DimensionUtil.getDimensionKey(pokemonEntity),
+                        bucket
+                ),
                 new PokemonStats(
                         pokemon.getLevel(),
                         ivs,
-                        evYield),
+                        evYield
+                ),
                 new PokemonRarity(
                         shouldAlertShiny,
                         shouldAlertLegend,
                         shouldAlertMythical,
                         shouldAlertUltra,
                         shouldAlertParadox,
-                        shouldAlertStarter),
+                        shouldAlertStarter
+                ),
                 new PokemonTraits(
                         nature,
                         ability,
@@ -171,7 +175,9 @@ public class CobblemonSpawnAlerts {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         "N/A",
                         "N/A",
-                        DimensionUtil.getDimensionKey(level)),
+                        DimensionUtil.getDimensionKey(level),
+                        RarityUtil.Bucket.COMMON
+                ),
                 new PokemonRarity(
                         shouldAlertShiny,
                         shouldAlertLegend,

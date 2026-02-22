@@ -5,33 +5,58 @@ import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
 import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntFunction;
 
 public class RarityUtil {
-    public enum Bucket {
-        COMMON("common"),
-        UNCOMMON("uncommon"),
-        RARE("rare"),
-        ULTRA_RARE("ultra-rare");
+    public enum Bucket implements StringRepresentable {
+        COMMON("common", 0),
+        UNCOMMON("uncommon", 1),
+        RARE("rare", 2),
+        ULTRA_RARE("ultra_rare", 3);
 
         private final String name;
-        private static final Map<String, Bucket> BUCKETS = new HashMap<>();
-        static {
-            for (Bucket b : values()) {
-                BUCKETS.put(b.name.toLowerCase(), b);
-            }
+        private final int id;
+
+        public static final IntFunction<Bucket> BY_ID = ByIdMap.continuous(
+                b -> b.id,
+                values(),
+                ByIdMap.OutOfBoundsStrategy.ZERO
+        );
+
+        public static final Codec<Bucket> CODEC = Codec.INT.xmap(
+                BY_ID::apply,
+                b -> b.id
+        );
+
+        public static final StreamCodec<ByteBuf, Bucket> STREAM_CODEC = ByteBufCodecs.VAR_INT.map(
+                BY_ID::apply,
+                b -> b.id
+        );
+
+        Bucket(String name, int id) {
+            this.name = name;
+            this.id = id;
         }
 
-        Bucket(String name) {
-            this.name = name;
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name;
         }
 
         public static Bucket fromString(String name) {
-            return BUCKETS.get(name.toLowerCase());
+            return StringRepresentable.fromEnum(Bucket::values).byName(name.toLowerCase());
         }
     }
 

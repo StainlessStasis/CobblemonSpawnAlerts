@@ -71,7 +71,7 @@ public class CSAFabricClient implements ClientModInitializer {
        // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
             context.client().execute(() -> {
-                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.evYield(), payload.nature(), payload.ability());
+                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.evYield(), payload.nature(), payload.ability(), payload.bucket());
             });
         });
 

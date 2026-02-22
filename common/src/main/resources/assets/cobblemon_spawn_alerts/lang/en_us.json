@@ -8,7 +8,7 @@
   "cobblemon-spawn-alerts.outdated_sound": "<color value=#55FF55>[CSA]</color> <color value=#FF5555>ERROR!</color> <color value=#FFFFFF>Attempted to play a sound without a namespace. You can fix this by adding 'minecraft:' to the beginning of your sound if it is a vanilla sound (including resource packs).",
   "cobblemon-spawn-alerts.debug_alert_condition": "<color value=#55FF55>[CSA] </color><color value=#FFFFFF>Attempting to create alert for {name} \n </color><color value=#55FF55>Cause: </color><color value=#FFFFFF>%s</color>",
 
-  "cobblemon-spawn-alerts.default_spawn_message": "<color value=#55FF55>A wild {legendary}{shiny}{HA}{gender}<color value=#FFFFFF>{name}</color> {level}{ivs}{evs}{nature}{ability}has appeared{nearest_player}{coords}{biome}!</color>",
+  "cobblemon-spawn-alerts.default_spawn_message": "<color value=#55FF55>A wild {legendary}{shiny}{bucket}{HA}{gender}<color value=#FFFFFF>{name}</color> {level}{ivs}{evs}{nature}{ability}has appeared{nearest_player}{coords}{biome}!</color>",
   "cobblemon-spawn-alerts.default_despawn_message": "<color value=#55FF55>A {legendary}{shiny}{HA}<color value=#FFFFFF>{name}</color> {despawned}.",
   "cobblemon-spawn-alerts.despawn_reason_despawned": "despawned",
   "cobblemon-spawn-alerts.despawn_reason_captured": "was captured by %s",
@@ -54,5 +54,11 @@
   "cobblemon-spawn-alerts.ultrabeast": "<bold><color value=#FF55FF>Ultra Beast </color></bold>",
   "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast",
   "cobblemon-spawn-alerts.paradox": "<bold><color value=#FF55FF>Paradox </color></bold>",
-  "cobblemon-spawn-alerts.paradox_unformatted": "Paradox"
+  "cobblemon-spawn-alerts.paradox_unformatted": "Paradox",
+  "cobblemon-spawn-alerts.bucket": "%s ",
+  "cobblemon-spawn-alerts.bucket_unformatted": "%s",
+  "cobblemon-spawn-alerts.common": "<color value=#AAAAAA>Common</color>",
+  "cobblemon-spawn-alerts.uncommon": "<color value=#00AA00>Uncommon</color>",
+  "cobblemon-spawn-alerts.rare": "<color value=#5555FF>Rare</color>",
+  "cobblemon-spawn-alerts.ultra_rare": "<color value=#FF55FF>Ultra Rare</color>"
 }

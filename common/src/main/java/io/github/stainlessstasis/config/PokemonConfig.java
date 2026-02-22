@@ -14,6 +14,7 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             boolean alertHiddenAbility,
             boolean alertDespawned,
             boolean showLegendary,
+            boolean showBucket,
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
             String customAlertTooltip,
@@ -42,13 +43,14 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             sounds.put("ultrabeast", "");
             sounds.put("paradox", "");
             sounds.put("starter", "");
+            sounds.put("bucket", "");
             sounds.put("unregistered", "");
             sounds.put("uncaught", "");
             sounds.put("ivs", "");
             sounds.put("evs", "");
 
             return new PokemonSpecificConfig(
-                    true, true, true, true, true, true,
+                    true, true, true, true, true, true, true,
                     statDisplayModes, "", "", "", sounds, "", false,
                     new JourneymapConfig(false, "", "", false)
             );

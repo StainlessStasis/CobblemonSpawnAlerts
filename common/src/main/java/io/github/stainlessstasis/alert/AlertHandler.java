@@ -50,10 +50,10 @@ public class AlertHandler {
 
     public static void alertClientside(PokemonEntity pokemonEntity) {
         EVs defaultEVYield = EvsUtil.getYield(pokemonEntity.getPokemon().getSpecies().getNationalPokedexNumber());
-        alertClientside(pokemonEntity, defaultEVYield);
+        alertClientside(pokemonEntity, defaultEVYield, RarityUtil.Bucket.COMMON);
     }
 
-    public static void alertClientside(PokemonEntity pokemonEntity, EVs evYield) {
+    public static void alertClientside(PokemonEntity pokemonEntity, EVs evYield, RarityUtil.Bucket bucket) {
         if (pokemonEntity.getOwnerUUID() != null) {
             return;
         }
@@ -75,7 +75,9 @@ public class AlertHandler {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
                         BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
-                        DimensionUtil.getDimensionKey(pokemonEntity)),
+                        DimensionUtil.getDimensionKey(pokemonEntity),
+                        bucket
+                ),
                 new PokemonStats(
                         pokemon.getLevel(),
                         pokemon.getIvs(),
@@ -140,6 +142,7 @@ public class AlertHandler {
         boolean shouldAlertUltra = isUltra && mainConfig.alertAllUltraBeasts();
         boolean shouldAlertParadox = isParadox && mainConfig.alertAllParadox();
         boolean shouldAlertStarter = isStarter && mainConfig.alertAllStarter();
+        boolean shouldAlertBucket = mainConfig.bucketsToAlert().contains(alertData.spawnData().bucket());
 
         // Check if should alert for dex
         boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
@@ -235,6 +238,7 @@ public class AlertHandler {
                             || shouldAlertUltra
                             || shouldAlertParadox
                             || shouldAlertStarter
+                            || shouldAlertBucket
                             || shouldAlertNotInDex
                             || shouldAlertUncaught
                             || mainConfig.alertEverything()
@@ -267,6 +271,7 @@ public class AlertHandler {
             if (shouldAlertUltra) alertCondition = DebugAlertCondition.ALERT_ALL_ULTRA_BEAST;
             if (shouldAlertParadox) alertCondition = DebugAlertCondition.ALERT_ALL_PARADOX;
             if (shouldAlertStarter) alertCondition = DebugAlertCondition.ALERT_ALL_STARTER;
+            if (shouldAlertBucket) alertCondition = DebugAlertCondition.ALERT_BUCKETS;
             if (shouldAlertIVs) alertCondition = DebugAlertCondition.IV_HUNTING;
             if (shouldAlertEVs) alertCondition = DebugAlertCondition.EV_HUNTING;
             if (shouldAlertUncaught) alertCondition = DebugAlertCondition.ALERT_ALL_UNCAUGHT;
@@ -313,6 +318,7 @@ public class AlertHandler {
             traits.put("ultrabeast", isUltra);
             traits.put("paradox", isParadox);
             traits.put("starter", isStarter);
+            traits.put("bucket", shouldAlertBucket);
             traits.put("unregistered", !isInDex);
             traits.put("uncaught", !isCaught);
             // TODO: change this if i ever add individual iv/ev hunting
@@ -445,6 +451,7 @@ public class AlertHandler {
         AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
         Gender gender = Gender.valueOf(alertData.traits().genderID());
         String nearestPlayer = alertData.spawnData().nearestPlayerName();
+        RarityUtil.Bucket bucket = alertData.spawnData().bucket();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
 
@@ -471,6 +478,23 @@ public class AlertHandler {
         }
         message = message.replace("{shiny}", "");
         message = message.replace("{shiny_unformatted}", "");
+
+        // Bucket
+        if (config.showBucket()) {
+            String bucketMessage = switch (bucket) {
+                case COMMON -> messageTemplates.common();
+                case UNCOMMON -> messageTemplates.uncommon();
+                case RARE -> messageTemplates.rare();
+                case ULTRA_RARE -> messageTemplates.ultra_rare();
+            };
+
+            bucketMessage = Component.translatable(bucketMessage).getString();
+            message = message.replace("{bucket}", Component.translatable(messageTemplates.bucket(), bucketMessage).getString());
+            message = message.replace("{bucket_unformatted}",
+                    Component.translatable(messageTemplates.bucket_unformatted(), StringUtil.capitalizeEachWord(bucket.getSerializedName())).getString());
+        }
+        message = message.replace("{bucket}", "");
+        message = message.replace("{bucket_unformatted}", "");
 
         // Legendary/Mythical/Ultra Beast/Paradox
         if (config.showLegendary()) {
@@ -619,9 +643,9 @@ public class AlertHandler {
                 hoverBuilder.append(genderMessage).append("\n");
             } else {
                 message = message.replace("{gender}", genderMessage);
+                message = message.replace("{gender_unformatted}",
+                        Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
             }
-            message = message.replace("{gender_unformatted}",
-                    Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
         }
         message = message.replace("{gender}", "");
         message = message.replace("{gender_unformatted}", "");

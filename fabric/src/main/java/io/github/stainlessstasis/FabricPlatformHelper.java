@@ -8,6 +8,7 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -52,18 +53,18 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void onPokemonSpawned(PokemonEntity pokemonEntity, String bucketName) {
+    public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : PlayerLookup.tracking((pokemonEntity))) {
-                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucketName));
+                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont kill the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucketName)) {
+            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
@@ -75,7 +76,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity));
+                    ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
                 }
             }
 
