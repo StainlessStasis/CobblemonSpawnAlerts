@@ -15,6 +15,7 @@ Click events use the following syntax: `event_name:action`. The click events are
 - Added sounds for despawns in `pokemon.json`.
 - Added `enableAlerts`, `enableDespawnAlerts`, and `enableSounds` in `main.json`.
 - Added colorable autoglow using ARGB32 (#AARRGGBB) formatting in `pokemon.json`.
+- Added filter by distance in `main.json`.
 
 ### Changes & Fixes
 - Fixed Adventure crashes and incompatibilities (e.g. BlueMap). See the breaking changes section above.
