@@ -31,10 +31,7 @@ import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -279,13 +276,7 @@ public class AlertHandler {
             StringBuilder debugHoverBuilder = new StringBuilder();
             message = applyDynamicReplacements(message, pokemonConfig, alertData, debugHoverBuilder);
             Component messageComponent = ComponentUtil.parseMarkup(message);
-            String debugHoverMarkup = debugHoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
-            Component hoverComponent = ComponentUtil.parseMarkup(debugHoverMarkup);
-            ClickEvent.Action debugClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
-                    ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
-            messageComponent = messageComponent.copy().withStyle(Style.EMPTY
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent))
-                    .withClickEvent(new ClickEvent(debugClickAction, "/csa glow " + alertData.spawnData().pokemonUUID())));
+            messageComponent = applyMessageInteractions(messageComponent, debugHoverBuilder.toString(), pokemonConfig, alertData);
             player.sendSystemMessage(messageComponent);
         }
 
@@ -359,13 +350,7 @@ public class AlertHandler {
             message = applyDynamicReplacements(message, pokemonConfig, alertData, hoverBuilder);
         }
         Component spawnComponent = ComponentUtil.parseMarkup(message);
-        String spawnHoverMarkup = hoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
-        Component spawnHoverComponent = ComponentUtil.parseMarkup(spawnHoverMarkup);
-        ClickEvent.Action spawnClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
-                ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
-        spawnComponent = spawnComponent.copy().withStyle(Style.EMPTY
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, spawnHoverComponent))
-                .withClickEvent(new ClickEvent(spawnClickAction, "/csa glow " + alertData.spawnData().pokemonUUID())));
+        spawnComponent = applyMessageInteractions(spawnComponent, hoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(spawnComponent);
 
         // journeymap compat
@@ -418,13 +403,7 @@ public class AlertHandler {
         StringBuilder despawnHoverBuilder = new StringBuilder();
         message = applyDynamicReplacements(message, pokemonConfig, despawnAlertData, despawnHoverBuilder);
         Component despawnComponent = ComponentUtil.parseMarkup(message);
-        String despawnHoverMarkup = despawnHoverBuilder.toString() + "<color value=#55FF55>Click to toggle glow</color>";
-        Component despawnHoverComponent = ComponentUtil.parseMarkup(despawnHoverMarkup);
-        ClickEvent.Action despawnClickAction = Services.PLATFORM.getPlatform() == Platform.FABRIC
-                ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND;
-        despawnComponent = despawnComponent.copy().withStyle(Style.EMPTY
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, despawnHoverComponent))
-                .withClickEvent(new ClickEvent(despawnClickAction, "/csa glow " + despawnAlertData.spawnData().pokemonUUID())));
+        despawnComponent = applyMessageInteractions(despawnComponent, despawnHoverBuilder.toString(), pokemonConfig, despawnAlertData);
         player.sendSystemMessage(despawnComponent);
     }
 
@@ -698,6 +677,79 @@ public class AlertHandler {
         message = message.replace("{nearest_player_unformatted}", "");
 
         return message;
+    }
+
+    private static Component applyMessageInteractions(
+            Component component,
+            String hoverText,
+            PokemonConfig.PokemonSpecificConfig config,
+            AlertDataPacket alertData
+    ) {
+        String customTooltip = config.customAlertTooltip();
+        String finalHoverText;
+        if (customTooltip != null && !customTooltip.isEmpty()) {
+            finalHoverText = applyDynamicReplacements(customTooltip, config, alertData, new StringBuilder(hoverText));
+        } else {
+            if (!hoverText.isEmpty() && !hoverText.endsWith("\n")) {
+                hoverText += "\n";
+            }
+            finalHoverText = hoverText + "<color value=#55FF55>Click to toggle glow</color>";
+        }
+
+        ClickEvent clickEvent = getDefaultGlowClickEvent(alertData);
+        String customClickEvent = config.customAlertClickEvent();
+        if (customClickEvent != null && !customClickEvent.isEmpty()) {
+            String replacedClickEvent = applyDynamicReplacements(customClickEvent, config, alertData, new StringBuilder(hoverText));
+            ClickEvent parsedClickEvent = parseClickEvent(replacedClickEvent);
+            if (parsedClickEvent != null) {
+                clickEvent = parsedClickEvent;
+            } else {
+                CobblemonSpawnAlerts.LOGGER.warn("Invalid customAlertClickEvent '{}'. Falling back to glow toggle click.", replacedClickEvent);
+            }
+        }
+
+        MutableComponent output = component.copy();
+        if (!finalHoverText.isEmpty()) {
+            Component hoverComponent = ComponentUtil.parseMarkup(finalHoverText);
+            output = output.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent)));
+        }
+
+        final ClickEvent finalClickEvent = clickEvent;
+        return output.withStyle(style -> style.withClickEvent(finalClickEvent));
+    }
+
+    private static ClickEvent getDefaultGlowClickEvent(AlertDataPacket alertData) {
+        String glowCommand = "/csa glow " + alertData.spawnData().pokemonUUID();
+        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
+            return new ClickEvent(ClickEvent.Action.RUN_COMMAND, glowCommand);
+        }
+
+        // Neo specifically does not run this command from RUN_COMMAND reliably.
+        return new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, glowCommand);
+    }
+
+    private static ClickEvent parseClickEvent(String eventDefinition) {
+        String[] split = eventDefinition.split(":", 2);
+        if (split.length != 2 || split[1].isEmpty()) {
+            return null;
+        }
+
+        String action = split[0].trim().toLowerCase(Locale.ROOT);
+        String value = split[1];
+        ClickEvent.Action clickAction = switch (action) {
+            case "open_url" -> ClickEvent.Action.OPEN_URL;
+            case "open_file" -> ClickEvent.Action.OPEN_FILE;
+            case "run_command" -> ClickEvent.Action.RUN_COMMAND;
+            case "suggest_command" -> ClickEvent.Action.SUGGEST_COMMAND;
+            case "change_page" -> ClickEvent.Action.CHANGE_PAGE;
+            case "copy_to_clipboard" -> ClickEvent.Action.COPY_TO_CLIPBOARD;
+            default -> null;
+        };
+
+        if (clickAction == null) {
+            return null;
+        }
+        return new ClickEvent(clickAction, value);
     }
 
     private static String replaceIfNotAvailable(String string) {
