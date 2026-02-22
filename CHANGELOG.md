@@ -13,7 +13,8 @@ Replaced the Adventure library with Ember's Text API - Thanks to @TysonTheEmber!
 - Added `customAlertTooltip` and `customAlertClickEvent`. Tooltips display a custom message when hovered, using [ETA markup](https://tysontheember.dev/embers-text-api/for-modpack-creators/markup-guide/). 
 Click events use the following syntax: `event_name:action`. The click events are `open_url, open_file, run_command, suggest_command, change_page, and copy_to_clipboard`. For example, `run_command:/csa openconfig` would open the config folder when clicked on.
 - Added sounds for despawns in `pokemon.json`.
-- Added `enableAlerts`, `enableDespawnAlerts`, and `enableSounds` to the `main.json` config.
+- Added `enableAlerts`, `enableDespawnAlerts`, and `enableSounds` in `main.json`.
+- Added colorable autoglow using ARGB32 (#AARRGGBB) formatting in `pokemon.json`.
 
 ### Changes & Fixes
 - Fixed Adventure crashes and incompatibilities (e.g. BlueMap). See the breaking changes section above.
