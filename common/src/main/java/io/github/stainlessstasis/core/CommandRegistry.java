@@ -11,9 +11,9 @@ import net.minecraft.network.chat.Component;
 import java.util.UUID;
 
 public class CommandRegistry {
-    public static void registerServerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
+    public static void registerCommonCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
         dispatcher.register(
-            Commands.literal("csa-server")
+            Commands.literal("csa-common")
             .then(Commands.literal("reload")
             .executes(ctx -> {
                 if (!ctx.getSource().hasPermission(3)) {
@@ -27,15 +27,15 @@ public class CommandRegistry {
 
                 ctx.getSource().sendSystemMessage(
                         Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
-                                .append(Component.literal("Server config reloading...").withStyle(ChatFormatting.WHITE)));
+                                .append(Component.literal("Common configs reloading...").withStyle(ChatFormatting.WHITE)));
                 if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.loadConfig()) {
                     ctx.getSource().sendSystemMessage(
                             Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
-                                    .append(Component.literal("Server config reloaded!").withStyle(ChatFormatting.WHITE)));
+                                    .append(Component.literal("Common configs reloaded!").withStyle(ChatFormatting.WHITE)));
                 } else {
                     ctx.getSource().sendSystemMessage(
                             Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
-                                    .append(Component.literal("Server config reload failed.").withStyle(ChatFormatting.RED)));
+                                    .append(Component.literal("Common configs reload failed.").withStyle(ChatFormatting.RED)));
                 }
                 return 1;
         })));
@@ -56,7 +56,7 @@ public class CommandRegistry {
         if (CobblemonSpawnAlertsClient.glowing.containsKey(uuid)) {
             CobblemonSpawnAlertsClient.glowing.remove(uuid);
         } else {
-            CobblemonSpawnAlertsClient.glowing.put(uuid, 0xffffff);
+            CobblemonSpawnAlertsClient.glowing.put(uuid, 0xffffffff);
         }
 
         return 1;

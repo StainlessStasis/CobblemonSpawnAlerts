@@ -1,21 +1,14 @@
 package io.github.stainlessstasis;
 
-import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.*;
-import io.github.stainlessstasis.platform.Services;
-import kotlin.Unit;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -63,7 +56,7 @@ public class CSANeo {
     public static class GameBusEvents {
         @SubscribeEvent
         public static void onCommandRegistration(RegisterCommandsEvent event) {
-            CommandRegistry.registerServerCommands(event.getDispatcher(), event.getBuildContext(), event.getCommandSelection());
+            CommandRegistry.registerCommonCommands(event.getDispatcher(), event.getBuildContext(), event.getCommandSelection());
         }
 
         @SubscribeEvent
