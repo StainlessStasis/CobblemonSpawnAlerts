@@ -10,9 +10,6 @@ import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,29 +19,10 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
-import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
-import net.tysontheember.emberstextapi.util.StyleUtil;
-
-import java.util.List;
 
 @Mod(value = CobblemonSpawnAlerts.MOD_ID, dist = Dist.CLIENT)
 public class CSANeoClient {
     public static boolean doesServerHaveMod = false;
-
-    public static Component parseMarkup(String markup) {
-        List<TextSpan> spans = MarkupParser.parse(markup);
-        MutableComponent result = Component.empty();
-        for (TextSpan span : spans) {
-            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
-            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
-            if (span.getColor() != null) {
-                style = style.withColor(span.getColor());
-            }
-            result.append(Component.literal(span.getContent()).withStyle(style));
-        }
-        return result;
-    }
 
     @EventBusSubscriber(value = Dist.CLIENT)
     public static class ModBusEvents {
