@@ -12,6 +12,7 @@ public enum DebugAlertCondition {
     ALERT_ALL_ULTRA_BEAST,
     ALERT_ALL_PARADOX,
     ALERT_ALL_STARTER,
+    ALERT_BUCKETS,
     IV_HUNTING,
     EV_HUNTING,
     ALERT_ALL_UNCAUGHT,

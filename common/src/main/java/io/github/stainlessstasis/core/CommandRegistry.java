@@ -2,36 +2,40 @@ package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.stainlessstasis.config.ClientConfigManager;
-import io.github.stainlessstasis.util.ComponentUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
 public class CommandRegistry {
-    public static void registerServerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
+    public static void registerCommonCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection environment) {
         dispatcher.register(
-            Commands.literal("csa-server")
+            Commands.literal("csa-common")
             .then(Commands.literal("reload")
             .executes(ctx -> {
                 if (!ctx.getSource().hasPermission(3)) {
                     if (ctx.getSource().getPlayer() != null) {
                         ctx.getSource().sendFailure(
-                                ComponentUtil.convertFromAdventure("<red>You do not have permission to use this command!</red>"));
+                                Component.literal("You do not have permission to use this command!").withStyle(ChatFormatting.RED));
                     }
 
                     return 0;
                 }
 
                 ctx.getSource().sendSystemMessage(
-                        ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloading...</white>"));
+                        Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                .append(Component.literal("Common configs reloading...").withStyle(ChatFormatting.WHITE)));
                 if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.loadConfig()) {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloaded!</white>"));
+                            Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                    .append(Component.literal("Common configs reloaded!").withStyle(ChatFormatting.WHITE)));
                 } else {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><red>Server config reload failed.</red>"));
+                            Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                    .append(Component.literal("Common configs reload failed.").withStyle(ChatFormatting.RED)));
                 }
                 return 1;
         })));
@@ -49,10 +53,10 @@ public class CommandRegistry {
 
     public static int handleGlowCommand(String uuid_) {
         UUID uuid = UUID.fromString(uuid_);
-        if (CobblemonSpawnAlertsClient.glowing.contains(uuid)) {
+        if (CobblemonSpawnAlertsClient.glowing.containsKey(uuid)) {
             CobblemonSpawnAlertsClient.glowing.remove(uuid);
         } else {
-            CobblemonSpawnAlertsClient.glowing.add(uuid);
+            CobblemonSpawnAlertsClient.glowing.put(uuid, 0xffffffff);
         }
 
         return 1;

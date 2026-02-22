@@ -14,11 +14,15 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             boolean alertHiddenAbility,
             boolean alertDespawned,
             boolean showLegendary,
+            boolean showBucket,
             Map<String, StatDisplayMode> statDisplayModes,
             String customAlertMessage,
+            String customAlertTooltip,
+            String customAlertClickEvent,
             Map<String, String> sounds,
             String customAlertSound,
             boolean autoGlow,
+            String glowColor,
             JourneymapConfig journeyMap
     ) {
         public static PokemonSpecificConfig createDefault() {
@@ -40,14 +44,16 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             sounds.put("ultrabeast", "");
             sounds.put("paradox", "");
             sounds.put("starter", "");
+            sounds.put("bucket", "");
             sounds.put("unregistered", "");
             sounds.put("uncaught", "");
             sounds.put("ivs", "");
             sounds.put("evs", "");
+            sounds.put("despawned", "");
 
             return new PokemonSpecificConfig(
-                    true, true, true, true, true, true,
-                    statDisplayModes, "", sounds, "", false,
+                    true, true, true, true, true, true, true,
+                    statDisplayModes, "", "", "", sounds, "", false, "#FFFFFFFF",
                     new JourneymapConfig(false, "", "", false)
             );
         }

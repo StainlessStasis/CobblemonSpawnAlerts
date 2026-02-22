@@ -11,7 +11,7 @@ public class MessageUtils {
         }
 
         String translated = Component.translatable(translationKey, args).getString();
-        Component component = ComponentUtil.convertFromAdventure(translated);
+        Component component = ComponentUtil.parseMarkup(translated);
         player.sendSystemMessage(component);
     }
 

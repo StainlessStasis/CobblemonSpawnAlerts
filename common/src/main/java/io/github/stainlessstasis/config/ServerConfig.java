@@ -1,15 +1,21 @@
 package io.github.stainlessstasis.config;
 
+import io.github.stainlessstasis.util.RarityUtil;
+
+import java.util.Set;
+
 public record ServerConfig (
     String[] comment,
     boolean enableSpawnCommandAlerts,
     boolean alertShinies,
+    boolean broadcastShiny,
     boolean alertLegendaries,
     boolean alertMythicals,
     boolean alertUltraBeasts,
     boolean alertParadox,
     boolean alertStarters,
     boolean alertHiddenAbility,
+    Set<RarityUtil.Bucket> bucketsToAlert,
     boolean broadcastIVs,
     boolean broadcastEVs,
     boolean broadcastNature,
@@ -19,14 +25,14 @@ public record ServerConfig (
         return new ServerConfig(
                 new String[]{
                         "This config is only used if you are in singleplayer or hosting a server (including LAN).",
-                        "It determines which Pokemon are *globally* alerted for all players, and what info about Pokemon is available to clients.",
+                        "It determines which Pokemon are sent to all players, sending info about those Pokemon to clients.",
                         "It does NOT determine how each individual client displays the data sent from the server. Each client is responsible for displaying its own alerts.",
                         "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
                         "https://modrinth.com/mod/cobblemon-spawn-alerts",
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
-                false, true, true, true, true, true,
-                false, false, true, true, true, true
+                false, true, true, true, true, true, true,
+                false, false, Set.of(RarityUtil.Bucket.ULTRA_RARE), true, true, true, true
         );
     }
 }

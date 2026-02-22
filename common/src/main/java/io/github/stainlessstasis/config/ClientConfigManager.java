@@ -20,16 +20,17 @@ public class ClientConfigManager extends AbstractConfigManager {
             failedLoad(MESSAGE_TEMPLATES_FILE.toPath());
             return false;
         }
-        pokemonConfig = loadConfigFile(POKEMON_CONFIG_FILE, PokemonConfig.class);
-        if (pokemonConfig == null) {
-            failedLoad(POKEMON_CONFIG_FILE.toPath());
-            return false;
-        }
         mainConfig = loadConfigFile(MAIN_CONFIG_FILE, MainConfig.class);
         if (mainConfig == null) {
             failedLoad(MAIN_CONFIG_FILE.toPath());
             return false;
         }
+        pokemonConfig = loadConfigFile(POKEMON_CONFIG_FILE, PokemonConfig.class);
+        if (pokemonConfig == null) {
+            failedLoad(POKEMON_CONFIG_FILE.toPath());
+            return false;
+        }
+
         return true;
     }
 
@@ -49,12 +50,8 @@ public class ClientConfigManager extends AbstractConfigManager {
     public MainConfig getMainConfig() {
         return mainConfig;
     }
-
     public PokemonConfig getPokemonConfig() {
         return pokemonConfig;
     }
-
-    public MessageTemplates getMessageTemplates() {
-        return messageTemplates;
-    }
+    public MessageTemplates getMessageTemplates() {return messageTemplates;}
 }

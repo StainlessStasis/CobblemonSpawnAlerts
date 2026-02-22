@@ -13,14 +13,12 @@ import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.stat.CobblemonStatProvider;
 import io.github.stainlessstasis.alert.DespawnReason;
-import io.github.stainlessstasis.config.ClientConfigManager;
 import io.github.stainlessstasis.config.CommonConfigManager;
 import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import kotlin.Unit;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.joml.Vector3f;
@@ -32,7 +30,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.11.5-beta";
+    public static final String MOD_VERSION = "1.12.0";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
@@ -43,44 +41,46 @@ public class CobblemonSpawnAlerts {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
         COMMON_CONFIG_MANAGER.loadConfig();
 
-        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, evt -> {
-            Services.PLATFORM.onPokemonSpawned(evt.getEntity());
+        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
+            var entity = event.getEntity();
+            var bucket = RarityUtil.getRarityBucket(entity, event.getSpawnablePosition());
+            Services.PLATFORM.onPokemonSpawned(entity, bucket);
             return Unit.INSTANCE;
         });
 
-        CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, evt -> {
-            if (CobblemonSpawnAlerts.globallyAlerted.contains(evt.getPokemon().getUuid())) {
-                Services.PLATFORM.onPokemonDespawned(evt.getPlayer().level(), evt.getPokemon(), evt.getPlayer().getName().getString(), DespawnReason.CAPTURED);
+        CobblemonEvents.POKEMON_CAPTURED.subscribe(Priority.NORMAL, event -> {
+            if (CobblemonSpawnAlerts.globallyAlerted.contains(event.getPokemon().getUuid())) {
+                Services.PLATFORM.onPokemonDespawned(event.getPlayer().level(), event.getPokemon(), event.getPlayer().getName().getString(), DespawnReason.CAPTURED);
             }
             return Unit.INSTANCE;
         });
 
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, evt -> {
-            if (evt.getKilled().getEntity() == null) {
+        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, event -> {
+            if (event.getKilled().getEntity() == null) {
                 return Unit.INSTANCE;
             }
-            Pokemon pokemon = evt.getKilled().getEntity().getPokemon();
+            Pokemon pokemon = event.getKilled().getEntity().getPokemon();
 
-            if (pokemon.getOwnerUUID() != null || !evt.getBattle().isPvW() || !CobblemonSpawnAlerts.globallyAlerted.contains(pokemon.getUuid())) {
+            if (pokemon.getOwnerUUID() != null || !event.getBattle().isPvW() || !CobblemonSpawnAlerts.globallyAlerted.contains(pokemon.getUuid())) {
                 return Unit.INSTANCE;
             }
 
-            Optional<UUID> uuid = StreamSupport.stream(evt.getBattle().getPlayerUUIDs().spliterator(), false).findFirst();
+            Optional<UUID> uuid = StreamSupport.stream(event.getBattle().getPlayerUUIDs().spliterator(), false).findFirst();
             String playerName = "N/A";
             if (uuid.isPresent()) {
-                Player player = evt.getKilled().getEntity().level().getPlayerByUUID(uuid.get());
+                Player player = event.getKilled().getEntity().level().getPlayerByUUID(uuid.get());
                 if (player != null) {
                     playerName = player.getName().getString();
                 }
             }
 
-            Services.PLATFORM.onPokemonDespawned(evt.getKilled().getEntity().level(), pokemon, playerName, DespawnReason.FAINTED);
+            Services.PLATFORM.onPokemonDespawned(event.getKilled().getEntity().level(), pokemon, playerName, DespawnReason.FAINTED);
 
             return Unit.INSTANCE;
         });
     }
 
-    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity) {
+    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
 
@@ -93,20 +93,13 @@ public class CobblemonSpawnAlerts {
             finalEvYield = EvsUtil.getEVsFromYield(pokemon.getForm().getEvYield());
         }
 
-        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability);
+        return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability, bucket);
     }
 
-    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity) {
+    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
-
-        boolean shouldAlertShiny = pokemon.getShiny() && config.alertShinies();
-        boolean shouldAlertLegend = pokemon.isLegendary() && config.alertLegendaries();
-        boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
-        boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
-        boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
 
         IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
         EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
@@ -126,18 +119,22 @@ public class CobblemonSpawnAlerts {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
                         BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
-                        DimensionUtil.getDimensionKey(pokemonEntity)),
+                        DimensionUtil.getDimensionKey(pokemonEntity),
+                        bucket
+                ),
                 new PokemonStats(
                         pokemon.getLevel(),
                         ivs,
-                        evYield),
+                        evYield
+                ),
                 new PokemonRarity(
-                        shouldAlertShiny,
-                        shouldAlertLegend,
-                        shouldAlertMythical,
-                        shouldAlertUltra,
-                        shouldAlertParadox,
-                        shouldAlertStarter),
+                        pokemon.getShiny() && config.broadcastShiny(),
+                        pokemon.isLegendary(),
+                        pokemon.isMythical(),
+                        pokemon.isUltraBeast(),
+                        pokemon.hasLabels(CobblemonPokemonLabels.PARADOX),
+                        RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())
+                ),
                 new PokemonTraits(
                         nature,
                         ability,
@@ -167,7 +164,9 @@ public class CobblemonSpawnAlerts {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         "N/A",
                         "N/A",
-                        DimensionUtil.getDimensionKey(level)),
+                        DimensionUtil.getDimensionKey(level),
+                        RarityUtil.Bucket.NONE
+                ),
                 new PokemonRarity(
                         shouldAlertShiny,
                         shouldAlertLegend,

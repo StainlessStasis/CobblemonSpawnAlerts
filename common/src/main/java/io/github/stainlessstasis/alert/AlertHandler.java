@@ -4,11 +4,9 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
-import com.cobblemon.mod.common.api.pokedex.FormDexRecord;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
 import com.cobblemon.mod.common.api.pokedex.SpeciesDexRecord;
 import com.cobblemon.mod.common.api.pokemon.Natures;
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.storage.player.client.ClientPokedexManager;
@@ -25,17 +23,16 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.network.PokemonStats;
-import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -49,14 +46,14 @@ public class AlertHandler {
     }
 
     public static void alertClientside(PokemonEntity pokemonEntity) {
+        if (!CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().enableAlerts()) return;
         EVs defaultEVYield = EvsUtil.getYield(pokemonEntity.getPokemon().getSpecies().getNationalPokedexNumber());
-        alertClientside(pokemonEntity, defaultEVYield);
+        alertClientside(pokemonEntity, defaultEVYield, RarityUtil.Bucket.COMMON);
     }
 
-    public static void alertClientside(PokemonEntity pokemonEntity, EVs evYield) {
-        if (pokemonEntity.getOwnerUUID() != null) {
-            return;
-        }
+    public static void alertClientside(PokemonEntity pokemonEntity, EVs evYield, RarityUtil.Bucket bucket) {
+        if (pokemonEntity.getOwnerUUID() != null) return;
+        if (!CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().enableAlerts()) return;
 
         String nearestPlayerName = "N/A";
         if (Minecraft.getInstance().player instanceof Player player) {
@@ -75,7 +72,9 @@ public class AlertHandler {
                         pokemon.getSpecies().getNationalPokedexNumber(),
                         nearestPlayerName,
                         BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
-                        DimensionUtil.getDimensionKey(pokemonEntity)),
+                        DimensionUtil.getDimensionKey(pokemonEntity),
+                        bucket
+                ),
                 new PokemonStats(
                         pokemon.getLevel(),
                         pokemon.getIvs(),
@@ -98,18 +97,14 @@ public class AlertHandler {
     }
 
     public static void alert(AlertDataPacket alertData) {
-        if (!(Minecraft.getInstance().player instanceof Player player)) {
-            return;
-        }
-        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) {
-            return;
-        }
-        if (alreadyAlerted.contains(alertData.spawnData().pokemonUUID())) {
-            return;
-        }
+        if (!(Minecraft.getInstance().player instanceof Player player)) return;
+        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) return;
+        if (!CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().enableAlerts()) return;
+        if (alreadyAlerted.contains(alertData.spawnData().pokemonUUID())) return;
 
         MainConfig mainConfig = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig();
         ClientPokedexManager dex = CobblemonClient.INSTANCE.getClientPokedexData();
+        Vector3f spawnPos = alertData.spawnData().position();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
         Pair<Boolean, PokemonConfig.PokemonSpecificConfig> result = getConfigForPokemon(pokemonName, alertData.spawnData().dexId());
@@ -140,6 +135,7 @@ public class AlertHandler {
         boolean shouldAlertUltra = isUltra && mainConfig.alertAllUltraBeasts();
         boolean shouldAlertParadox = isParadox && mainConfig.alertAllParadox();
         boolean shouldAlertStarter = isStarter && mainConfig.alertAllStarter();
+        boolean shouldAlertBucket = mainConfig.bucketsToAlert().contains(alertData.spawnData().bucket());
 
         // Check if should alert for dex
         boolean shouldAlertNotInDex = mainConfig.alertAllNotInDex();
@@ -161,13 +157,12 @@ public class AlertHandler {
         && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHA());
 
         // Check if should alert for IV and EV hunting
-        final MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
-        final MainConfig.EVHunting evHunting = mainConfig.evHunting();
+        MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
+        MainConfig.EVHunting evHunting = mainConfig.evHunting();
 
         boolean shouldAlertIVs = false;
         if (ivHunting.enabled()) {
-            final IVs ivs = alertData.stats().ivs();
-
+            IVs ivs = alertData.stats().ivs();
             boolean meetsMinReqs = false;
             if (ivHunting.requireAllMinimumsMet()) {
                 if (
@@ -202,8 +197,7 @@ public class AlertHandler {
 
         boolean shouldAlertEVs = false;
         if (evHunting.enabled()) {
-            final EVs evs = alertData.stats().evYield();
-
+            EVs evs = alertData.stats().evYield();
             shouldAlertEVs =
                 (evHunting.minHp() > 0 && evs.get(Stats.HP) >= evHunting.minHp())
                 || (evHunting.minAtk() > 0 && evs.get(Stats.ATTACK) >= evHunting.minAtk())
@@ -214,9 +208,8 @@ public class AlertHandler {
         }
 
         // Check level filter
-        final MainConfig.LevelFilter levelFilter = mainConfig.levelFilter();
+        MainConfig.LevelFilter levelFilter = mainConfig.levelFilter();
         boolean passesLevelFilter = true;
-
         if (levelFilter.enabled()) {
             int level = alertData.stats().level();
             if (level < levelFilter.minLevel() || level > levelFilter.maxLevel()) {
@@ -224,10 +217,20 @@ public class AlertHandler {
             }
         }
 
+        // Check distance filter
+        MainConfig.DistanceFilter distanceFilter = mainConfig.distanceFilter();
+        boolean passesDistanceFilter = true;
+        if (distanceFilter.enabled()) {
+            double distance = Math.sqrt(player.distanceToSqr(new Vec3(spawnPos)));
+            if (distance < distanceFilter.minDistance() || distance > distanceFilter.maxDistance()) {
+                passesDistanceFilter = false;
+            }
+        }
+
         // Finalize alert check
         boolean shouldAlertInConfig = pokemonConfig.alwaysAlert() || shouldAlertShiny || shouldAlertHA;
         boolean shouldAlertNotInConfig =
-                passesLevelFilter &&
+                (passesLevelFilter && passesDistanceFilter) &&
                         (
                             shouldAlertShiny
                             || shouldAlertLegend
@@ -235,6 +238,7 @@ public class AlertHandler {
                             || shouldAlertUltra
                             || shouldAlertParadox
                             || shouldAlertStarter
+                            || shouldAlertBucket
                             || shouldAlertNotInDex
                             || shouldAlertUncaught
                             || mainConfig.alertEverything()
@@ -267,15 +271,18 @@ public class AlertHandler {
             if (shouldAlertUltra) alertCondition = DebugAlertCondition.ALERT_ALL_ULTRA_BEAST;
             if (shouldAlertParadox) alertCondition = DebugAlertCondition.ALERT_ALL_PARADOX;
             if (shouldAlertStarter) alertCondition = DebugAlertCondition.ALERT_ALL_STARTER;
+            if (shouldAlertBucket) alertCondition = DebugAlertCondition.ALERT_BUCKETS;
             if (shouldAlertIVs) alertCondition = DebugAlertCondition.IV_HUNTING;
             if (shouldAlertEVs) alertCondition = DebugAlertCondition.EV_HUNTING;
             if (shouldAlertUncaught) alertCondition = DebugAlertCondition.ALERT_ALL_UNCAUGHT;
             if (shouldAlertNotInDex) alertCondition = DebugAlertCondition.ALERT_ALL_NOT_IN_DEX;
 
             String message = MessageUtils.getTranslated("cobblemon-spawn-alerts.debug_alert_condition", alertCondition.name());
-            message = applyDynamicReplacements(message, pokemonConfig, alertData);
-            Component component = ComponentUtil.convertFromAdventure(message);
-            player.sendSystemMessage(component);
+            StringBuilder debugHoverBuilder = new StringBuilder();
+            message = applyDynamicReplacements(message, pokemonConfig, alertData, debugHoverBuilder);
+            Component messageComponent = ComponentUtil.parseMarkup(message);
+            messageComponent = applyMessageInteractions(messageComponent, debugHoverBuilder.toString(), pokemonConfig, alertData);
+            player.sendSystemMessage(messageComponent);
         }
 
         if (isInConfig) {
@@ -290,43 +297,48 @@ public class AlertHandler {
 
         alreadyAlerted.add(alertData.spawnData().pokemonUUID());
 
-        // play custom alert sound if one exists
-        if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
-            String[] split = StringUtil.splitIdentifier(pokemonConfig.customAlertSound());
-            if (!split[0].equals("NO NAMESPACE")) {
-                ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
-                SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
-                player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
-            } else {
-                player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+        // sounds
+        if (mainConfig.enableSounds()) {
+            // play custom alert sound if one exists
+            if (!(Objects.equals(pokemonConfig.customAlertSound(), ""))) {
+                String[] split = StringUtil.splitIdentifier(pokemonConfig.customAlertSound());
+                if (!split[0].equals("NO NAMESPACE")) {
+                    ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                    SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
+                    player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+                } else {
+                    player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                }
             }
-        }
 
-        // play alert sounds if they exist
-        else {
-            HashMap<String, Boolean> traits = new HashMap<>();
-            traits.put("shiny", isShiny);
-            traits.put("legendary", isLegend);
-            traits.put("mythical", isMythical);
-            traits.put("ultrabeast", isUltra);
-            traits.put("paradox", isParadox);
-            traits.put("starter", isStarter);
-            traits.put("unregistered", !isInDex);
-            traits.put("uncaught", !isCaught);
-            // TODO: change this if i ever add individual iv/ev hunting
-            traits.put("ivs", shouldAlertIVs);
-            traits.put("evs", shouldAlertEVs);
+            // play alert sounds if they exist
+            else {
+                HashMap<String, Boolean> traits = new HashMap<>();
+                traits.put("shiny", isShiny);
+                traits.put("legendary", isLegend);
+                traits.put("mythical", isMythical);
+                traits.put("ultrabeast", isUltra);
+                traits.put("paradox", isParadox);
+                traits.put("starter", isStarter);
+                traits.put("bucket", shouldAlertBucket);
+                traits.put("unregistered", !isInDex);
+                traits.put("uncaught", !isCaught);
+                // TODO: change this if i ever add individual iv/ev hunting
+                traits.put("ivs", shouldAlertIVs);
+                traits.put("evs", shouldAlertEVs);
+                traits.put("despawned", false);
 
-            for (String soundTrait : pokemonConfig.sounds().keySet()) {
-                String soundID = pokemonConfig.sounds().get(soundTrait);
-                if (traits.get(soundTrait) && !soundID.isEmpty()) {
-                    String[] split = StringUtil.splitIdentifier(soundID);
-                    if (!split[0].equals("NO NAMESPACE")) {
-                        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
-                        SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
-                        player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
-                    } else {
-                        player.sendSystemMessage(ComponentUtil.convertFromAdventure(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                for (String soundTrait : pokemonConfig.sounds().keySet()) {
+                    String soundID = pokemonConfig.sounds().get(soundTrait);
+                    if (traits.get(soundTrait) && !soundID.isEmpty()) {
+                        String[] split = StringUtil.splitIdentifier(soundID);
+                        if (!split[0].equals("NO NAMESPACE")) {
+                            ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                            SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
+                            player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+                        } else {
+                            player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                        }
                     }
                 }
             }
@@ -334,38 +346,37 @@ public class AlertHandler {
 
         // Autoglow
         if (pokemonConfig.autoGlow()) {
-            CobblemonSpawnAlertsClient.glowing.add(alertData.spawnData().pokemonUUID());
+            int color = GlowUtil.getGlowColor(pokemonConfig.glowColor());
+            CobblemonSpawnAlertsClient.glowing.put(alertData.spawnData().pokemonUUID(), color);
         }
 
         // send the custom alert if one exits
         String message;
+        StringBuilder hoverBuilder = new StringBuilder();
         if (!Objects.equals(pokemonConfig.customAlertMessage(), "")) {
-            message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData);
-            MessageUtils.sendTranslated(message);
+            message = applyDynamicReplacements(pokemonConfig.customAlertMessage(), pokemonConfig, alertData, hoverBuilder);
         } else {
             // use the default message if no custom one is provided
             message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
-            message = applyDynamicReplacements(message, pokemonConfig, alertData);
-            Component component = ComponentUtil.convertFromAdventure(message);
-            player.sendSystemMessage(component);
+            message = applyDynamicReplacements(message, pokemonConfig, alertData, hoverBuilder);
         }
+        Component spawnComponent = ComponentUtil.parseMarkup(message);
+        spawnComponent = applyMessageInteractions(spawnComponent, hoverBuilder.toString(), pokemonConfig, alertData);
+        player.sendSystemMessage(spawnComponent);
 
         // journeymap compat
         PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();
         if (Services.PLATFORM.isModLoaded("journeymap") && jmConfig.enableWaypoint()) {
-            Vector3f pos = alertData.spawnData().position();
-            BlockPos blockPos = new BlockPos((int)pos.x, (int)pos.y, (int)pos.z);
+            BlockPos blockPos = new BlockPos((int)spawnPos.x, (int)spawnPos.y, (int)spawnPos.z);
             JourneymapCompat.createWaypoint(blockPos, alertData, jmConfig);
         }
     }
 
     public static void alertDespawned(DespawnDataPacket despawnData) {
-        if (!(Minecraft.getInstance().player instanceof Player player)) {
-            return;
-        }
-        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) {
-            return;
-        }
+        if (!(Minecraft.getInstance().player instanceof Player player)) return;
+        if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) return;
+        if (!CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().enableDespawnAlerts()) return;
+        if (!alreadyAlerted.contains(despawnData.spawnData().pokemonUUID())) return;
 
         CobblemonSpawnAlertsClient.glowing.remove(despawnData.spawnData().pokemonUUID());
         if (Services.PLATFORM.isModLoaded("journeymap")) {
@@ -378,28 +389,45 @@ public class AlertHandler {
         }
 
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
+        MainConfig mainConfig = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig();
         String message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().despawnMessage());
 
         message = switch (DespawnReason.valueOf(despawnData.despawnReason())) {
             case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), despawnData.playerName()).getString());
             case DESPAWNED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Despawned()).getString());
             case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
+            case DIED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Died()).getString());
         };
 
-        message = applyDynamicReplacements(message, pokemonConfig,
-                new AlertDataPacket(
-                        despawnData.spawnData(),
-                        new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
-                        despawnData.rarity(),
-                        new PokemonTraits(
-                                Natures.NAUGHTY.getName().getPath(),
-                                Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
-                                Gender.GENDERLESS.name(),
-                                "Normal"
-                        )
-                ));
-        Component component = ComponentUtil.convertFromAdventure(message);
-        player.sendSystemMessage(component);
+        AlertDataPacket despawnAlertData = new AlertDataPacket(
+                despawnData.spawnData(),
+                new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
+                despawnData.rarity(),
+                new PokemonTraits(
+                        Natures.NAUGHTY.getName().getPath(),
+                        Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
+                        Gender.GENDERLESS.name(),
+                        "Normal"
+                )
+        );
+        StringBuilder despawnHoverBuilder = new StringBuilder();
+        message = applyDynamicReplacements(message, pokemonConfig, despawnAlertData, despawnHoverBuilder);
+        Component despawnComponent = ComponentUtil.parseMarkup(message);
+        despawnComponent = applyMessageInteractions(despawnComponent, despawnHoverBuilder.toString(), pokemonConfig, despawnAlertData);
+        player.sendSystemMessage(despawnComponent);
+
+        // play despawn sound if one exists
+        String despawnSound = pokemonConfig.sounds().get("despawned");
+        if (mainConfig.enableSounds() && !(Objects.equals(despawnSound, ""))) {
+            String[] split = StringUtil.splitIdentifier(despawnSound);
+            if (!split[0].equals("NO NAMESPACE")) {
+                ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(split[0], split[1]);
+                SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
+                player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
+            } else {
+                player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+            }
+        }
     }
 
     public static Pair<Boolean, PokemonConfig.PokemonSpecificConfig> getConfigForPokemon(String pokemonName, int dexID) {
@@ -430,7 +458,7 @@ public class AlertHandler {
 
     }
 
-    public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData) {
+    public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
 
         int level = alertData.stats().level();
@@ -440,6 +468,7 @@ public class AlertHandler {
         AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
         Gender gender = Gender.valueOf(alertData.traits().genderID());
         String nearestPlayer = alertData.spawnData().nearestPlayerName();
+        RarityUtil.Bucket bucket = alertData.spawnData().bucket();
 
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
 
@@ -447,7 +476,6 @@ public class AlertHandler {
         message = message.replace("{name_lower}", pokemonName.toLowerCase());
         message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
-        String hoverText = "";
         Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
         StatDisplayMode levelDisplayMode = displayModes.get("level");
         StatDisplayMode ivsDisplayMode = displayModes.get("ivs");
@@ -467,6 +495,24 @@ public class AlertHandler {
         }
         message = message.replace("{shiny}", "");
         message = message.replace("{shiny_unformatted}", "");
+
+        // Bucket
+        if (config.showBucket()) {
+            String bucketMessage = switch (bucket) {
+                case COMMON -> messageTemplates.common();
+                case UNCOMMON -> messageTemplates.uncommon();
+                case RARE -> messageTemplates.rare();
+                case ULTRA_RARE -> messageTemplates.ultra_rare();
+                case NONE -> "";
+            };
+
+            bucketMessage = Component.translatable(bucketMessage).getString();
+            message = message.replace("{bucket}", Component.translatable(messageTemplates.bucket(), bucketMessage).getString());
+            message = message.replace("{bucket_unformatted}",
+                    Component.translatable(messageTemplates.bucket_unformatted(), StringUtil.capitalizeEachWord(bucket.getSerializedName())).getString());
+        }
+        message = message.replace("{bucket}", "");
+        message = message.replace("{bucket_unformatted}", "");
 
         // Legendary/Mythical/Ultra Beast/Paradox
         if (config.showLegendary()) {
@@ -495,7 +541,7 @@ public class AlertHandler {
             String levelMessage = Component.translatable(configMessage, level).getString();
 
             if (isHoverEnabled) {
-                hoverText += levelMessage + "\n";
+                hoverBuilder.append(levelMessage).append("\n");
             } else {
                 message = message.replace("{level}", levelMessage);
             }
@@ -516,7 +562,7 @@ public class AlertHandler {
                     Component.translatable(configMessage,
                             "-", "-", "-", "-", "-", "-").getString();
             if (isHoverEnabled) {
-                hoverText += ivsMessage + "\n";
+                hoverBuilder.append(ivsMessage).append("\n");
             } else {
                 message = message.replace("{ivs}", ivsMessage);
             }
@@ -540,7 +586,7 @@ public class AlertHandler {
                             evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
                             evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
             if (isHoverEnabled) {
-                hoverText += evsMessage + "\n";
+                hoverBuilder.append(evsMessage).append("\n");
             } else {
                 message = message.replace("{evs}", evsMessage);
             }
@@ -558,14 +604,14 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
             String natureString = nature != null ? MiscUtilsKt.asTranslated(nature.getDisplayName()).getString() : "N/A";
             natureString = StringUtil.capitalize(natureString);
-            natureString = replaceIfNotAvailable(natureString);
+            natureString = AlertUtil.replaceIfNotAvailable(natureString);
             String natureMessage = Component.translatable(configMessage, natureString).getString();
             if (isHoverEnabled) {
-                hoverText += natureMessage + "\n";
+                hoverBuilder.append(natureMessage).append("\n");
             } else {
                 message = message.replace("{nature}", natureMessage);
             }
-            String natureUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
+            String natureUnformatted = AlertUtil.replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
             message = message.replace("{nature_unformatted}", natureUnformatted);
         }
         message = message.replace("{nature}", "");
@@ -576,14 +622,14 @@ public class AlertHandler {
             boolean isHoverEnabled = abilityDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.ability_hover() : messageTemplates.ability();
             String abilityString = ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A";
-            abilityString = replaceIfNotAvailable(abilityString);
+            abilityString = AlertUtil.replaceIfNotAvailable(abilityString);
             String abilityMessage = Component.translatable(configMessage, abilityString).getString();
             if (isHoverEnabled) {
-                hoverText += abilityMessage + "\n";
+                hoverBuilder.append(abilityMessage).append("\n");
             } else {
                 message = message.replace("{ability}", abilityMessage);
             }
-            String abilityUnformatted = replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
+            String abilityUnformatted = AlertUtil.replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
             message = message.replace("{ability_unformatted}", abilityUnformatted);
         }
         message = message.replace("{ability}", "");
@@ -612,12 +658,12 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
             String genderMessage = Component.translatable(configMessage, genderString).getString();
             if (isHoverEnabled) {
-                hoverText += genderMessage + "\n";
+                hoverBuilder.append(genderMessage).append("\n");
             } else {
                 message = message.replace("{gender}", genderMessage);
+                message = message.replace("{gender_unformatted}",
+                        Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
             }
-            message = message.replace("{gender_unformatted}",
-                    Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
         }
         message = message.replace("{gender}", "");
         message = message.replace("{gender_unformatted}", "");
@@ -629,7 +675,7 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
             String coordsMessage = Component.translatable(configMessage, (int)coords.x, (int)coords.y, (int)coords.z).getString();
             if (isHoverEnabled) {
-                hoverText += coordsMessage + "\n";
+                hoverBuilder.append(coordsMessage).append("\n");
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
@@ -647,7 +693,7 @@ public class AlertHandler {
             String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
             String biomeMessage = Component.translatable(configMessage, biomeName).getString();
             if (isHoverEnabled) {
-                hoverText += biomeMessage + "\n";
+                hoverBuilder.append(biomeMessage).append("\n");
             } else {
                 message = message.replace("{biome}", biomeMessage);
             }
@@ -663,7 +709,7 @@ public class AlertHandler {
             String nearestPlayerMessage = Component.translatable(configMessage, nearestPlayer).getString();
 
             if (isHoverEnabled) {
-                hoverText += nearestPlayerMessage + "\n";
+                hoverBuilder.append(nearestPlayerMessage).append("\n");
             } else {
                 message = message.replace("{nearest_player}", nearestPlayerMessage);
             }
@@ -672,26 +718,45 @@ public class AlertHandler {
         message = message.replace("{nearest_player}", "");
         message = message.replace("{nearest_player_unformatted}", "");
 
-        // Hover
-        hoverText += "<green>Click to toggle glow</green>";
-        message = "<hover:show_text:\"" + hoverText + "\">" + message + "</hover>";
-
-        // Glow click
-        if (Services.PLATFORM.getPlatform() == Platform.FABRIC) {
-            message = "<click:run_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
-        } else {
-            // so yeah uh for some fucking reason i cant comprehend, neo SPECIFICALLY does not work with run_command for this command.
-            // i dont know why. i dont know how. i dont know where. i dont know when. i dont know who. i dont know what. i dont know.
-            message = "<click:suggest_command:/csa glow " + alertData.spawnData().pokemonUUID().toString() + ">" + message + "</click>";
-        }
-
         return message;
     }
 
-    private static String replaceIfNotAvailable(String string) {
-        if (!Services.PLATFORM.doesServerHaveMod()) {
-            return "N/A";
+    private static Component applyMessageInteractions(
+            Component component,
+            String hoverText,
+            PokemonConfig.PokemonSpecificConfig config,
+            AlertDataPacket alertData
+    ) {
+        String customTooltip = config.customAlertTooltip();
+        String finalHoverText;
+        if (customTooltip != null && !customTooltip.isEmpty()) {
+            finalHoverText = applyDynamicReplacements(customTooltip, config, alertData, new StringBuilder(hoverText));
+        } else {
+            if (!hoverText.isEmpty() && !hoverText.endsWith("\n")) {
+                hoverText += "\n";
+            }
+            finalHoverText = hoverText + "<color value=#55FF55>Click to toggle glow</color>";
         }
-        return string;
+
+        ClickEvent clickEvent = AlertUtil.getDefaultGlowClickEvent(alertData);
+        String customClickEvent = config.customAlertClickEvent();
+        if (customClickEvent != null && !customClickEvent.isEmpty()) {
+            String replacedClickEvent = applyDynamicReplacements(customClickEvent, config, alertData, new StringBuilder(hoverText));
+            ClickEvent parsedClickEvent = AlertUtil.parseClickEvent(replacedClickEvent);
+            if (parsedClickEvent != null) {
+                clickEvent = parsedClickEvent;
+            } else {
+                CobblemonSpawnAlerts.LOGGER.warn("Invalid customAlertClickEvent '{}'. Falling back to glow toggle click.", replacedClickEvent);
+            }
+        }
+
+        MutableComponent output = component.copy();
+        if (!finalHoverText.isEmpty()) {
+            Component hoverComponent = ComponentUtil.parseMarkup(finalHoverText);
+            output = output.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent)));
+        }
+
+        ClickEvent finalClickEvent = clickEvent;
+        return output.withStyle(style -> style.withClickEvent(finalClickEvent));
     }
 }

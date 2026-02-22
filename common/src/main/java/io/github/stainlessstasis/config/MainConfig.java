@@ -1,12 +1,18 @@
 package io.github.stainlessstasis.config;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.util.RarityUtil;
+
+import java.util.Set;
 
 public record MainConfig (
     String configVersion,
     String[] comment,
     boolean debug,
     boolean multiplayerWarning,
+    boolean enableAlerts,
+    boolean enableDespawnAlerts,
+    boolean enableSounds,
     boolean alertAllShinies,
     boolean alertAllHA,
     boolean alertAllLegendaries,
@@ -14,12 +20,14 @@ public record MainConfig (
     boolean alertAllUltraBeasts,
     boolean alertAllParadox,
     boolean alertAllStarter,
+    Set<RarityUtil.Bucket> bucketsToAlert,
     boolean alertAllNotInDex,
     boolean alertAllUncaught,
     boolean alertEverything,
     IVHunting ivHunting,
     EVHunting evHunting,
-    LevelFilter levelFilter
+    LevelFilter levelFilter,
+    DistanceFilter distanceFilter
 ) {
     public static MainConfig createDefault() {
         return new MainConfig(CobblemonSpawnAlerts.MOD_VERSION,
@@ -29,9 +37,10 @@ public record MainConfig (
                         "https://modrinth.com/mod/cobblemon-spawn-alerts",
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
-                false, true, true, true, true, true,
-                true, true,false, false, false, false,
-                IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
+                false, true, true, true, true, true, true, true,
+                true, true, true,false, Set.of(RarityUtil.Bucket.ULTRA_RARE),
+                false, false, false,
+                IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault(), DistanceFilter.createDefault()
                 );
     }
 
@@ -49,5 +58,9 @@ public record MainConfig (
 
     public record LevelFilter(boolean enabled, int minLevel, int maxLevel) {
         public static LevelFilter createDefault() {return new LevelFilter(false, 1, 100);}
+    }
+
+    public record DistanceFilter(boolean enabled, int minDistance, int maxDistance) {
+        public static DistanceFilter createDefault() {return new DistanceFilter(false, 0, Integer.MAX_VALUE);}
     }
 }

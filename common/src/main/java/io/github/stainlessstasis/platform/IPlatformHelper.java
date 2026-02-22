@@ -3,9 +3,9 @@ package io.github.stainlessstasis.platform;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
-import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
-import net.minecraft.server.level.ServerPlayer;
+import io.github.stainlessstasis.util.RarityUtil;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import java.nio.file.Path;
@@ -44,7 +44,7 @@ public interface IPlatformHelper {
 
     Path getConfigDir();
 
-    void onPokemonSpawned(PokemonEntity pokemonEntity);
+    void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket);
 
     default void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         CobblemonSpawnAlerts.globallyAlerted.remove(pokemon.getUuid());
@@ -57,4 +57,6 @@ public interface IPlatformHelper {
     };
 
     boolean doesServerHaveMod();
+
+    Component parseMarkup(String markup);
 }

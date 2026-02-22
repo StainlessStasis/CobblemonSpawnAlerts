@@ -27,7 +27,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${property("fabric_kotlin")}")
     modImplementation("com.cobblemon:fabric:${property("cobblemon_version")}") { isTransitive = false }
 
-    modImplementation(include("net.kyori:adventure-platform-fabric:5.14.1")!!)
+    modImplementation("net.tysontheember.emberstextapi:emberstextapi-fabric-1.21.1:2.5.0")
+
     modImplementation("info.journeymap", "journeymap-api-fabric", property("journeymap_api_version") as String?)
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")

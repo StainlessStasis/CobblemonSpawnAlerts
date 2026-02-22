@@ -8,7 +8,9 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,8 +46,8 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void onPokemonSpawned(PokemonEntity pokemonEntity) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
+    public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
+        new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             List<ServerPlayer> players = new ArrayList<>();
@@ -55,12 +57,12 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : players) {
-                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity));
+                PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont overload the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity)) {
+            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
@@ -72,7 +74,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity));
+                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
                 }
             }
 
@@ -85,12 +87,16 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         IPlatformHelper.super.onPokemonDespawned(_level, pokemon, playerName, despawnReason);
         if (_level instanceof ServerLevel level) {
             PacketDistributor.sendToAllPlayers(CobblemonSpawnAlerts.createDespawnData(level, pokemon, playerName, despawnReason));
-
         }
     }
 
     @Override
     public boolean doesServerHaveMod() {
         return CSANeoClient.doesServerHaveMod;
+    }
+
+    @Override
+    public Component parseMarkup(String markup) {
+        return NeoForgeMarkupParser.parseMarkup(markup);
     }
 }

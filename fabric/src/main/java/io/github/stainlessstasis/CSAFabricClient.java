@@ -1,16 +1,13 @@
 package io.github.stainlessstasis;
 
-import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
-import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
-import kotlin.Unit;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -71,7 +68,7 @@ public class CSAFabricClient implements ClientModInitializer {
        // Packets
         ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
             context.client().execute(() -> {
-                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.evYield(), payload.nature(), payload.ability());
+                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.evYield(), payload.nature(), payload.ability(), payload.bucket());
             });
         });
 

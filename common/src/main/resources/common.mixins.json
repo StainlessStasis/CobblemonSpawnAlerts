@@ -3,9 +3,13 @@
   "package": "io.github.stainlessstasis.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "PokemonSpawnCommandMixin"
+    "PokemonSpawnCommandMixin",
+    "PokemonEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "client": [
+    "LevelRendererMixin"
+  ]
 }

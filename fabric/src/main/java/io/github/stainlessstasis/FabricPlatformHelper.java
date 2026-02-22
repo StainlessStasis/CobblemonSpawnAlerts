@@ -8,10 +8,12 @@ import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -45,18 +47,18 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public void onPokemonSpawned(PokemonEntity pokemonEntity) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
+    public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
+        new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : PlayerLookup.tracking((pokemonEntity))) {
-                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity));
+                ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont kill the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity)) {
+            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
@@ -68,7 +70,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity));
+                    ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
                 }
             }
 
@@ -90,5 +92,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
     @Override
     public boolean doesServerHaveMod() {
         return CSAFabricClient.doesServerHaveMod;
+    }
+
+    @Override
+    public Component parseMarkup(String markup) {
+        return FabricMarkupParser.parseMarkup(markup);
     }
 }
