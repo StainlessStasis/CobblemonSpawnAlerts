@@ -16,6 +16,7 @@ Click events use the following syntax: `event_name:action`. The click events are
 - Added `enableAlerts`, `enableDespawnAlerts`, and `enableSounds` in `main.json`.
 - Added colorable autoglow using ARGB32 (#AARRGGBB) formatting in `pokemon.json`.
 - Added filter by distance in `main.json`.
+- Added config to modify what is classified as legendary, starter, etc. On the server side, this config is only used for starter global alerts. It is primarily used on the client side. However, since it is still common between server and client, it is reloaded via `/csa-common reload`.
 
 ### Changes & Fixes
 - Fixed Adventure crashes and incompatibilities (e.g. BlueMap). See the breaking changes section above.
