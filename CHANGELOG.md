@@ -3,9 +3,10 @@
 ## [1.12.0] (STILL WIP)
 ### 🚨 BREAKING CHANGES 🚨
 Replaced the Adventure library with Ember's Text API - Thanks to @TysonTheEmber!
+- CSA now requires [Ember's Text API](https://modrinth.com/mod/embers-text-api) version 2.5.0 or higher
 - Breaks existing configs which use MiniMessage formatting. Refer to ETA's [markup guide](https://tysontheember.dev/embers-text-api/for-modpack-creators/markup-guide/) for updating your formatting.
 - This fixes issues regarding Adventure being JiJ'd or shadowed, conflicting with other mods which also bundle Adventure.
-- ETA, while it may slightly differ from MiniMessage, should be just as, if not *more* capable of making cool things. 
+- ETA, while it may slightly differ from MiniMessage, should be just as, if not *more* capable of making cool things.
 
 ### New Features
 - Added rarity buckets finally! There is a server config for global alerts, and a main config & message templates, as per usual. You can list out multiple buckets like so: `"COMMON", "UNCOMMON", "RARE", "ULTRA_RARE"`.
@@ -15,4 +16,5 @@ Click events use the following syntax: `event_name:action`. The click events are
 ### Changes & Fixes
 - Fixed Adventure crashes and incompatibilities (e.g. BlueMap). See the breaking changes section above.
 - Fixed an oversight where the server config was redundantly checked for the status of a Pokemon when sending alert data to clients. E.g. if a shiny legendary spawned, but the server config had shinies disabled, clients would not be alerted that it was a shiny. Because servers may still want to hide the fact that a Pokemon is shiny, `broadcastShiny` has been added as well.
-- Fixed despawn alerts triggering for Pokemon your client never actually alerted
+- Fixed despawn alerts triggering for Pokemon your client never actually alerted.
+- Fixed despawn alerts falsely triggering when the chunk the Pokemon was in was unloaded, even though it didn't actually despawn. They now properly alert when the entity is fully removed.
