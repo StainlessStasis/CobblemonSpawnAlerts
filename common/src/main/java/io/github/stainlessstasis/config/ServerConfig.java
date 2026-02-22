@@ -19,7 +19,7 @@ public record ServerConfig (
         return new ServerConfig(
                 new String[]{
                         "This config is only used if you are in singleplayer or hosting a server (including LAN).",
-                        "It determines which Pokemon are *globally* alerted for all players, and what info about Pokemon is available to clients.",
+                        "It determines which Pokemon are sent to all players, sending info about those Pokemon to clients.",
                         "It does NOT determine how each individual client displays the data sent from the server. Each client is responsible for displaying its own alerts.",
                         "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
                         "https://modrinth.com/mod/cobblemon-spawn-alerts",

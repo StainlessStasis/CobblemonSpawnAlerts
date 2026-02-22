@@ -45,7 +45,7 @@ public interface IPlatformHelper {
 
     Path getConfigDir();
 
-    void onPokemonSpawned(PokemonEntity pokemonEntity);
+    void onPokemonSpawned(PokemonEntity pokemonEntity, String bucketName);
 
     default void onPokemonDespawned(Level _level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
         CobblemonSpawnAlerts.globallyAlerted.remove(pokemon.getUuid());

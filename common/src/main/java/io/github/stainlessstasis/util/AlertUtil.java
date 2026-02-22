@@ -7,7 +7,7 @@ import io.github.stainlessstasis.config.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 public class AlertUtil {
-    public static boolean shouldGlobalAlert(PokemonEntity pokemonEntity) {
+    public static boolean shouldGlobalAlert(PokemonEntity pokemonEntity, String bucketName) {
         Pokemon pokemon = pokemonEntity.getPokemon();
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
 

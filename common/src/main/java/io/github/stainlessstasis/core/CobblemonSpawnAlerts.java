@@ -6,6 +6,10 @@ import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
+import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools;
+import com.cobblemon.mod.common.api.spawning.SpawnBucket;
+import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
+import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.IVs;
@@ -42,7 +46,9 @@ public class CobblemonSpawnAlerts {
         COMMON_CONFIG_MANAGER.loadConfig();
 
         CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
-            Services.PLATFORM.onPokemonSpawned(event.getEntity());
+            var entity = event.getEntity();
+            var bucket = RarityUtil.getRarityBucket(entity, event.getSpawnablePosition());
+            Services.PLATFORM.onPokemonSpawned(entity, bucket);
             return Unit.INSTANCE;
         });
 
@@ -78,7 +84,7 @@ public class CobblemonSpawnAlerts {
         });
     }
 
-    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity) {
+    public static PokemonDataPacket createPokemonData(PokemonEntity pokemonEntity, String bucketName) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
         Pokemon pokemon = pokemonEntity.getPokemon();
 

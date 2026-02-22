@@ -14,6 +14,7 @@ public record MainConfig (
     boolean alertAllUltraBeasts,
     boolean alertAllParadox,
     boolean alertAllStarter,
+    String bucketsToAlert,
     boolean alertAllNotInDex,
     boolean alertAllUncaught,
     boolean alertEverything,
@@ -30,7 +31,7 @@ public record MainConfig (
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
                 false, true, true, true, true, true,
-                true, true,false, false, false, false,
+                true, true,false, "ultra-rare", false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault()
                 );
     }

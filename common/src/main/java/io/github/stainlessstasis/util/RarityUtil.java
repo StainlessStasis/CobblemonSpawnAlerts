@@ -1,8 +1,59 @@
 package io.github.stainlessstasis.util;
 
+import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools;
+import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
+import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
+import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RarityUtil {
+    public enum Bucket {
+        COMMON("common"),
+        UNCOMMON("uncommon"),
+        RARE("rare"),
+        ULTRA_RARE("ultra-rare");
+
+        private final String name;
+        private static final Map<String, Bucket> BUCKETS = new HashMap<>();
+        static {
+            for (Bucket b : values()) {
+                BUCKETS.put(b.name.toLowerCase(), b);
+            }
+        }
+
+        Bucket(String name) {
+            this.name = name;
+        }
+
+        public static Bucket fromString(String name) {
+            return BUCKETS.get(name.toLowerCase());
+        }
+    }
+
+    public static Bucket getRarityBucket(PokemonEntity entity, SpawnablePosition spawnablePosition) {
+        String speciesName = entity.getPokemon().getSpecies().getName().toLowerCase();
+        List<SpawnDetail> matchingSpawns = CobblemonSpawnPools.WORLD_SPAWN_POOL.getDetails().stream()
+                .filter(
+                        detail -> detail instanceof PokemonSpawnDetail pokemonSpawnDetail
+                                &&
+                                pokemonSpawnDetail.getPokemon().getSpecies().equals(speciesName)
+                )
+                .filter(detail -> detail.isSatisfiedBy(spawnablePosition))
+                .toList();
+
+        Bucket bucket = Bucket.COMMON;
+        if (!matchingSpawns.isEmpty()) {
+            bucket = Bucket.fromString(matchingSpawns.getFirst().getBucket().getName());
+        }
+
+        return bucket;
+    }
+
     private static final Set<Integer> LEGENDARIES = Set.of(
             144, // Articuno
             145, // Zapdos
@@ -115,8 +166,6 @@ public class RarityUtil {
             804, // Naganadel
             805, // Stakataka
             806  // Blacephalon
-
-
     );
 
     private static final Set<Integer> PARADOX = Set.of(
