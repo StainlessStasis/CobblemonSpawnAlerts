@@ -1,16 +1,13 @@
 package io.github.stainlessstasis;
 
-import com.cobblemon.mod.common.api.scheduling.ScheduledTask;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
-import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
 import io.github.stainlessstasis.network.*;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
-import kotlin.Unit;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,11 +21,33 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.Entity;
+import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
+import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
+import net.tysontheember.emberstextapi.util.StyleUtil;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class CSAFabricClient implements ClientModInitializer {
     public static boolean doesServerHaveMod = false;
+
+    public static Component parseMarkup(String markup) {
+        List<TextSpan> spans = MarkupParser.parse(markup);
+        MutableComponent result = Component.empty();
+        for (TextSpan span : spans) {
+            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
+            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
+            if (span.getColor() != null) {
+                style = style.withColor(span.getColor());
+            }
+            result.append(Component.literal(span.getContent()).withStyle(style));
+        }
+        return result;
+    }
 
     @Override
     public void onInitializeClient() {

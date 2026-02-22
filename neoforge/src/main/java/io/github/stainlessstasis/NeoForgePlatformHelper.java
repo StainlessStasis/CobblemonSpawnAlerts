@@ -11,8 +11,6 @@ import io.github.stainlessstasis.util.AlertUtil;
 import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,9 +19,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
-import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
-import net.tysontheember.emberstextapi.util.StyleUtil;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -52,7 +47,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
+        new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             List<ServerPlayer> players = new ArrayList<>();
@@ -102,16 +97,6 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public Component parseMarkup(String markup) {
-        List<TextSpan> spans = MarkupParser.parse(markup);
-        MutableComponent result = Component.empty();
-        for (TextSpan span : spans) {
-            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
-            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
-            if (span.getColor() != null) {
-                style = style.withColor(span.getColor());
-            }
-            result.append(Component.literal(span.getContent()).withStyle(style));
-        }
-        return result;
+        return NeoForgeMarkupParser.parseMarkup(markup);
     }
 }

@@ -14,18 +14,12 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
-import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
-import net.tysontheember.emberstextapi.util.StyleUtil;
 
 import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -54,7 +48,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void onPokemonSpawned(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
-        ScheduledTask _task = new ScheduledTask.Builder().delay(0.5f).execute(task -> {
+        new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
             // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
@@ -102,16 +96,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public Component parseMarkup(String markup) {
-        List<TextSpan> spans = MarkupParser.parse(markup);
-        MutableComponent result = Component.empty();
-        for (TextSpan span : spans) {
-            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
-            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
-            if (span.getColor() != null) {
-                style = style.withColor(span.getColor());
-            }
-            result.append(Component.literal(span.getContent()).withStyle(style));
-        }
-        return result;
+        return FabricMarkupParser.parseMarkup(markup);
     }
 }

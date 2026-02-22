@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public record RaritiesConfig(
+        String[] comment,
         Set<Integer> legendaries,
         Set<Integer> mythicals,
         Set<Integer> ultra_beasts,
@@ -17,6 +18,14 @@ public record RaritiesConfig(
 
     public static RaritiesConfig createDefault() {
         return new RaritiesConfig(
+                new String[]{
+                        "This config is common between server and client. It determines which Pokemon are classified as legendary, starter, etc.",
+                        "Servers only reference this config for STARTERS, since Cobblemon provides labels for all other groups.",
+                        "Clients reference everything within this config, since labels don't exist clientside.",
+                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
+                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
+                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                },
                 orderedSet(
                         144, // Articuno
                         145, // Zapdos
