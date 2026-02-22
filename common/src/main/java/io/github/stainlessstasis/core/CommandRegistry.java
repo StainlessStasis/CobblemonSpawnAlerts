@@ -2,10 +2,11 @@ package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
 import io.github.stainlessstasis.config.ClientConfigManager;
-import io.github.stainlessstasis.util.ComponentUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 
 import java.util.UUID;
 
@@ -18,20 +19,23 @@ public class CommandRegistry {
                 if (!ctx.getSource().hasPermission(3)) {
                     if (ctx.getSource().getPlayer() != null) {
                         ctx.getSource().sendFailure(
-                                ComponentUtil.convertFromAdventure("<red>You do not have permission to use this command!</red>"));
+                                Component.literal("You do not have permission to use this command!").withStyle(ChatFormatting.RED));
                     }
 
                     return 0;
                 }
 
                 ctx.getSource().sendSystemMessage(
-                        ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloading...</white>"));
+                        Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                .append(Component.literal("Server config reloading...").withStyle(ChatFormatting.WHITE)));
                 if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.loadConfig()) {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><white>Server config reloaded!</white>"));
+                            Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                    .append(Component.literal("Server config reloaded!").withStyle(ChatFormatting.WHITE)));
                 } else {
                     ctx.getSource().sendSystemMessage(
-                            ComponentUtil.convertFromAdventure("<green>[CSA] </green><red>Server config reload failed.</red>"));
+                            Component.literal("[CSA] ").withStyle(ChatFormatting.GREEN)
+                                    .append(Component.literal("Server config reload failed.").withStyle(ChatFormatting.RED)));
                 }
                 return 1;
         })));

@@ -40,8 +40,7 @@ dependencies {
         exclude("net.neoforged.fancymodloader", "loader")
     }
 
-    implementation("net.kyori:adventure-platform-neoforge:6.0.0")
-    include("net.kyori:adventure-platform-neoforge:6.0.0")
+    modImplementation("net.tysontheember.emberstextapi:emberstextapi-neoforge-1.21.1:2.5.0")
 
     modImplementation("info.journeymap", "journeymap-api-neoforge", property("journeymap_api_version") as String?)
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_neo_file_id")}")
