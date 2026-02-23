@@ -2,8 +2,12 @@
 A highly customizable Cobblemon sidemod to alert you when a certain Pokemon spawns
 
 ## IMPORTANT:<br>
-**Some Pokemon info may not display properly if you are on a server!** Servers can optionally install this mod to broadcast this info to clients if they desire, also with a config of its own. If a server does not have this mod installed, then things will not display correctly.<br>
+#### Some Pokemon info may not display properly if you are on a server!
+Servers can optionally install this mod to broadcast this info to clients if they desire, also with a config of its own. If a server does not have this mod installed, then things will not display correctly.<br>
 Also, while the serverside mod is optional, all clients must have the mod if the server does.
+
+#### 1.12.0 update:
+As of 1.12.0, the Adventure library has been replaced with [Ember's Text API](https://modrinth.com/mod/embers-text-api). This will break existing configs. See the full changelog for more details.
 
 ## No more staring at the minimap!
 Have you ever been hunting for an ultra-rare, and as you're flying around your eyes are too focused on reading each Pokemon's name that you miss something? Well with this mod, you can simply receive a message in chat when the Pokemon spawns instead! The config is a JSON file that is very easy to edit and add any Pokemon you want.
@@ -15,7 +19,7 @@ CSA is fully compatible with Journeymap and can automatically create and remove 
 By simply editing the config, you can be alerted whenever an unregistered or uncaught Pokemon spawns near you!
 
 ## Customizability!
-Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use MiniMessage formatting to easily color or format messages however you like (see the [MiniMessage docs](https://docs.advntr.dev/minimessage/format.html)). <br>The default message looks like this:<br>
+Each Pokemon can be individually customized exactly to your needs. If you want to shiny hunt for a Ralts while making sure you don't miss out on any beautiful Bidoofs (i love bidoof), you can do that. Messages use Ember's Text API markup to easily color or format messages however you like (see the [ETA docs](https://tysontheember.dev/embers-text-api/for-modpack-creators/markup-guide/)). <br>The default message looks like this:<br>
 ![Default message](https://cdn.modrinth.com/data/cached_images/4b5500d73cb2c2d1a630cc5c1bee5b220bdb9eb7.png)<br>
 But can be modified to look like this, or however you want!
 ![Cool bidoof](https://cdn.modrinth.com/data/cached_images/21ac636baa53001eb530b22ff3b57d1b0b5813d0.png)
@@ -30,46 +34,59 @@ This is intended behavior, which I still need to find a better solution for (if 
 ### Support for Xaero's Minimap waypoints?
 Unfortunately, no. While it is technically already possible via modifying templates and using custom MiniMessage scripts in your alerts, I will not be adding direct compatibility to the mod. Xaero's is completely closed source, offering no API, no wiki, and no Discord server. I am not going to go through the effort of trying to figure out how to integrate someone's mod when they provide no resources for doing such. However, if someone wants to PR this, I'd love to make compatibility possible.
 ### When will you...
-Unless it's a genuine issue with the mod, I'll be stepping away from any big features for a little while. I've started a new project recently which I'm very passionate about, and devoting a lot of time to. I WILL come back to this mod eventually - I'm just currently not having fun making it, and I don't get paid to do this. Lastly, as mentioned above, I will accept PRs if anyone gets tired of me taking too long.
-### Rarity bucket alerts?
-See above.
+Unless it's a genuine issue with the mod, I add features at my own pace. If you get upset with a feature taking too long, feel free to PR it.
 ### In-game editable config?
 See above.
 
-## Known Incompatibilities:
-- BlueMap, or any other mod which bundles the Adventure library. Won't fix - feel free to PR if you know how.
+## Known Issues:
 - Cobblemon Academy 2.0 makes some changes to the configs, causing shinies not to alert by default. In the CSA `main.json` config (use `/csa openconfig` to open the directory), set `alertAllShinies` to true. Then run `/csa reload`. Shiny alerts should work now.
+- Forgot to add `broadcastBucket` to server config in 1.12.0. Oops
 
 ## Config:
 <details>
-<summary>Config - Main (client)</summary>
+  <summary>About/Reloading the Configs</summary>
   
-The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br><br>
-This file is called `main.json`
+  ### General info:
+  - Found in your Minecraft instance's `config` folder. Use `/csa openconfig` to open the directory.
+  - Re-entering a world will **NOT** reload the configs. You must use their respective commands to reload them while the game is running, or restart the game.
+  - Configs are separated into `client` and `common`. The client configs are `main.json`, `pokemon.json`, and `message_templates.json`. The common configs are `server.json` and `rarities.json`.
+  - For a detailed description of each config, see their respective categories.
+  ### Client configs:
+  - Reloaded via `/csa reload`.
+  - These only affect things on **your** own client. They affect what you *see* and what you *hear*. These do nothing on a server and do not at all affect other players.
+  ### Common configs:
+  - Reloaded via `/csa-common reload`.
+  - These affect things on your client, **and** on servers. They affect what clients *know* about a Pokemon.
+  - `server.json` is only used if you are the server host (e.g. singleplayer, LAN, dedicated server).
+  - `rarities.json` is used by the server and clients. On the server, it only cares about `starters`. On clients, everything is used.
+</details>
+<details>
+<summary>Config - Main (client)</summary>
 
 ### Config Settings:<br>
-* **alertAllShinies**: Alerts you when any shiny spawns, unless `alertShiny` is disabled in its config, or its config is disabled.<br>
-* **alertAllLegendaries**: Alerts you when any legendary spawns, unless its config is disabled.<br>
-* **alertAllMythicals**: Alerts you when any mythical spawns, unless its config is disabled.<br>
-* **alertAllUltraBeasts**: Alerts you when any ultra beast spawns, unless its config is disabled.<br>
-* **alertAllParadox**: Alerts you when any paradox spawns, unless its config is disabled.<br>
-* **alertAllParadox**: Alerts you when any starter spawns, unless its config is disabled.<br>
-* **alertAllNotInDex**: Alerts you when any Pokemon which is not already registered in your Pokedex spawns, unless its config is disabled.<br>
-* **alertAllUncaught**: Alerts you when any Pokemon which you have not caught spawns, unless its config is disabled.<br>
-* **alertEverything**: Alerts you to every single spawn near you, unless its config is disabled. Why would you want to do this? Idk.
+* **debug**: Enables debug messages in chat.<br>
+* **multiplayerWarning**: Enables a warning message when joining a server.
+* **enableAlerts**: Enables alert messages, excluding despawns.
+* **enableDespawnAlerts**: Enables alert messages for when alerted Pokemon despawn. *Note: this is limited to Pokemon which have been globally alerted, since clients don't have a reliable way to track despawns.*
+* **alertAllShinies**: Alerts when any shiny spawns, unless `alertShiny` is disabled in its config.<br>
+* **alertAllLegendaries**: Alerts when any legendary spawns.<br>
+* **alertAllMythicals**: Alerts when any mythical spawns.<br>
+* **alertAllUltraBeasts**: Alerts when any ultra beast spawns.<br>
+* **alertAllParadox**: Alerts when any paradox spawns.<br>
+* **alertAllStarter**: Alerts when any starter spawns.<br>
+* **alertAllNotInDex**: Alerts when any Pokemon which is not already registered in your Pokedex spawns.<br>
+* **alertAllUncaught**: Alerts when any Pokemon which you have not caught spawns.<br>
+* **alertEverything**: Alerts every single spawn near you. Why would you want to do this? Idk.
+* **bucketsToAlert**: A list of buckets to alert spawns from. E.g. `"ULTRA_RARE", "RARE"`. *Note: this will only work if the server provides the bucket info.*
 
-**Level filter**: Allows you to set min and max levels for triggering alerts.
+**Level filter**: Allows setting min and max levels for triggering alerts.<br>
+**Distance filter**: Allows setting min and max distance, in blocks, for triggering alerts.
 
 For IV/EV hunting, see the IV/EV Hunting tab under Config
-
-### Reloading the Config:<br>
-You can edit the config while the game is running, and simply use the command `/csa reload` to reload it. Leaving/entering a world will **NOT** reload the config, but restarting the game will. The command must be run to take effect while the game is running.<br>
 </details>
 
 <details>
 <summary>Config - Pokemon (client)</summary>
-
-The config is found in your Minecraft instance folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig`.<br>
 
 ### IMPORTANT:
 All custom configs must have the Pokemon's name in the language you are playing on! If you are playing Cobblemon on any language other than English, you must ensure that Pokemon names are written in that language, otherwise the configs will not work! This does not apply to the default config, that will work fine.<br>
@@ -82,11 +99,14 @@ The name of each Pokemon's config can be formatted like "x, y, z" to include mul
 * **alwaysAlert**: Whether to always alert the Pokemon's spawn message, assuming enabled is set to true. Setting this to false will only display a spawn message given some other condition is true (e.g. alertShiny).
 * **alertShiny**: Whether to alert a shiny Pokemon, or if the Pokemon is shiny. If alwaysAlert is set to false, this will ONLY alert that Pokemon's spawn if it is shiny. If alwaysAlert is set to true, then it will simply specify if the spawned Pokemon is shiny.
 * **alertHiddenAbility**: Whether to alert a shiny Pokemon, or if the Pokemon has a Hidden Ability. This requires the mod to be installed server side and the server must have abilities being broadcast in the server config.
-* **showLegendary**: Shows whether the Pokemon is legendary, mythical, paradox, or ultra beast.
-* **customAlertMessage**: Used to create a custom alert message for a Pokemon using [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.
+* **showLegendary**: Shows whether the Pokemon is legendary, mythical, paradox, or ultra beast. This uses the `rarities.json` config.
+* **showBucket**: Shows whether the bucket a Pokemon spawned from. This requires the server to broadcast the bucket to clients.
+* **customAlertMessage**: Used to create a custom alert message for a Pokemon using [ETA markup](https://tysontheember.dev/embers-text-api/for-modpack-creators/markup-guide/). See the Custom Alert Messages tab for more info.
+* **customAlertTooltip**: Used to add custom hoverable tooltips to an alert message.
+* **customAlertClickEvent**: Used to add custom click events to an alert message. Click events use the following syntax: `event_name:action`. The click events are `open_url`, `open_file`, `run_command`, `suggest_command`, `change_page`, and `copy_to_clipboard`. For example, `run_command:/csa openconfig` would open the config folder when clicked on.
 * **autoGlow**: Makes a Pokemon glow when alerted. Click the alert to toggle the glow.
-<br><br>
-The following are a sub category of the config for displaying certain info about a Pokemon. These have 3 options -- `"MAIN_MESSAGE"`, `"HOVER"`, and `"DISABLED"`:
+* **glowColor**: Changes the glow color of autoGlow. Formatted as ARGB (#AARRGGBB). Alpha does not actually affect anything.
+#### The following are a sub category of the config for displaying certain info about a Pokemon. Note that some info requires the server to broadcast it. These have 3 options -- `"MAIN_MESSAGE"`, `"HOVER"`, and `"DISABLED"`:
 * **level**: Shows the Pokemon's level.
 * **ivs**: Lists the Pokemon's IVs in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.
 * **evs**: Lists the Pokemon's EV Yield in order of HP/Atk/Def/Sp.Atk/Sp.Def/Speed.
@@ -104,6 +124,7 @@ You will also see sounds listed below the stat displays. See the Custom Sounds t
 <details>
   <summary>Full template example</summary>
 
+# This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 ```json
 {
   "configVersion": "1.11.3",
@@ -194,6 +215,8 @@ You will also see sounds listed below the stat displays. See the Custom Sounds t
 </details>
 
 Show all stats in message:<br>
+
+# This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 ```json
 "bidoof": {
       "enabled": true,
@@ -218,6 +241,8 @@ Show all stats in message:<br>
 ```
 ![All stats in main message](https://cdn.modrinth.com/data/cached_images/91a4c7f5079243efff2aba7e84f7044c5f8048c4.png)
 Show all stats in hover:<br>
+
+# This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 ```json
 "bidoof": {
       "enabled": true,
@@ -256,7 +281,8 @@ The default values for the templates are found in your Minecraft instance's lang
 
 <details>
   <summary>The defaults for en_us.json (the only currently added language)</summary>
-  
+
+  # This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 ```json
   {
   "cobblemon-spawn-alerts.client_config_reloading": "<green>[CSA] </green><white>Client config reloading...</white>",
@@ -320,6 +346,7 @@ The default values for the templates are found in your Minecraft instance's lang
 ### Modifying Templates:<br>
 When modifying templates, keep in mind the spacing and parameters. `%s` is used internally to insert values, and the amount of them **MUST** match the default template. For example, if you are modifying the template for IVs, your new template must have EXACTLY 6 `%s` - no more, no less. These also insert values in order, so unfortunately changing the order of IVs or coordinates is currently impossible.<br>**Note:** Some of the default templates have spaces in them to make formatting work properly, so just be aware of that if you are modifying a template.<br>
 ### Examples:<br>
+# This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 Change the shiny color for all Pokemon:<br>
 ```json
 "shiny": "<blue><b>Shiny </b></blue>",
@@ -336,27 +363,24 @@ Change the default spawn message for all Pokemon:
 </details>
 
 <details>
-<summary>Config - Server</summary>
-
-The config is found in your server folder under `config -> cobblemon-spawn-alerts`. You can also use the command `/csa openconfig` in singleplayer.<br><br>
-This file is called `server.json`
+<summary>Config - Server (common)</summary>
 
 ### Config Settings:<br>
 * **enableSpawnCommandAlerts**: Enables alerts for Pokemon spawned via commands. IMPORTANT - This can break other addons, such as Cobblemon: Path to Legends! Only enable this if you know what you're doing, or if you know the addon is compatible with this option.<br>
-* **alertShinies**: Alerts all players on the server when a shiny spawns.<br>
-* **alertLegendaries**: Alerts all players on the server when a legendary spawns.<br>
-* **alertMythicals**: Alerts all players on the server when a mythical spawns.<br>
-* **alertUltraBeasts**: Alerts all players on the server when a ultra beast spawns.<br>
-* **alertParadox**: Alerts all players on the server when a paradox spawns.<br>
-* **alertStarters**: Alerts all players on the server when a starter spawns.<br>
-* **broadcastIVs**: Tells clients what IVs a spawned Pokemon has.<br>
-* **broadcastEVs**: Tells clients what EV Yield a spawned Pokemon has.<br>
-* **broadcastNature**: Tells clients what Nature a spawned Pokemon has.<br>
-* **broadcastAbility**: Tells clients what Ability a spawned Pokemon has.<br>
+* **alertX**: Sends info about the Pokemon belonging to X group to all players on the server, allowing clients to alert them.
+* **broadcastX**: Sends X info about the Pokemon to all players on the server.
 **Note:** Disabling these on your own client will also stop things from displaying properly in singleplayer... so don't do that?
 
-### Reloading the Config:<br>
-You can edit the config while the game is running, and simply use the command `/csa-server reload` to reload it. You must have permission level 3 (OP) or higher to use this command.<br>
+</details>
+
+<details>
+<summary>Config - Rarities (common)</summary>
+
+`rarities.json` is a collection of Pokemon dex numbers used by both the server and client to determine which group(s) a Pokemon belongs to.
+
+The `server.json` config only uses the `starters` list for global alerts via `alertStarters`.
+
+Clients use the entirety of the rarities config, since labels don't exist clientside. As an example, say you love Bidoof so much you think it should be labeled Mythical. If you simply add `399` (it MUST be a dex number - NOT a name), then Bidoof would be alerted **on your client only** as Mythical. Again, this does NOT affect global alerts for servers, with the exception of `starters`.
 
 </details>
 
@@ -369,18 +393,20 @@ Currently, the available dynamic replacements are:
 * **{legendary} / {legendary_unformatted}**: Inserts the Pokemon's rarity (legendary/mythical/ultra beast/paradox) if `showLegendary` is enabled
 * **{shiny} / {shiny_unformatted}**: Inserts a shiny message if the Pokemon is shiny and `alertShiny` is enabled
 * **{HA} / {HA_unformatted}**: Inserts a Hidden Ability message if the Pokemon has a Hidden Ability and `alertHiddenAbility` is enabled
-* **{level} / {level_unformatted}**: Inserts the Pokemon's level if enabled
-* **{ivs} / {ivs_unformatted}**: Inserts the Pokemon's IVs if enabled
-* **{evs} / {evs_unformatted}**: Inserts the Pokemon's EV Yield if enabled
-* **{nature} / {nature_unformatted}**: Inserts the Pokemon's nature if enabled
-* **{ability} / {ability_unformatted}**: Inserts the Pokemon's ability if enabled
-* **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender if enabled
-* **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates if enabled
-* **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned if enabled
-* **{nearest_player} / {nearest_player_unformatted}**: Inserts the name of the nearest player to the spawned Pokemon if enabled
-* **{despawned}**: Inserts the Pokemon's despawn message for despawn, captured, and fainted respectively. This probably shouldn't be used though.
+* **{bucket} / {bucket_unformatted}**: Inserts the Pokemon's spawn bucket
+* **{level} / {level_unformatted}**: Inserts the Pokemon's level
+* **{ivs} / {ivs_unformatted}**: Inserts the Pokemon's IVs
+* **{evs} / {evs_unformatted}**: Inserts the Pokemon's EV Yield
+* **{nature} / {nature_unformatted}**: Inserts the Pokemon's nature
+* **{ability} / {ability_unformatted}**: Inserts the Pokemon's ability
+* **{gender} / {gender_unformatted}**: Inserts the Pokemon's gender
+* **{coords} / {coords_unformatted}**: Inserts the Pokemon's coordinates
+* **{biome} / {biome_unformatted}**: Inserts the biome the Pokemon spawned
+* **{nearest_player} / {nearest_player_unformatted}**: Inserts the name of the nearest player to the spawned Pokemon
+* **{despawned}**: Inserts the Pokemon's despawn message for despawn, captured, fainted, or killed by other causes respectively. This probably shouldn't be used though.
 
 ### Examples:<br>
+# This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
 Creating a custom alert message:<br>
 ```json
 "bidoof": {
@@ -433,6 +459,7 @@ Next up is adding your sound in the config, which is super simple. Whatever your
 <details>
   <summary>Full template using the default sounds provided in the pack</summary>
 
+  # This is outdated as of 1.12.0. If you're reading this, I'm either still working on it, or I forgot to edit this. Please let me know.
   This plays the Pokemon: Legends Arceus shiny sound when any shiny spawns
   ```json
 {
@@ -514,8 +541,6 @@ In `pokemon.json`, there are a few options for Journeymap waypoints:
 ## More to come!
 I currently plan to add the following:
 * In-game editable config using ForgeConfigAPIPort
-* Alerts for rarity buckets
-* Nature hunting
 * Maybe individual IV hunting?
 
 If you have any other ideas, feel free to share them with me!
