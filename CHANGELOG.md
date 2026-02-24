@@ -29,3 +29,11 @@ Click events use the following syntax: `event_name:action`. The click events are
 
 ## [1.12.1]
 Fixed NeoForge startup crash due to accidental hard dependency on Journeymap
+
+## [1.12.2]
+### New Features
+- Added `broadcastBucket` to `server.json`
+
+### Changes & Fixes
+- Fixed PokemonDataPacket networking error due to null buckets. Added error handling and logging to it.
+- Fixed stupid idiot error where I mistyped ultra-rare as ultra_rare and so ultra rares wouldn't alert :)
