@@ -503,7 +503,7 @@ public class AlertHandler {
                 case UNCOMMON -> messageTemplates.uncommon();
                 case RARE -> messageTemplates.rare();
                 case ULTRA_RARE -> messageTemplates.ultra_rare();
-                case NONE -> "";
+                case NONE -> messageTemplates.bucket_none();
             };
 
             bucketMessage = Component.translatable(bucketMessage).getString();

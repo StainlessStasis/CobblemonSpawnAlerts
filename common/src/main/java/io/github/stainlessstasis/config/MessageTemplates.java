@@ -55,7 +55,8 @@ public record MessageTemplates (
         String common,
         String uncommon,
         String rare,
-        String ultra_rare
+        String ultra_rare,
+        String bucket_none
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
@@ -118,7 +119,8 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.common",
                 "cobblemon-spawn-alerts.uncommon",
                 "cobblemon-spawn-alerts.rare",
-                "cobblemon-spawn-alerts.ultra_rare"
+                "cobblemon-spawn-alerts.ultra_rare",
+                "cobblemon-spawn-alerts.bucket_none"
         );
     }
 }

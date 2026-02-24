@@ -30,7 +30,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.12.1";
+    public static final String MOD_VERSION = "1.12.2";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
@@ -43,7 +43,10 @@ public class CobblemonSpawnAlerts {
 
         CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.NORMAL, event -> {
             var entity = event.getEntity();
-            var bucket = RarityUtil.getRarityBucket(entity, event.getSpawnablePosition());
+            RarityUtil.Bucket bucket = RarityUtil.Bucket.NONE;
+            if (COMMON_CONFIG_MANAGER.getServerConfig().broadcastBucket()) {
+                bucket = RarityUtil.getRarityBucket(entity, event.getSpawnablePosition());
+            }
             Services.PLATFORM.onPokemonSpawned(entity, bucket);
             return Unit.INSTANCE;
         });

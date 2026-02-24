@@ -61,5 +61,6 @@
   "cobblemon-spawn-alerts.common": "<color value=#AAAAAA>Common</color>",
   "cobblemon-spawn-alerts.uncommon": "<color value=#00AA00>Uncommon</color>",
   "cobblemon-spawn-alerts.rare": "<color value=#5555FF>Rare</color>",
-  "cobblemon-spawn-alerts.ultra_rare": "<color value=#FF55FF>Ultra Rare</color>"
+  "cobblemon-spawn-alerts.ultra_rare": "<color value=#FF55FF>Ultra Rare</color>",
+  "cobblemon-spawn-alerts.bucket_none": "<color value=#555555>N/A</color>"
 }

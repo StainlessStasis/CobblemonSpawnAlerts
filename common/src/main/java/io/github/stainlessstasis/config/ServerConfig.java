@@ -16,6 +16,7 @@ public record ServerConfig (
     boolean alertStarters,
     boolean alertHiddenAbility,
     Set<RarityUtil.Bucket> bucketsToAlert,
+    boolean broadcastBucket,
     boolean broadcastIVs,
     boolean broadcastEVs,
     boolean broadcastNature,
@@ -32,7 +33,8 @@ public record ServerConfig (
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
                 false, true, true, true, true, true, true,
-                false, false, Set.of(RarityUtil.Bucket.ULTRA_RARE), true, true, true, true
+                false, false, Set.of(RarityUtil.Bucket.ULTRA_RARE), true,
+                true, true, true, true
         );
     }
 }
