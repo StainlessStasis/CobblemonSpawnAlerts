@@ -26,3 +26,14 @@ Click events use the following syntax: `event_name:action`. The click events are
 - Fixed an oversight where the server config was redundantly checked for the status of a Pokemon when sending alert data to clients. E.g. if a shiny legendary spawned, but the server config had shinies disabled, clients would not be alerted that it was a shiny. Because servers may still want to hide the fact that a Pokemon is shiny, `broadcastShiny` has been added as well.
 - Fixed despawn alerts triggering for Pokemon your client never actually alerted.
 - Fixed despawn alerts falsely triggering when the chunk the Pokemon was in was unloaded, even though it didn't actually despawn. They now properly alert when the entity is fully removed.
+
+## [1.12.1]
+Fixed NeoForge startup crash due to accidental hard dependency on Journeymap
+
+## [1.12.2]
+### New Features
+- Added `broadcastBucket` to `server.json`
+
+### Changes & Fixes
+- Fixed PokemonDataPacket networking error due to null buckets. Added error handling and logging to it.
+- Fixed stupid idiot error where I mistyped ultra-rare as ultra_rare and so ultra rares wouldn't alert :)
