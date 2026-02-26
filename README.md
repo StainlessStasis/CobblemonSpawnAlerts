@@ -1,4 +1,4 @@
-# Cobblemon Spawn Alerts
+[# Cobblemon Spawn Alerts
 A highly customizable Cobblemon sidemod to alert you when a certain Pokemon spawns
 
 ## IMPORTANT:<br>
@@ -548,3 +548,4 @@ If you have any other ideas, feel free to share them with me!
 ## Feedback | Contact me
 You can contact me on Discord; my username is `stasis_the_shattered`. You can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts. Feel free to ping so I see your message.<br>
 *Note: Please do not send a friend request or DM, I will ignore it and redirect you to the Cobblemon server. Only reason I'm choosing to do this now is so future problems can be solved by searching in that channel.*
+](https://github.com/StainlessStasis/CobblemonSpawnAlerts)
