@@ -3,10 +3,8 @@ package io.github.stainlessstasis.compat;
 import com.n1netails.n1netails.discord.api.DiscordWebhookClient;
 import com.n1netails.n1netails.discord.exception.DiscordWebhookException;
 import com.n1netails.n1netails.discord.internal.DiscordWebhookClientImpl;
-import com.n1netails.n1netails.discord.model.WebhookMessage;
 import com.n1netails.n1netails.discord.service.WebhookService;
 import io.github.stainlessstasis.config.common.DiscordWebhookConfig;
-import io.github.stainlessstasis.config.common.DiscordWebhookWrappers;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.AlertDataPacket;
 

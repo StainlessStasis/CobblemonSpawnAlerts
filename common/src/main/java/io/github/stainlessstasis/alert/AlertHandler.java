@@ -363,8 +363,9 @@ public class AlertHandler {
         Component spawnComponent = MessageUtils.parseMarkup(message);
         spawnComponent = AlertUtils.applyMessageInteractions(spawnComponent, hoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(spawnComponent);
-        // TODO: remove this
-        CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData);
+        if (pokemonConfig.sendWebhook()) {
+            CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData);
+        }
 
         // journeymap compat
         PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();

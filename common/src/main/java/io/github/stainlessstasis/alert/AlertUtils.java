@@ -77,45 +77,33 @@ public class AlertUtils {
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
+        Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
 
-        int level = alertData.stats().level();
-        IVs ivs = alertData.stats().ivs();
-        EVs evYield = alertData.stats().evYield();
-        Nature nature = Natures.getNature(alertData.traits().natureID());
-        AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
-        Gender gender = Gender.valueOf(alertData.traits().genderID());
-        String nearestPlayer = alertData.spawnData().nearestPlayerName();
-        RarityUtil.Bucket bucket = alertData.spawnData().bucket();
-
+        // Name
         String pokemonName = PokemonNameUtil.getTranslatedName(alertData.spawnData().translatedPokemonName());
-
         message = message.replace("{name}", pokemonName);
         message = message.replace("{name_lower}", pokemonName.toLowerCase());
         message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
-        Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
-        StatDisplayMode levelDisplayMode = displayModes.get("level");
-        StatDisplayMode ivsDisplayMode = displayModes.get("ivs");
-        StatDisplayMode evsDisplayMode = displayModes.get("evs");
-        StatDisplayMode natureDisplayMode = displayModes.get("nature");
-        StatDisplayMode abilityDisplayMode = displayModes.get("ability");
-        StatDisplayMode genderDisplayMode = displayModes.get("gender");
-        StatDisplayMode coordinatesDisplayMode = displayModes.get("coordinates");
-        StatDisplayMode biomeDisplayMode = displayModes.get("biome");
-        StatDisplayMode nearestPlayerDisplayMode = displayModes.get("nearestPlayer");
-
         // Shiny
-        boolean shouldAlertShiny = config.alertShiny() && alertData.rarity().isShiny();
-        if (shouldAlertShiny) {
+        if (config.alertShiny() && alertData.rarity().isShiny()) {
             message = message.replace("{shiny}", Component.translatable(messageTemplates.shiny()).getString());
-            message = message.replace("{shiny_unformatted}", Component.translatable(messageTemplates.shiny_unformatted()).getString());
         }
-        message = message.replace("{shiny}", "");
-        message = message.replace("{shiny_unformatted}", "");
+        // HA
+        if (config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())) {
+            message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
+        }
+
+        // Level
+        int level = alertData.stats().level();
+        message = processStat(message, hoverBuilder, displayModes.get("level"), getTemplateByTag(messageTemplates, "level", level));
 
         // Bucket
+        RarityUtil.Bucket bucket = alertData.spawnData().bucket();
         if (config.showBucket()) {
-            String bucketMessage = switch (bucket) {
+            StatTemplate raw = getTemplateByTag(messageTemplates, "bucket");
+
+            String bucketKey = switch (bucket) {
                 case COMMON -> messageTemplates.common();
                 case UNCOMMON -> messageTemplates.uncommon();
                 case RARE -> messageTemplates.rare();
@@ -123,232 +111,145 @@ public class AlertUtils {
                 case NONE -> messageTemplates.bucket_none();
             };
 
-            bucketMessage = Component.translatable(bucketMessage).getString();
-            message = message.replace("{bucket}", Component.translatable(messageTemplates.bucket(), bucketMessage).getString());
-            message = message.replace("{bucket_unformatted}",
-                    Component.translatable(messageTemplates.bucket_unformatted(), StringUtil.capitalizeEachWord(bucket.getSerializedName())).getString());
-        }
-        message = message.replace("{bucket}", "");
-        message = message.replace("{bucket_unformatted}", "");
+            String translatedBucket = Component.translatable(bucketKey).getString();
+            String serializedName = StringUtil.capitalizeEachWord(bucket.getSerializedName());
 
-        // Legendary/Mythical/Ultra Beast/Paradox
+            StatTemplate finalBucket = new StatTemplate(
+                    "bucket",
+                    Component.translatable(raw.main(), translatedBucket).getString(),
+                    raw.hover() != null ? Component.translatable(raw.hover(), translatedBucket).getString() : null,
+                    Component.translatable(raw.unformatted(), serializedName).getString()
+            );
+
+            message = processStat(message, hoverBuilder, StatDisplayMode.MAIN_MESSAGE, finalBucket);
+        }
+
+        // Legendary/Rarity
         if (config.showLegendary()) {
             int dexId = alertData.spawnData().dexId();
-            if (RarityUtil.isLegendary(dexId)) {
-                message = message.replace("{legendary}", Component.translatable(messageTemplates.legendary()).getString());
-                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.legendary_unformatted()).getString());
-            } else if (RarityUtil.isMythical(dexId)) {
-                message = message.replace("{legendary}", Component.translatable(messageTemplates.mythical()).getString());
-                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.mythical_unformatted()).getString());
-            } else if (RarityUtil.isUltraBeast(dexId)) {
-                message = message.replace("{legendary}", Component.translatable(messageTemplates.ultrabeast()).getString());
-                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.ultrabeast_unformatted()).getString());
-            } else if (RarityUtil.isParadox(dexId)) {
-                message = message.replace("{legendary}", Component.translatable(messageTemplates.paradox()).getString());
-                message = message.replace("{legendary_unformatted}", Component.translatable(messageTemplates.paradox_unformatted()).getString());
+            String label =
+                    RarityUtil.isLegendary(dexId) ? "legendary" :
+                    RarityUtil.isMythical(dexId) ? "mythical" :
+                    RarityUtil.isUltraBeast(dexId) ? "ultrabeast" :
+                    RarityUtil.isParadox(dexId) ? "paradox" : null;
+
+            if (label != null) {
+                StatTemplate StatTemplate = getTemplateByTag(messageTemplates, label);
+                StatTemplate finalLabel = new StatTemplate("legendary",
+                        Component.translatable(StatTemplate.main()).getString(), null,
+                        Component.translatable(StatTemplate.unformatted()).getString());
+                message = processStat(message, hoverBuilder, StatDisplayMode.MAIN_MESSAGE, finalLabel);
             }
         }
-        message = message.replace("{legendary}", "");
-        message = message.replace("{legendary_unformatted}", "");
-
-        // Level
-        if (levelDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = levelDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.level_hover() : messageTemplates.level();
-            String levelMessage = Component.translatable(configMessage, level).getString();
-
-            if (isHoverEnabled) {
-                hoverBuilder.append(levelMessage).append("\n");
-            } else {
-                message = message.replace("{level}", levelMessage);
-            }
-            message = message.replace("{level_unformatted}", Component.translatable(messageTemplates.level_unformatted(), level).getString());
-        }
-        message = message.replace("{level}", "");
-        message = message.replace("{level_unformatted}", "");
 
         // IVs
-        if (ivsDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = ivsDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.ivs_hover() : messageTemplates.ivs();
-            String ivsMessage = Services.PLATFORM.doesServerHaveMod() ?
-                    Component.translatable(configMessage,
-                            ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString()
-                    :
-                    Component.translatable(configMessage,
-                            "-", "-", "-", "-", "-", "-").getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(ivsMessage).append("\n");
-            } else {
-                message = message.replace("{ivs}", ivsMessage);
-            }
-            String ivsUnformatted = Services.PLATFORM.doesServerHaveMod() ?
-                    Component.translatable(messageTemplates.ivs_unformatted(),
-                            ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
-                            ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)).getString()
-                    :
-                    Component.translatable(messageTemplates.evs_unformatted(),
-                            "-", "-", "-", "-", "-", "-").getString();
-            message = message.replace("{ivs_unformatted}", ivsUnformatted);
-        }
-        message = message.replace("{ivs}", "");
-        message = message.replace("{ivs_unformatted}", "");
+        Object[] ivArgs = Services.PLATFORM.doesServerHaveMod() ?
+                new Object[]{alertData.stats().ivs().get(Stats.HP), alertData.stats().ivs().get(Stats.ATTACK), alertData.stats().ivs().get(Stats.DEFENCE),
+                        alertData.stats().ivs().get(Stats.SPECIAL_ATTACK), alertData.stats().ivs().get(Stats.SPECIAL_DEFENCE), alertData.stats().ivs().get(Stats.SPEED)}
+                : new Object[]{"-", "-", "-", "-", "-", "-"};
+        message = processStat(message, hoverBuilder, displayModes.get("ivs"), getTemplateByTag(messageTemplates, "ivs", ivArgs));
 
         // EVs
-        if (evsDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = evsDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.evs_hover() : messageTemplates.evs();
-            String evsMessage = Component.translatable(configMessage,
-                    evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(evsMessage).append("\n");
-            } else {
-                message = message.replace("{evs}", evsMessage);
-            }
-            String evsUnformatted = Component.translatable(messageTemplates.evs_unformatted(),
-                    evYield.get(Stats.HP), evYield.get(Stats.ATTACK), evYield.get(Stats.DEFENCE),
-                    evYield.get(Stats.SPECIAL_ATTACK), evYield.get(Stats.SPECIAL_DEFENCE), evYield.get(Stats.SPEED)).getString();
-            message = message.replace("{evs_unformatted}", evsUnformatted);
-        }
-        message = message.replace("{evs}", "");
-        message = message.replace("{evs_unformatted}", "");
+        Object[] evArgs = new Object[]{alertData.stats().evYield().get(Stats.HP), alertData.stats().evYield().get(Stats.ATTACK), alertData.stats().evYield().get(Stats.DEFENCE),
+                alertData.stats().evYield().get(Stats.SPECIAL_ATTACK), alertData.stats().evYield().get(Stats.SPECIAL_DEFENCE), alertData.stats().evYield().get(Stats.SPEED)};
+        message = processStat(message, hoverBuilder, displayModes.get("evs"), getTemplateByTag(messageTemplates, "evs", evArgs));
 
         // Nature
-        if (natureDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = natureDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.nature_hover() : messageTemplates.nature();
-            String natureString = nature != null ? MiscUtilsKt.asTranslated(nature.getDisplayName()).getString() : "N/A";
-            natureString = StringUtil.capitalize(natureString);
-            natureString = AlertUtils.replaceIfNotAvailable(natureString);
-            String natureMessage = Component.translatable(configMessage, natureString).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(natureMessage).append("\n");
-            } else {
-                message = message.replace("{nature}", natureMessage);
-            }
-            String natureUnformatted = AlertUtils.replaceIfNotAvailable(Component.translatable(messageTemplates.nature_unformatted(), natureString).getString());
-            message = message.replace("{nature_unformatted}", natureUnformatted);
-        }
-        message = message.replace("{nature}", "");
-        message = message.replace("{nature_unformatted}", "");
+        Nature nature = Natures.getNature(alertData.traits().natureID());
+        String natureName = AlertUtils.replaceIfNotAvailable(nature != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(nature.getDisplayName()).getString()) : "N/A");
+        message = processStat(message, hoverBuilder, displayModes.get("nature"), getTemplateByTag(messageTemplates, "nature", natureName));
 
         // Ability
-        if (abilityDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = abilityDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.ability_hover() : messageTemplates.ability();
-            String abilityString = ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A";
-            abilityString = AlertUtils.replaceIfNotAvailable(abilityString);
-            String abilityMessage = Component.translatable(configMessage, abilityString).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(abilityMessage).append("\n");
-            } else {
-                message = message.replace("{ability}", abilityMessage);
-            }
-            String abilityUnformatted = AlertUtils.replaceIfNotAvailable(Component.translatable(messageTemplates.ability_unformatted(), abilityString).getString());
-            message = message.replace("{ability_unformatted}", abilityUnformatted);
-        }
-        message = message.replace("{ability}", "");
-        message = message.replace("{ability_unformatted}", "");
-
-        // Hidden Ability
-        boolean shouldAlertHA = config.alertHiddenAbility() &&
-                HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID());
-        if (shouldAlertHA) {
-            message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
-            message = message.replace("{HA_unformatted}", Component.translatable(messageTemplates.hidden_ability_unformatted()).getString());
-        }
-        message = message.replace("{HA}", "");
-        message = message.replace("{HA_unformatted}", "");
+        AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
+        String abilityName = AlertUtils.replaceIfNotAvailable(ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A");
+        message = processStat(message, hoverBuilder, displayModes.get("ability"), getTemplateByTag(messageTemplates, "ability", abilityName));
 
         // Gender
-        if (genderDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = genderDisplayMode == StatDisplayMode.HOVER;
-            String genderSymbol = switch (gender) {
-                case MALE -> messageTemplates.male();
-                case FEMALE -> messageTemplates.female();
-                case GENDERLESS -> messageTemplates.genderless();
-            };
-            String genderName = StringUtil.capitalize(gender.toString().toLowerCase());
-            String genderString = Component.translatable(genderSymbol, genderName).getString();
-            String configMessage = isHoverEnabled ? messageTemplates.gender_hover() : messageTemplates.gender();
-            String genderMessage = Component.translatable(configMessage, genderString).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(genderMessage).append("\n");
-            } else {
-                message = message.replace("{gender}", genderMessage);
-                message = message.replace("{gender_unformatted}",
-                        Component.translatable(messageTemplates.gender_unformatted(), genderName).getString());
-            }
-        }
-        message = message.replace("{gender}", "");
-        message = message.replace("{gender_unformatted}", "");
+        Gender gender = Gender.valueOf(alertData.traits().genderID());
+        StatTemplate template = getTemplateByTag(messageTemplates, "gender");
+        String symbolKey = switch (gender) {
+            case MALE -> messageTemplates.male();
+            case FEMALE -> messageTemplates.female();
+            case GENDERLESS -> messageTemplates.genderless();
+        };
+        String genderName = StringUtil.capitalize(gender.toString().toLowerCase());
+        String genderSymbol = Component.translatable(symbolKey, genderName).getString();
+        StatTemplate finalGender = new StatTemplate("gender",
+                Component.translatable(template.main(), genderSymbol).getString(),
+                Component.translatable(template.hover(), genderSymbol).getString(),
+                Component.translatable(template.unformatted(), genderName).getString()
+        );
+        message = processStat(message, hoverBuilder, displayModes.get("gender"), finalGender);
 
         // Coordinates
         Vector3f coords = alertData.spawnData().position();
-        if (coordinatesDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = coordinatesDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
+        String x = coords.x > Integer.MIN_VALUE ? String.valueOf((int)coords.x) : "N/A";
+        String y = coords.y > Integer.MIN_VALUE ? String.valueOf((int)coords.y) : "N/A";
+        String z = coords.z > Integer.MIN_VALUE ? String.valueOf((int)coords.z) : "N/A";
+        message = processStat(message, hoverBuilder, displayModes.get("coordinates"), getTemplateByTag(messageTemplates, "coords", x, y, z));
 
-            String x = coords.x > Integer.MIN_VALUE ? String.valueOf((int)coords.x) : "N/A";
-            String y = coords.y > Integer.MIN_VALUE ? String.valueOf((int)coords.y) : "N/A";
-            String z = coords.z > Integer.MIN_VALUE ? String.valueOf((int)coords.z) : "N/A";
-
-            String coordsMessage = Component.translatable(configMessage, x, y, z).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(coordsMessage).append("\n");
-            } else {
-                message = message.replace("{coords}", coordsMessage);
-            }
-
-            message = message.replace("{coords_unformatted}",Component.translatable(messageTemplates.coords_unformatted(), x, y, z).getString());
-            message = message.replace("{x}", Component.translatable(messageTemplates.coords_x(), x).getString());
-            message = message.replace("{y}", Component.translatable(messageTemplates.coords_y(), y).getString());
-            message = message.replace("{z}", Component.translatable(messageTemplates.coords_z(), z).getString());
-        }
-        message = message.replace("{coords}", "");
-        message = message.replace("{coords_unformatted}", "");
-        message = message.replace("{x}", "");
-        message = message.replace("{y}", "");
-        message = message.replace("{z}", "");
+        message = message.replace("{x}", Component.translatable(messageTemplates.coords_x(), x).getString())
+                .replace("{y}", Component.translatable(messageTemplates.coords_y(), y).getString())
+                .replace("{z}", Component.translatable(messageTemplates.coords_z(), z).getString());
 
         // Biome
-        if (biomeDisplayMode != StatDisplayMode.DISABLED && Minecraft.getInstance().level != null) {
-            boolean isHoverEnabled = biomeDisplayMode == StatDisplayMode.HOVER;
-            String biomeName = Component.translatable(alertData.spawnData().biomeKey()).getString();
-            biomeName = StringUtil.makeBeautiful(biomeName);
-
-            String configMessage = isHoverEnabled ? messageTemplates.biome_hover() : messageTemplates.biome();
-            String biomeMessage = Component.translatable(configMessage, biomeName).getString();
-            if (isHoverEnabled) {
-                hoverBuilder.append(biomeMessage).append("\n");
-            } else {
-                message = message.replace("{biome}", biomeMessage);
-            }
-            message = message.replace("{biome_unformatted}", Component.translatable(messageTemplates.biome_unformatted(), biomeName).getString());
-        }
-        message = message.replace("{biome}", "");
-        message = message.replace("{biome_unformatted}", "");
+        String biomeName = StringUtil.makeBeautiful(Component.translatable(alertData.spawnData().biomeKey()).getString());
+        message = processStat(message, hoverBuilder, displayModes.get("biome"), getTemplateByTag(messageTemplates, "biome", biomeName));
 
         // Nearest Player
-        if (nearestPlayerDisplayMode != StatDisplayMode.DISABLED) {
-            boolean isHoverEnabled = nearestPlayerDisplayMode == StatDisplayMode.HOVER;
-            String configMessage = isHoverEnabled ? messageTemplates.nearest_player_hover() : messageTemplates.nearest_player();
-            String nearestPlayerMessage = Component.translatable(configMessage, nearestPlayer).getString();
+        message = processStat(message, hoverBuilder, displayModes.get("nearestPlayer"), getTemplateByTag(messageTemplates, "nearest_player", alertData.spawnData().nearestPlayerName()));
 
-            if (isHoverEnabled) {
-                hoverBuilder.append(nearestPlayerMessage).append("\n");
-            } else {
-                message = message.replace("{nearest_player}", nearestPlayerMessage);
-            }
-            message = message.replace("{nearest_player_unformatted}", Component.translatable(messageTemplates.nearest_player_unformatted(), nearestPlayer).getString());
-        }
-        message = message.replace("{nearest_player}", "");
-        message = message.replace("{nearest_player_unformatted}", "");
-
-        return message;
+        return cleanupDynamicReplacements(message);
     }
+
+    private static String processStat(String message, StringBuilder hover, StatDisplayMode mode, StatTemplate template) {
+        if (mode == StatDisplayMode.DISABLED) return message;
+
+        if (mode == StatDisplayMode.HOVER || mode == StatDisplayMode.BOTH) {
+            hover.append(template.hover()).append("\n");
+        }
+
+        if (mode == StatDisplayMode.MAIN_MESSAGE || mode == StatDisplayMode.BOTH) {
+            message = message.replace("{" + template.tag() + "}", template.main());
+        }
+
+        return message.replace("{" + template.tag() + "_unformatted}", template.unformatted());
+    }
+
+    public static String cleanupDynamicReplacements(String message) {
+        return message.replaceAll("\\{[^}]*}", "");
+    }
+
+    private static StatTemplate getTemplateByTag(MessageTemplates templates, String tag, Object... args) {
+        StatTemplate raw = getTemplateByTag(templates, tag);
+
+        return new StatTemplate(
+                tag,
+                Component.translatable(raw.main(), args).getString(),
+                Component.translatable(raw.hover(), args).getString(),
+                Component.translatable(raw.unformatted(), args).getString()
+        );
+    }
+
+    private static StatTemplate getTemplateByTag(MessageTemplates templates, String tag) {
+        try {
+            String main = (String) MessageTemplates.class.getMethod(tag).invoke(templates);
+            String hover = tryGetMethod(templates, tag + "_hover");
+            String unformatted = tryGetMethod(templates, tag + "_unformatted");
+
+            return new StatTemplate(tag, main, hover, unformatted);
+        } catch (Exception e) {
+            CobblemonSpawnAlerts.LOGGER.error("Failed to find templates for tag: {}", tag, e);
+            return new StatTemplate(tag, "U/D", "U/D", "U/D");
+        }
+    }
+    
+    private static String tryGetMethod(MessageTemplates templates, String name) {
+        try { return (String) MessageTemplates.class.getMethod(name).invoke(templates); }
+        catch (Exception ignored) {return "U/D";}
+    }
+
+    private record StatTemplate(String tag, String main, String hover, String unformatted) {}
 
     public static Component applyMessageInteractions(
             Component component,

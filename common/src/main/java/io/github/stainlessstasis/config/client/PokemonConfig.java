@@ -23,7 +23,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             String customAlertSound,
             boolean autoGlow,
             String glowColor,
-            JourneymapConfig journeyMap
+            JourneymapConfig journeyMap,
+            boolean sendWebhook
     ) {
         public static PokemonSpecificConfig createDefault() {
             Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
@@ -54,7 +55,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true, true,
                     statDisplayModes, "", "", "", sounds, "", false, "#FFFFFFFF",
-                    new JourneymapConfig(false, "", "#FFFFFF", false)
+                    new JourneymapConfig(false, "", "#FFFFFF", false),
+                    false
             );
         }
     }

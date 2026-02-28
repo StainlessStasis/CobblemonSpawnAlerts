@@ -50,7 +50,13 @@ However, it is highly recommended to leave this setting on. The message will go 
 - Added configVersion to message_templates, server, and rarities configs
 
 ## (WIP) [1.12.4]
+### 🚨 BREAKING CHANGES 🚨
+Added regex pattern matcher to remove anything within {curly braces} after dynamic replacements are applied.
+- Necessary change to clean up code a bit.
+- Allows for a more modular system to support custom DRs in the future.
+
 ### New Features
+- Added `BOTH` option for stat display modes.
 
 ### Changes & Fixes
 - Journeymap waypoint names now support dynamic replacements. Use the `unformatted` versions when available - most DRs will not work if the stat mode is set to `HOVER`.
