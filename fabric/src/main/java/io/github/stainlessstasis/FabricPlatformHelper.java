@@ -7,13 +7,12 @@ import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
-import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.alert.AlertUtils;
 import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,7 +58,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont kill the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
+            if (!AlertUtils.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());

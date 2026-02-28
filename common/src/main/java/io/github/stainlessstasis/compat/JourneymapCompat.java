@@ -1,5 +1,7 @@
 package io.github.stainlessstasis.compat;
 
+import io.github.stainlessstasis.alert.AlertHandler;
+import io.github.stainlessstasis.alert.AlertUtils;
 import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
@@ -26,14 +28,17 @@ public class JourneymapCompat {
         JourneymapCompat.api = api;
     }
 
-    public static void createWaypoint(BlockPos pos, AlertDataPacket alertData, PokemonConfig.JourneymapConfig jmConfig) {
+    public static void createWaypoint(BlockPos pos, AlertDataPacket alertData, PokemonConfig.PokemonSpecificConfig pokemonConfig, PokemonConfig.JourneymapConfig jmConfig) {
         if (api == null) {
             CobblemonSpawnAlerts.LOGGER.error("Cannot create waypoint: IClientAPI is null.");
             return;
         }
 
         ResourceKey<Level> dimension = DimensionUtil.getDimension(alertData.spawnData().dimensionKey());
-        String waypointName = jmConfig.waypointName().isEmpty() ? alertData.spawnData().translatedPokemonName() : jmConfig.waypointName();
+        String waypointName = alertData.spawnData().translatedPokemonName();
+        if (!jmConfig.waypointName().isEmpty()) {
+            waypointName = AlertUtils.applyDynamicReplacements(jmConfig.waypointName(), pokemonConfig, alertData, new StringBuilder());
+        }
 
         Waypoint waypoint = WaypointFactory.createClientWaypoint(CobblemonSpawnAlerts.MOD_ID, pos, waypointName, dimension, jmConfig.persistent());
 

@@ -48,3 +48,9 @@ However, it is highly recommended to leave this setting on. The message will go 
 - Changed DespawnDataPacket to contain the entire AlertDataPacket for the Pokemon, giving access to much more information in despawn messages.
 - Made coordinates display as "N/A" when unavilable, instead of just 0.
 - Added configVersion to message_templates, server, and rarities configs
+
+## (WIP) [1.12.4]
+### New Features
+
+### Changes & Fixes
+- Journeymap waypoint names now support dynamic replacements. Use the `unformatted` versions when available - most DRs will not work if the stat mode is set to `HOVER`.

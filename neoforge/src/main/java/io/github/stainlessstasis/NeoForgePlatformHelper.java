@@ -7,10 +7,9 @@ import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
-import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.alert.AlertUtils;
 import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -63,7 +62,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont overload the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
+            if (!AlertUtils.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
