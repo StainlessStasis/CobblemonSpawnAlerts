@@ -2,7 +2,9 @@ package io.github.stainlessstasis.config.manager;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class VersionMatcher {
@@ -68,5 +70,16 @@ public class VersionMatcher {
     public static boolean hasVersionChanged() {
         var versionStatus = compareVersions(LAST_KNOWN_MOD_VERSION, CobblemonSpawnAlerts.MOD_VERSION);
         return versionStatus != VersionStatus.NO_CHANGE;
+    }
+
+    public static List<String> getMajorChanges() {
+        List<String> changes = new ArrayList<>();
+
+        for (String version : MAJOR_CHANGES.keySet()) {
+            if (compareVersions(LAST_KNOWN_MOD_VERSION, version) == VersionStatus.NEWER) {
+                changes.add(MAJOR_CHANGES.get(version));
+            }
+        }
+        return changes;
     }
 }

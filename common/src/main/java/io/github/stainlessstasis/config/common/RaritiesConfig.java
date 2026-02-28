@@ -26,9 +26,8 @@ public record RaritiesConfig(
                         "This config is common between server and client. It determines which Pokemon are classified as legendary, starter, etc.",
                         "Servers only reference this config for STARTERS, since Cobblemon provides labels for all other groups.",
                         "Clients reference everything within this config, since labels don't exist clientside.",
-                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
-                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
-                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                        "For details on using the config, please see the docs.",
+                        "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
                 orderedSet(
                         144, // Articuno

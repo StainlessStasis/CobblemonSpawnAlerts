@@ -41,6 +41,8 @@ Fixed NeoForge startup crash due to accidental hard dependency on Journeymap
 ## [1.12.3]
 ### New Features
 - Added `{x}`, `{y}`, and `{z}` dynamic replacements for coordinates.
+- Added version checker to notify players of important changes. You may disable this in `main.json`. 
+However, it is highly recommended to leave this setting on. The message will go away after restarting your game, assuming the version stays consistent.
 
 ### Changes & Fixes
 - Changed DespawnDataPacket to contain the entire AlertDataPacket for the Pokemon, giving access to much more information in despawn messages.

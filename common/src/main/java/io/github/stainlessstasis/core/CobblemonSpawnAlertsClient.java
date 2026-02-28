@@ -39,6 +39,13 @@ public class CobblemonSpawnAlertsClient {
         }
     }
 
+    public static ClickEvent getChangelogClickEvent() {
+        return new ClickEvent(
+                ClickEvent.Action.OPEN_URL,
+                "https://stainlessstasis.github.io/CSA-Docs/other/changelog"
+        );
+    }
+
     public static void sendMultiplayerWarning() {
         final MainConfig mainConfig = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig();
         if (mainConfig.multiplayerWarning() && !Minecraft.getInstance().isSingleplayer()) {
@@ -46,12 +53,12 @@ public class CobblemonSpawnAlertsClient {
         }
 
         if (mainConfig.versionChangeWarning() && VersionMatcher.hasVersionChanged()) {
-            MessageUtils.sendTranslated("cobblemon-spawn-alerts.version_change_detected",
-                    new ClickEvent(
-                            ClickEvent.Action.OPEN_URL,
-                            "https://stainlessstasis.github.io/CSA-Docs/other/changelog"
-                    )
-            );
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.version_change_detected", getChangelogClickEvent());
+
+            List<String> changelog = VersionMatcher.getMajorChanges();
+            for (String message : changelog) {
+                MessageUtils.sendTranslated(message, getChangelogClickEvent());
+            }
         }
     }
 }

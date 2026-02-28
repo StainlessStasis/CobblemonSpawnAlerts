@@ -69,9 +69,8 @@ public record MessageTemplates (
                 CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only on your client. It determines how each piece of an alert is displayed, giving you full control over displaying them.",
-                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
-                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
-                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                        "For details on using the config, please see the docs.",
+                        "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
                 "cobblemon-spawn-alerts.default_spawn_message",
                 "cobblemon-spawn-alerts.default_despawn_message",

@@ -54,7 +54,7 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true, true,
                     statDisplayModes, "", "", "", sounds, "", false, "#FFFFFFFF",
-                    new JourneymapConfig(false, "", "", false)
+                    new JourneymapConfig(false, "", "#FFFFFF", false)
             );
         }
     }
@@ -66,9 +66,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
                 CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only on your client. It determines which Pokemon are alerted, and how that alert is displayed.",
-                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
-                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
-                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                        "For details on using the config, please see the docs.",
+                        "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
                 defaults
         );

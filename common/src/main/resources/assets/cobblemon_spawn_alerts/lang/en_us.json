@@ -4,9 +4,11 @@
   "cobblemon-spawn-alerts.client_config_reload_failed": "<color value=#55FF55>[CSA] </color><color value=#FF5555>Client config reload failed.</color>",
   "cobblemon-spawn-alerts.config_load_failed": "<color value=#55FF55>[CSA] </color><color value=#FF5555>Config failed to load properly while loading `%s`.</color>",
   "cobblemon-spawn-alerts.config_save_failed": "<color value=#55FF55>[CSA] </color><color value=#FF5555>Config failed to save properly while saving `%s`.</color>",
+
   "cobblemon-spawn-alerts.multiplayer_warning": "<color value=#55FF55>[CSA]</color> <color value=#FFFF55>WARNING!</color> <color value=#FFFFFF>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs, EV yield, or Nature, may be displayed incorrectly!",
   "cobblemon-spawn-alerts.version_change_detected": "<c col=#55FF55>[CSA]</c> <c col=#FFFF55>WARNING!</c> <c col=#FFFFFF>A change in mod versions was detected since you last started the game. Some things may have changed. Click here for more details.</c>",
-  "cobblemon-spawn-alerts.changelog.1_12_0": "",
+  "cobblemon-spawn-alerts.changelog.1_12_0": "<c col=#55FF55>[CSA]</c> <shadow c=#000000><c col=#AA0000><b>BREAKING CHANGES!</b></c></shadow> <c col=#FF5555>MiniMessage is no longer used for text formatting as of 1.12.0, and has been replaced by Ember's Text API. <b>This breaks existing configs!</b></c>",
+
   "cobblemon-spawn-alerts.outdated_sound": "<color value=#55FF55>[CSA]</color> <color value=#FF5555>ERROR!</color> <color value=#FFFFFF>Attempted to play a sound without a namespace. You can fix this by adding 'minecraft:' to the beginning of your sound if it is a vanilla sound (including resource packs).",
   "cobblemon-spawn-alerts.debug_alert_condition": "<color value=#55FF55>[CSA] </color><color value=#FFFFFF>Attempting to create alert for {name} \n </color><color value=#55FF55>Cause: </color><color value=#FFFFFF>%s</color>",
 
@@ -16,51 +18,67 @@
   "cobblemon-spawn-alerts.despawn_reason_captured": "was captured by %s",
   "cobblemon-spawn-alerts.despawn_reason_fainted": "was defeated by %s",
   "cobblemon-spawn-alerts.despawn_reason_died": "died of mysterious causes",
+
   "cobblemon-spawn-alerts.shiny": "<color value=#FFAA00>Shiny </color>",
   "cobblemon-spawn-alerts.shiny_unformatted": "Shiny ",
+
   "cobblemon-spawn-alerts.hidden_ability": "<bold><color value=#55FFFF>Hidden Ability </color></bold>",
   "cobblemon-spawn-alerts.hidden_ability_unformatted": "Hidden Ability ",
+
   "cobblemon-spawn-alerts.level": "<color value=#AAAAAA>(Lvl. %s) </color>",
   "cobblemon-spawn-alerts.level_hover": "Level: <color value=#AAAAAA>%s</color>",
   "cobblemon-spawn-alerts.level_unformatted": "%s",
+
   "cobblemon-spawn-alerts.ivs": "with IVs: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
   "cobblemon-spawn-alerts.ivs_hover": "IVs: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
   "cobblemon-spawn-alerts.ivs_unformatted": "(%s/%s/%s/%s/%s/%s)",
+
   "cobblemon-spawn-alerts.evs": "with EV yield: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
   "cobblemon-spawn-alerts.evs_hover": "EV Yield: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
   "cobblemon-spawn-alerts.evs_unformatted": "(%s/%s/%s/%s/%s/%s)",
+
   "cobblemon-spawn-alerts.nature": "with Nature: <color value=#AAAAAA>%s</color> ",
   "cobblemon-spawn-alerts.nature_hover": "Nature: <color value=#AAAAAA>%s</color> ",
   "cobblemon-spawn-alerts.nature_unformatted": "%s",
+
   "cobblemon-spawn-alerts.ability": "with Ability: <color value=#AAAAAA>%s</color> ",
   "cobblemon-spawn-alerts.ability_hover": "Ability: <color value=#AAAAAA>%s</color> ",
   "cobblemon-spawn-alerts.ability_unformatted": "%s",
+
   "cobblemon-spawn-alerts.gender": "%s ",
   "cobblemon-spawn-alerts.gender_hover": "Gender: %s",
   "cobblemon-spawn-alerts.gender_unformatted": "%s",
   "cobblemon-spawn-alerts.male": "<color value=#55FFFF>♂ %s</color>",
   "cobblemon-spawn-alerts.female": "<color value=#FF55FF>♀ %s</color>",
   "cobblemon-spawn-alerts.genderless": "<color value=#AAAAAA>%s</color>",
+
   "cobblemon-spawn-alerts.coords": " at <color value=#AAAAAA>(%s, %s, %s)</color>",
   "cobblemon-spawn-alerts.coords_hover": "Coordinates: <color value=#AAAAAA>(%s, %s, %s)</color>",
   "cobblemon-spawn-alerts.coords_unformatted": "(%s, %s, %s)",
   "cobblemon-spawn-alerts.coords_x": "%s",
   "cobblemon-spawn-alerts.coords_y": "%s",
   "cobblemon-spawn-alerts.coords_z": "%s",
+
   "cobblemon-spawn-alerts.biome": " in a <color value=#AAAAAA>%s</color> biome",
   "cobblemon-spawn-alerts.biome_hover": "Biome: <color value=#AAAAAA>%s</color>",
   "cobblemon-spawn-alerts.biome_unformatted": "%s",
+
   "cobblemon-spawn-alerts.nearest_player": " near player: <color value=#AAAAAA>%s</color>",
   "cobblemon-spawn-alerts.nearest_player_hover": "Nearest Player: <color value=#AAAAAA>%s</color>",
   "cobblemon-spawn-alerts.nearest_player_unformatted": "%s",
+
   "cobblemon-spawn-alerts.legendary": "<bold><color value=#FF55FF>Legendary </color></bold>",
   "cobblemon-spawn-alerts.legendary_unformatted": "Legendary",
+
   "cobblemon-spawn-alerts.mythical": "<bold><color value=#FF55FF>Mythical </color></bold>",
   "cobblemon-spawn-alerts.mythical_unformatted": "Mythical",
+
   "cobblemon-spawn-alerts.ultrabeast": "<bold><color value=#FF55FF>Ultra Beast </color></bold>",
   "cobblemon-spawn-alerts.ultrabeast_unformatted": "Ultra Beast",
+
   "cobblemon-spawn-alerts.paradox": "<bold><color value=#FF55FF>Paradox </color></bold>",
   "cobblemon-spawn-alerts.paradox_unformatted": "Paradox",
+
   "cobblemon-spawn-alerts.bucket": "%s ",
   "cobblemon-spawn-alerts.bucket_unformatted": "%s",
   "cobblemon-spawn-alerts.common": "<color value=#AAAAAA>Common</color>",
