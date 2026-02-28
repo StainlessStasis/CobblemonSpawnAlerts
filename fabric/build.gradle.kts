@@ -33,6 +33,9 @@ dependencies {
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")
 
+    implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    include("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+
     implementation(project(":common", configuration = "namedElements"))
     "developmentFabric"(project(":common", configuration = "namedElements"))
     shadowCommon(project(":common", configuration = "transformProductionFabric"))

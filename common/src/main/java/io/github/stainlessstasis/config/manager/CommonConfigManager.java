@@ -1,5 +1,6 @@
 package io.github.stainlessstasis.config.manager;
 
+import io.github.stainlessstasis.config.common.DiscordWebhookConfig;
 import io.github.stainlessstasis.config.common.RaritiesConfig;
 import io.github.stainlessstasis.config.common.ServerConfig;
 
@@ -8,8 +9,10 @@ import java.io.File;
 public class CommonConfigManager extends AbstractConfigManager {
     private final File SERVER_CONFIG_FILE = MOD_CONFIG_DIR.resolve("server.json").toFile();
     private final File RARITIES_CONFIG_FILE = MOD_CONFIG_DIR.resolve("rarities.json").toFile();
+    private final File DISCORD_CONFIG_FILE = MOD_CONFIG_DIR.resolve("webhooks.json").toFile();
     private ServerConfig serverConfig;
     private RaritiesConfig raritiesConfig;
+    private DiscordWebhookConfig discordConfig;
 
     @Override
     boolean onConfigLoad() {
@@ -23,6 +26,11 @@ public class CommonConfigManager extends AbstractConfigManager {
             failedLoad(RARITIES_CONFIG_FILE.toPath());
             return false;
         }
+        discordConfig = loadConfigFile(DISCORD_CONFIG_FILE, DiscordWebhookConfig.class);
+        if (discordConfig == null) {
+            failedLoad(DISCORD_CONFIG_FILE.toPath());
+            return false;
+        }
         return true;
     }
 
@@ -31,5 +39,8 @@ public class CommonConfigManager extends AbstractConfigManager {
     }
     public RaritiesConfig getRaritiesConfig() {
         return raritiesConfig;
+    }
+    public DiscordWebhookConfig getDiscordConfig() {
+        return discordConfig;
     }
 }

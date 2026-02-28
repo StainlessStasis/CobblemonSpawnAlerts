@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.pokemon.Nature;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.stat.CobblemonStatProvider;
 import io.github.stainlessstasis.alert.DespawnReason;
+import io.github.stainlessstasis.compat.DiscordWebhookService;
 import io.github.stainlessstasis.config.manager.CommonConfigManager;
 import io.github.stainlessstasis.config.common.ServerConfig;
 import io.github.stainlessstasis.config.manager.VersionMatcher;
@@ -22,7 +23,6 @@ import io.github.stainlessstasis.util.*;
 import kotlin.Unit;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,7 @@ public class CobblemonSpawnAlerts {
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
     public static Set<UUID> globallyAlerted = new HashSet<>();
     public static Set<UUID> despawned = new HashSet<>();
+    private static DiscordWebhookService discordWebhookService;
 
     public static void initServer() {
         LOGGER.info("CobblemonSpawnAlerts server initializing...");
@@ -83,6 +84,13 @@ public class CobblemonSpawnAlerts {
 
             return Unit.INSTANCE;
         });
+    }
+
+    public static synchronized DiscordWebhookService getWebhookService() {
+        if (discordWebhookService == null) {
+            discordWebhookService = new DiscordWebhookService();
+        }
+        return discordWebhookService;
     }
 
     public static String getLastKnownModVersion() {
