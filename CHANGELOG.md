@@ -3,7 +3,7 @@
 ## [1.12.0]
 ### 🚨 BREAKING CHANGES 🚨
 Replaced the Adventure library with Ember's Text API - Thanks to @TysonTheEmber!
-- CSA now requires [Ember's Text API](https://modrinth.com/mod/embers-text-api) version 2.5.0 or higher
+- CSA now requires [Ember's Text API](https://modrinth.com/mod/embers-text-api) version 2.5.0 or higher.
 - Breaks existing configs which use MiniMessage formatting. Refer to ETA's [markup guide](https://tysontheember.dev/embers-text-api/for-modpack-creators/markup-guide/) for updating your formatting.
 - Required dependency on clients, and Fabric servers. NeoForge dedicated servers do not depend on ETA.
 - This fixes issues regarding Adventure being JiJ'd or shadowed, conflicting with other mods which also bundle Adventure.
@@ -37,3 +37,11 @@ Fixed NeoForge startup crash due to accidental hard dependency on Journeymap
 ### Changes & Fixes
 - Fixed PokemonDataPacket networking error due to null buckets. Added error handling and logging to it.
 - Fixed stupid idiot error where I mistyped ultra-rare as ultra_rare and so ultra rares wouldn't alert :)
+
+## [1.12.3]
+### New Features
+- Added `{x}`, `{y}`, and `{z}` dynamic replacements for coordinates.
+
+### Changes & Fixes
+- Changed DespawnDataPacket to contain the entire AlertDataPacket for the Pokemon, giving access to much more information in despawn messages.
+- Made coordinates display as "N/A" when unavilable, instead of just 0.

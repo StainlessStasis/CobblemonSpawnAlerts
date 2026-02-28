@@ -30,7 +30,7 @@ import java.util.stream.StreamSupport;
 
 public class CobblemonSpawnAlerts {
     public static final String MOD_ID = "cobblemon_spawn_alerts";
-    public static final String MOD_VERSION = "1.12.2";
+    public static final String MOD_VERSION = "1.12.3";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final CommonConfigManager COMMON_CONFIG_MANAGER = new CommonConfigManager();
     public static final String DEFAULT_POKEMON_CONFIG_NAME = "default (You can modify anything BELOW this, but dont delete it!)";
@@ -99,15 +99,43 @@ public class CobblemonSpawnAlerts {
         return new PokemonDataPacket(pokemonEntity.getId(), ivs, finalEvYield, nature, ability, bucket);
     }
 
-    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
+    public static PokemonStats createPokemonStats(Pokemon pokemon) {
         ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
+        IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
+        EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemon.getForm().getEvYield()) : EVs.createEmpty();
+
+        return new PokemonStats(pokemon.getLevel(), ivs, evYield);
+    }
+
+    public static PokemonRarityData createPokemonRarityData(Pokemon pokemon) {
+        ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
+        return new PokemonRarityData(
+                pokemon.getShiny() && config.broadcastShiny(),
+                pokemon.isLegendary(),
+                pokemon.isMythical(),
+                pokemon.isUltraBeast(),
+                pokemon.hasLabels(CobblemonPokemonLabels.PARADOX),
+                RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())
+        );
+    }
+
+    public static PokemonTraits createPokemonTraits(Pokemon pokemon) {
+        ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
+        String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.NAUGHTY.getName().getPath();
+        String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.get("levitate").create(false, Priority.LOWEST).getName();
+
+        return new PokemonTraits(
+                nature,
+                ability,
+                pokemon.getGender().name(),
+                pokemon.getForm().getName()
+        );
+    }
+
+    public static AlertDataPacket createAlertData(PokemonEntity pokemonEntity, RarityUtil.Bucket bucket) {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
-        IVs ivs = config.broadcastIVs() ? pokemon.getIvs() : IVs.createRandomIVs(0);
-        EVs evYield = config.broadcastEVs() ? EvsUtil.getEVsFromYield(pokemonEntity.getForm().getEvYield()) : EVs.createEmpty();
-        String nature = config.broadcastNature() ? pokemon.getNature().getName().getPath() : Natures.NAUGHTY.getName().getPath();
-        String ability = config.broadcastAbility() ? pokemon.getAbility().getName() : Abilities.get("levitate").create(false, Priority.LOWEST).getName();
 
         String nearestPlayerName = "N/A";
         if (pokemonEntity.level().getNearestPlayer(pokemonEntity, 128d) instanceof Player player) {
@@ -115,69 +143,40 @@ public class CobblemonSpawnAlerts {
         }
 
         return new AlertDataPacket(
-                new PokemonSpawnData(
-                        pokemonName,
-                        pokemon.getUuid(),
-                        pokemonEntity.position().toVector3f(),
-                        pokemon.getSpecies().getNationalPokedexNumber(),
-                        nearestPlayerName,
-                        BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
-                        DimensionUtil.getDimensionKey(pokemonEntity),
-                        bucket
-                ),
-                new PokemonStats(
-                        pokemon.getLevel(),
-                        ivs,
-                        evYield
-                ),
-                new PokemonRarity(
-                        pokemon.getShiny() && config.broadcastShiny(),
-                        pokemon.isLegendary(),
-                        pokemon.isMythical(),
-                        pokemon.isUltraBeast(),
-                        pokemon.hasLabels(CobblemonPokemonLabels.PARADOX),
-                        RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber())
-                ),
-                new PokemonTraits(
-                        nature,
-                        ability,
-                        pokemon.getGender().name(),
-                        pokemon.getForm().getName()
-                )
-            );
+            new PokemonSpawnData(
+                    pokemonName,
+                    pokemon.getUuid(),
+                    pokemonEntity.position().toVector3f(),
+                    pokemon.getSpecies().getNationalPokedexNumber(),
+                    nearestPlayerName,
+                    BiomeUtil.getBiomeKey(pokemonEntity.level(), pokemonEntity.position()),
+                    DimensionUtil.getDimensionKey(pokemonEntity),
+                    bucket
+            ),
+            createPokemonStats(pokemon),
+            createPokemonRarityData(pokemon),
+            createPokemonTraits(pokemon)
+        );
     }
 
     public static DespawnDataPacket createDespawnData(Level level, Pokemon pokemon, String playerName, DespawnReason despawnReason) {
-        ServerConfig config = CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig();
-        String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
-
-        boolean shouldAlertShiny = pokemon.getShiny() && config.alertShinies();
-        boolean shouldAlertLegend = pokemon.isLegendary() && config.alertLegendaries();
-        boolean shouldAlertMythical = pokemon.isMythical() && config.alertMythicals();
-        boolean shouldAlertUltra = pokemon.isUltraBeast() && config.alertUltraBeasts();
-        boolean shouldAlertParadox = pokemon.hasLabels(CobblemonPokemonLabels.PARADOX) && config.alertParadox();
-        boolean shouldAlertStarter = RarityUtil.isStarter(pokemon.getSpecies().getNationalPokedexNumber()) && config.alertStarters();
-
         return new DespawnDataPacket(
-                playerName,
-                new PokemonSpawnData(
-                        pokemonName,
-                        pokemon.getUuid(),
-                        new Vector3f(0, 0, 0),
-                        pokemon.getSpecies().getNationalPokedexNumber(),
-                        "N/A",
-                        "N/A",
-                        DimensionUtil.getDimensionKey(level),
-                        RarityUtil.Bucket.NONE
+                new AlertDataPacket(
+                        new PokemonSpawnData(
+                                PokemonNameUtil.getTranslationKey(pokemon),
+                                pokemon.getUuid(),
+                                new Vector3f(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE),
+                                pokemon.getSpecies().getNationalPokedexNumber(),
+                                playerName,
+                                "N/A",
+                                DimensionUtil.getDimensionKey(level),
+                                RarityUtil.Bucket.NONE
+                        ),
+                        createPokemonStats(pokemon),
+                        createPokemonRarityData(pokemon),
+                        createPokemonTraits(pokemon)
                 ),
-                new PokemonRarity(
-                        shouldAlertShiny,
-                        shouldAlertLegend,
-                        shouldAlertMythical,
-                        shouldAlertUltra,
-                        shouldAlertParadox,
-                        shouldAlertStarter
-                ),
+
                 despawnReason.name()
         );
     }

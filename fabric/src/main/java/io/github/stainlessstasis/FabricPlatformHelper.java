@@ -51,7 +51,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
         new ScheduledTask.Builder().delay(0.5f).execute(task -> {
             Set<UUID> alreadyAlerted = new HashSet<>();
 
-            // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
+            // Send EVERY PokemonEntity to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : PlayerLookup.tracking((pokemonEntity))) {
                 ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());

@@ -80,7 +80,7 @@ public class AlertHandler {
                         pokemon.getIvs(),
                         evYield
                 ),
-                new PokemonRarity(
+                new PokemonRarityData(
                         pokemon.getShiny(),
                         RarityUtil.isLegendary(dexId),
                         RarityUtil.isMythical(dexId),
@@ -376,14 +376,18 @@ public class AlertHandler {
         if (!(Minecraft.getInstance().player instanceof Player player)) return;
         if (CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.isReloading()) return;
         if (!CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().enableDespawnAlerts()) return;
-        if (!alreadyAlerted.contains(despawnData.spawnData().pokemonUUID())) return;
 
-        CobblemonSpawnAlertsClient.glowing.remove(despawnData.spawnData().pokemonUUID());
+        final AlertDataPacket alertData = despawnData.alertData();
+        final PokemonSpawnData spawnData = alertData.spawnData();
+
+        if (!alreadyAlerted.contains(alertData.spawnData().pokemonUUID())) return;
+
+        CobblemonSpawnAlertsClient.glowing.remove(spawnData.pokemonUUID());
         if (Services.PLATFORM.isModLoaded("journeymap")) {
-            JourneymapCompat.removeWaypoint(despawnData.spawnData().pokemonUUID());
+            JourneymapCompat.removeWaypoint(spawnData.pokemonUUID());
         }
 
-        PokemonConfig.PokemonSpecificConfig pokemonConfig = getConfigForPokemon(despawnData.spawnData().translatedPokemonName(), despawnData.spawnData().dexId()).getSecond();
+        PokemonConfig.PokemonSpecificConfig pokemonConfig = getConfigForPokemon(spawnData.translatedPokemonName(), spawnData.dexId()).getSecond();
         if (!pokemonConfig.alertDespawned()) {
             return;
         }
@@ -393,27 +397,16 @@ public class AlertHandler {
         String message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().despawnMessage());
 
         message = switch (DespawnReason.valueOf(despawnData.despawnReason())) {
-            case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), despawnData.playerName()).getString());
+            case CAPTURED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Captured(), spawnData.nearestPlayerName()).getString());
             case DESPAWNED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Despawned()).getString());
-            case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), despawnData.playerName()).getString());
+            case FAINTED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Fainted(), spawnData.nearestPlayerName()).getString());
             case DIED -> message.replace("{despawned}", Component.translatable(messageTemplates.despawnReason_Died()).getString());
         };
 
-        AlertDataPacket despawnAlertData = new AlertDataPacket(
-                despawnData.spawnData(),
-                new PokemonStats(-1, IVs.createRandomIVs(0), EVs.createEmpty()),
-                despawnData.rarity(),
-                new PokemonTraits(
-                        Natures.NAUGHTY.getName().getPath(),
-                        Abilities.get("levitate").create(false, Priority.LOWEST).getName(),
-                        Gender.GENDERLESS.name(),
-                        "Normal"
-                )
-        );
         StringBuilder despawnHoverBuilder = new StringBuilder();
-        message = applyDynamicReplacements(message, pokemonConfig, despawnAlertData, despawnHoverBuilder);
+        message = applyDynamicReplacements(message, pokemonConfig, alertData, despawnHoverBuilder);
         Component despawnComponent = ComponentUtil.parseMarkup(message);
-        despawnComponent = applyMessageInteractions(despawnComponent, despawnHoverBuilder.toString(), pokemonConfig, despawnAlertData);
+        despawnComponent = applyMessageInteractions(despawnComponent, despawnHoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(despawnComponent);
 
         // play despawn sound if one exists
@@ -673,16 +666,28 @@ public class AlertHandler {
         if (coordinatesDisplayMode != StatDisplayMode.DISABLED) {
             boolean isHoverEnabled = coordinatesDisplayMode == StatDisplayMode.HOVER;
             String configMessage = isHoverEnabled ? messageTemplates.coords_hover() : messageTemplates.coords();
-            String coordsMessage = Component.translatable(configMessage, (int)coords.x, (int)coords.y, (int)coords.z).getString();
+
+            String x = coords.x > Integer.MIN_VALUE ? String.valueOf((int)coords.x) : "N/A";
+            String y = coords.y > Integer.MIN_VALUE ? String.valueOf((int)coords.y) : "N/A";
+            String z = coords.z > Integer.MIN_VALUE ? String.valueOf((int)coords.z) : "N/A";
+
+            String coordsMessage = Component.translatable(configMessage, x, y, z).getString();
             if (isHoverEnabled) {
                 hoverBuilder.append(coordsMessage).append("\n");
             } else {
                 message = message.replace("{coords}", coordsMessage);
             }
-            message = message.replace("{coords_unformatted}",Component.translatable(messageTemplates.coords_unformatted(), (int)coords.x, (int)coords.y, (int)coords.z).getString());
+
+            message = message.replace("{coords_unformatted}",Component.translatable(messageTemplates.coords_unformatted(), x, y, z).getString());
+            message = message.replace("{x}", Component.translatable(messageTemplates.coords_x(), x).getString());
+            message = message.replace("{y}", Component.translatable(messageTemplates.coords_y(), y).getString());
+            message = message.replace("{z}", Component.translatable(messageTemplates.coords_z(), z).getString());
         }
         message = message.replace("{coords}", "");
         message = message.replace("{coords_unformatted}", "");
+        message = message.replace("{x}", "");
+        message = message.replace("{y}", "");
+        message = message.replace("{z}", "");
 
         // Biome
         if (biomeDisplayMode != StatDisplayMode.DISABLED && Minecraft.getInstance().level != null) {

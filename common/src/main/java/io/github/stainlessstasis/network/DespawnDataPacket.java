@@ -6,12 +6,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
-public record DespawnDataPacket(String playerName, PokemonSpawnData spawnData, PokemonRarity rarity, String despawnReason) implements CustomPacketPayload {
+public record DespawnDataPacket(AlertDataPacket alertData, String despawnReason) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<DespawnDataPacket> ID = new CustomPacketPayload.Type<>(ModPackets.DESPAWN_DATA);
     public static final StreamCodec<FriendlyByteBuf, DespawnDataPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, DespawnDataPacket::playerName,
-            PokemonSpawnData.STREAM_CODEC, DespawnDataPacket::spawnData,
-            PokemonRarity.STREAM_CODEC, DespawnDataPacket::rarity,
+            AlertDataPacket.STREAM_CODEC, DespawnDataPacket::alertData,
             ByteBufCodecs.STRING_UTF8, DespawnDataPacket::despawnReason,
             DespawnDataPacket::new
     );

@@ -55,7 +55,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                  players = chunkCache.chunkMap.getPlayersCloseForSpawning(pokemonEntity.chunkPosition());
             }
 
-            // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
+            // Send EVERY PokemonEntity to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : players) {
                 PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
