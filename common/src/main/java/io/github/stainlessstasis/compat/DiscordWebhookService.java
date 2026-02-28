@@ -25,7 +25,6 @@ public class DiscordWebhookService {
             String url = config.webhookURL();
             var webhook = config.webhookContent().convert();
 
-            // replace with your discord webhook url
             try {
                 webhookClient.sendMessage(url, webhook);
             } catch (DiscordWebhookException e) {

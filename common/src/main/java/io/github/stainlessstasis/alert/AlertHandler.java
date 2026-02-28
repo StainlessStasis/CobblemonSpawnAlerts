@@ -14,6 +14,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
+import io.github.stainlessstasis.compat.DiscordWebhookService;
 import io.github.stainlessstasis.compat.JourneymapCompat;
 import io.github.stainlessstasis.config.client.MainConfig;
 import io.github.stainlessstasis.config.client.MessageTemplates;
@@ -362,6 +363,8 @@ public class AlertHandler {
         Component spawnComponent = MessageUtils.parseMarkup(message);
         spawnComponent = AlertUtils.applyMessageInteractions(spawnComponent, hoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(spawnComponent);
+        // TODO: remove this
+        CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData);
 
         // journeymap compat
         PokemonConfig.JourneymapConfig jmConfig = pokemonConfig.journeyMap();
