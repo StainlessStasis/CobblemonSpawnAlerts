@@ -1,7 +1,6 @@
 package io.github.stainlessstasis.alert;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.abilities.Abilities;
 import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.pokedex.PokedexEntryProgress;
@@ -16,9 +15,9 @@ import com.cobblemon.mod.common.pokemon.*;
 import com.cobblemon.mod.common.util.MiscUtilsKt;
 import com.mojang.datafixers.util.Pair;
 import io.github.stainlessstasis.compat.JourneymapCompat;
-import io.github.stainlessstasis.config.MainConfig;
-import io.github.stainlessstasis.config.MessageTemplates;
-import io.github.stainlessstasis.config.PokemonConfig;
+import io.github.stainlessstasis.config.client.MainConfig;
+import io.github.stainlessstasis.config.client.MessageTemplates;
+import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.*;
@@ -280,7 +279,7 @@ public class AlertHandler {
             String message = MessageUtils.getTranslated("cobblemon-spawn-alerts.debug_alert_condition", alertCondition.name());
             StringBuilder debugHoverBuilder = new StringBuilder();
             message = applyDynamicReplacements(message, pokemonConfig, alertData, debugHoverBuilder);
-            Component messageComponent = ComponentUtil.parseMarkup(message);
+            Component messageComponent = MessageUtils.parseMarkup(message);
             messageComponent = applyMessageInteractions(messageComponent, debugHoverBuilder.toString(), pokemonConfig, alertData);
             player.sendSystemMessage(messageComponent);
         }
@@ -307,7 +306,7 @@ public class AlertHandler {
                     SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                     player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                 } else {
-                    player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                    player.sendSystemMessage(MessageUtils.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
                 }
             }
 
@@ -337,7 +336,7 @@ public class AlertHandler {
                             SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                             player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
                         } else {
-                            player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                            player.sendSystemMessage(MessageUtils.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
                         }
                     }
                 }
@@ -360,7 +359,7 @@ public class AlertHandler {
             message = MessageUtils.getTranslated(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates().fullSpawnMessage());
             message = applyDynamicReplacements(message, pokemonConfig, alertData, hoverBuilder);
         }
-        Component spawnComponent = ComponentUtil.parseMarkup(message);
+        Component spawnComponent = MessageUtils.parseMarkup(message);
         spawnComponent = applyMessageInteractions(spawnComponent, hoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(spawnComponent);
 
@@ -405,7 +404,7 @@ public class AlertHandler {
 
         StringBuilder despawnHoverBuilder = new StringBuilder();
         message = applyDynamicReplacements(message, pokemonConfig, alertData, despawnHoverBuilder);
-        Component despawnComponent = ComponentUtil.parseMarkup(message);
+        Component despawnComponent = MessageUtils.parseMarkup(message);
         despawnComponent = applyMessageInteractions(despawnComponent, despawnHoverBuilder.toString(), pokemonConfig, alertData);
         player.sendSystemMessage(despawnComponent);
 
@@ -418,7 +417,7 @@ public class AlertHandler {
                 SoundEvent sound = SoundEvent.createFixedRangeEvent(resourceLocation, -1f);
                 player.playNotifySound(sound, SoundSource.MASTER, 1f, 1f);
             } else {
-                player.sendSystemMessage(ComponentUtil.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
+                player.sendSystemMessage(MessageUtils.parseMarkup(MessageUtils.getTranslated("cobblemon-spawn-alerts.outdated_sound")));
             }
         }
     }
@@ -757,7 +756,7 @@ public class AlertHandler {
 
         MutableComponent output = component.copy();
         if (!finalHoverText.isEmpty()) {
-            Component hoverComponent = ComponentUtil.parseMarkup(finalHoverText);
+            Component hoverComponent = MessageUtils.parseMarkup(finalHoverText);
             output = output.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverComponent)));
         }
 

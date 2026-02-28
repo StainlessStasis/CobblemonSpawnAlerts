@@ -1,6 +1,9 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.client;
+
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 public record MessageTemplates (
+        String configVersion,
         String[] comment,
         String fullSpawnMessage,
         String despawnMessage,
@@ -63,6 +66,7 @@ public record MessageTemplates (
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
+                CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only on your client. It determines how each piece of an alert is displayed, giving you full control over displaying them.",
                         "For documentation on using the config, please see the Modrinth or GitHub for the mod.",

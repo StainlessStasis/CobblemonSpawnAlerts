@@ -11,6 +11,7 @@ import io.github.stainlessstasis.util.AlertUtil;
 import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -96,7 +97,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public Component parseMarkup(String markup) {
+    public MutableComponent parseMarkup(String markup) {
         return NeoForgeMarkupParser.parseMarkup(markup);
     }
 }

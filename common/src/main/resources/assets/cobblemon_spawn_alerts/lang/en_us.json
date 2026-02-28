@@ -5,6 +5,8 @@
   "cobblemon-spawn-alerts.config_load_failed": "<color value=#55FF55>[CSA] </color><color value=#FF5555>Config failed to load properly while loading `%s`.</color>",
   "cobblemon-spawn-alerts.config_save_failed": "<color value=#55FF55>[CSA] </color><color value=#FF5555>Config failed to save properly while saving `%s`.</color>",
   "cobblemon-spawn-alerts.multiplayer_warning": "<color value=#55FF55>[CSA]</color> <color value=#FFFF55>WARNING!</color> <color value=#FFFFFF>You are playing on a server. If the server doesn't have the mod installed, or has disabled broadcasting of Pokemon info, certain things, like IVs, EV yield, or Nature, may be displayed incorrectly!",
+  "cobblemon-spawn-alerts.version_change_detected": "<c col=#55FF55>[CSA]</c> <c col=#FFFF55>WARNING!</c> <c col=#FFFFFF>A change in mod versions was detected since you last started the game. Some things may have changed. Click here for more details.</c>",
+  "cobblemon-spawn-alerts.changelog.1_12_0": "",
   "cobblemon-spawn-alerts.outdated_sound": "<color value=#55FF55>[CSA]</color> <color value=#FF5555>ERROR!</color> <color value=#FFFFFF>Attempted to play a sound without a namespace. You can fix this by adding 'minecraft:' to the beginning of your sound if it is a vanilla sound (including resource packs).",
   "cobblemon-spawn-alerts.debug_alert_condition": "<color value=#55FF55>[CSA] </color><color value=#FFFFFF>Attempting to create alert for {name} \n </color><color value=#55FF55>Cause: </color><color value=#FFFFFF>%s</color>",
 

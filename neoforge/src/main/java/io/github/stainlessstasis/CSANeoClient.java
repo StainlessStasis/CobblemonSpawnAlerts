@@ -64,9 +64,7 @@ public class CSANeoClient {
 
         @SubscribeEvent
         public static void onConnect(ClientPlayerNetworkEvent.LoggingIn event) {
-            if (!Minecraft.getInstance().isSingleplayer() && CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
-                MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
-            }
+            CobblemonSpawnAlertsClient.sendMultiplayerWarning();
         }
 
         @SubscribeEvent

@@ -1,10 +1,12 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.common;
 
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.util.RarityUtil;
 
 import java.util.Set;
 
 public record ServerConfig (
+    String configVersion,
     String[] comment,
     boolean enableSpawnCommandAlerts,
     boolean alertShinies,
@@ -24,6 +26,7 @@ public record ServerConfig (
 ) {
     public static ServerConfig createDefault() {
         return new ServerConfig(
+                CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only used if you are in singleplayer or hosting a server (including LAN).",
                         "It determines which Pokemon are sent to all players, sending info about those Pokemon to clients.",

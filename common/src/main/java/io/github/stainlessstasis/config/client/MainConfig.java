@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.client;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.util.RarityUtil;
@@ -10,6 +10,7 @@ public record MainConfig (
     String[] comment,
     boolean debug,
     boolean multiplayerWarning,
+    boolean versionChangeWarning,
     boolean enableAlerts,
     boolean enableDespawnAlerts,
     boolean enableSounds,
@@ -37,9 +38,9 @@ public record MainConfig (
                         "https://modrinth.com/mod/cobblemon-spawn-alerts",
                         "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
                 },
-                false, true, true, true, true, true, true, true,
-                true, true, true,false, Set.of(RarityUtil.Bucket.ULTRA_RARE),
-                false, false, false,
+                false, true, true, true, true, true,
+                true, true, true, true, true, true,
+                false, Set.of(RarityUtil.Bucket.ULTRA_RARE), false, false, false,
                 IVHunting.createDefault(), EVHunting.createDefault(), LevelFilter.createDefault(), DistanceFilter.createDefault()
                 );
     }

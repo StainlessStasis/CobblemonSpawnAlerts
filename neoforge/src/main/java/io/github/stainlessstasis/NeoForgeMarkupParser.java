@@ -11,7 +11,7 @@ import java.util.List;
 
 /// Client only
 public class NeoForgeMarkupParser {
-    public static Component parseMarkup(String markup) {
+    public static MutableComponent parseMarkup(String markup) {
         List<TextSpan> spans = MarkupParser.parse(markup);
         MutableComponent result = Component.empty();
         for (TextSpan span : spans) {

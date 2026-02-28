@@ -3,7 +3,7 @@ package io.github.stainlessstasis.util;
 import com.cobblemon.mod.common.api.pokemon.labels.CobblemonPokemonLabels;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import io.github.stainlessstasis.config.ServerConfig;
+import io.github.stainlessstasis.config.common.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.platform.Platform;

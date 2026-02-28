@@ -1,10 +1,13 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.common;
+
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public record RaritiesConfig(
+        String configVersion,
         String[] comment,
         Set<Integer> legendaries,
         Set<Integer> mythicals,
@@ -18,6 +21,7 @@ public record RaritiesConfig(
 
     public static RaritiesConfig createDefault() {
         return new RaritiesConfig(
+                CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is common between server and client. It determines which Pokemon are classified as legendary, starter, etc.",
                         "Servers only reference this config for STARTERS, since Cobblemon provides labels for all other groups.",

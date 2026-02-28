@@ -92,9 +92,7 @@ public class CSAFabricClient implements ClientModInitializer {
     }
 
     private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
-        if (!minecraft.isSingleplayer() && CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig().multiplayerWarning()) {
-            MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
-        }
+        CobblemonSpawnAlertsClient.sendMultiplayerWarning();
     }
 
     private void onClientStop(Minecraft minecraft) {

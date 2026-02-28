@@ -1,4 +1,7 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.manager;
+
+import io.github.stainlessstasis.config.common.RaritiesConfig;
+import io.github.stainlessstasis.config.common.ServerConfig;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.client;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.alert.StatDisplayMode;

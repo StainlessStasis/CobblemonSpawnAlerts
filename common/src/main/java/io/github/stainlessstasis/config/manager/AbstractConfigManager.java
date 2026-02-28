@@ -1,6 +1,7 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.manager;
 
 import com.google.gson.*;
+import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.MessageUtils;
@@ -86,6 +87,7 @@ public abstract class AbstractConfigManager {
             // Auto update config version
             if (mergedJson.has("configVersion")) {
                 String currentVersion = mergedJson.get("configVersion").getAsString();
+                VersionMatcher.setLastKnownModVersion(currentVersion);
                 if (!currentVersion.equals(CobblemonSpawnAlerts.MOD_VERSION)) {
                     mergedJson.add("configVersion", new JsonPrimitive(CobblemonSpawnAlerts.MOD_VERSION));
                 }

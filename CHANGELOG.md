@@ -45,3 +45,4 @@ Fixed NeoForge startup crash due to accidental hard dependency on Journeymap
 ### Changes & Fixes
 - Changed DespawnDataPacket to contain the entire AlertDataPacket for the Pokemon, giving access to much more information in despawn messages.
 - Made coordinates display as "N/A" when unavilable, instead of just 0.
+- Added configVersion to message_templates, server, and rarities configs

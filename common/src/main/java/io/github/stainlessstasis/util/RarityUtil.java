@@ -1,14 +1,12 @@
 package io.github.stainlessstasis.util;
 
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.spawning.CobblemonSpawnPools;
 import com.cobblemon.mod.common.api.spawning.detail.PokemonSpawnDetail;
 import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.serialization.Codec;
-import io.github.stainlessstasis.config.RaritiesConfig;
+import io.github.stainlessstasis.config.common.RaritiesConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

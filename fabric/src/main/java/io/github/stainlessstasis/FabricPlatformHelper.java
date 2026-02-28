@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -95,7 +96,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public Component parseMarkup(String markup) {
+    public MutableComponent parseMarkup(String markup) {
         return FabricMarkupParser.parseMarkup(markup);
     }
 }

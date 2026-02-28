@@ -1,6 +1,6 @@
 package io.github.stainlessstasis.compat;
 
-import io.github.stainlessstasis.config.PokemonConfig;
+import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.AlertDataPacket;

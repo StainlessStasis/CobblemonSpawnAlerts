@@ -6,6 +6,7 @@ import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.util.RarityUtil;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.Level;
 
 import java.nio.file.Path;
@@ -58,5 +59,5 @@ public interface IPlatformHelper {
 
     boolean doesServerHaveMod();
 
-    Component parseMarkup(String markup);
+    MutableComponent parseMarkup(String markup);
 }
