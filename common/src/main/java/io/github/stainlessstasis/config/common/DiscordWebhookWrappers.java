@@ -3,12 +3,21 @@ package io.github.stainlessstasis.config.common;
 import com.n1netails.n1netails.discord.model.EmbedBuilder;
 import com.n1netails.n1netails.discord.model.WebhookMessage;
 import com.n1netails.n1netails.discord.model.WebhookMessageBuilder;
+import io.github.stainlessstasis.alert.DynamicReplacements;
+import io.github.stainlessstasis.config.client.PokemonConfig;
+import io.github.stainlessstasis.network.AlertDataPacket;
+import io.github.stainlessstasis.platform.Services;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiscordWebhookWrappers {
-    private static String DEFAULT_CONTENT = "No message provided. This cannot be blank, unless your webhook has an embed(s).";
+    private static final String DEFAULT_CONTENT = "No message provided. This cannot be blank, unless your webhook has an embed(s).";
+
+    private static String parseDynamicReplacements(String message, @Nullable PokemonConfig.PokemonSpecificConfig pokemonSpecificConfig, AlertDataPacket alertData) {
+        return Services.PLATFORM.parseMarkupAsString(DynamicReplacements.applyDynamicReplacements(message, pokemonSpecificConfig, alertData, new StringBuilder()));
+    }
 
     public record WebhookContent(
             String content,
@@ -21,6 +30,22 @@ public class DiscordWebhookWrappers {
             return new WebhookContent(
                     DEFAULT_CONTENT, "", "", false, List.of(Embed.createDefault())
             );
+        }
+
+        public WebhookContent applyDynamicReplacements(AlertDataPacket alertData) {
+            return applyDynamicReplacements(alertData, null);
+        }
+
+        public WebhookContent applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig pokemonConfig) {
+            String newContent = parseDynamicReplacements(this.content, pokemonConfig, alertData);
+            String newUsername = parseDynamicReplacements(this.username, pokemonConfig, alertData);
+            String newAvatar = parseDynamicReplacements(this.avatarURL, pokemonConfig, alertData);
+
+            List<Embed> newEmbeds = this.embeds.stream()
+                    .map(e -> e.applyDynamicReplacements(alertData, pokemonConfig))
+                    .toList();
+
+            return new WebhookContent(newContent, newUsername, newAvatar, this.tts, newEmbeds);
         }
 
         public WebhookMessage convert() {
@@ -121,6 +146,22 @@ public class DiscordWebhookWrappers {
                 Footer.createDefault()
             );
         }
+
+        public Embed applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig config) {
+            return new Embed(
+                    this.enabled,
+                    parseDynamicReplacements(this.title, config, alertData),
+                    parseDynamicReplacements(this.description, config, alertData),
+                    this.color,
+                    parseDynamicReplacements(this.url, config, alertData),
+                    parseDynamicReplacements(this.imageURL, config, alertData),
+                    parseDynamicReplacements(this.thumbnailURL, config, alertData),
+                    this.timestamp,
+                    this.author.applyDynamicReplacements(alertData, config),
+                    this.fields.stream().map(f -> f.applyDynamicReplacements(alertData, config)).toList(),
+                    this.footer.applyDynamicReplacements(alertData, config)
+            );
+        }
     }
 
     public record Author(
@@ -130,6 +171,14 @@ public class DiscordWebhookWrappers {
     ) {
         public static Author createDefault() {
             return new Author("", "", "");
+        }
+
+        public Author applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig config) {
+            return new Author(
+                    parseDynamicReplacements(this.name, config, alertData),
+                    parseDynamicReplacements(this.url, config, alertData),
+                    parseDynamicReplacements(this.iconURL, config, alertData)
+            );
         }
     }
 
@@ -141,6 +190,14 @@ public class DiscordWebhookWrappers {
         public static EmbedField createDefault() {
             return new EmbedField("", "", false);
         }
+
+        public EmbedField applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig config) {
+            return new EmbedField(
+                    parseDynamicReplacements(this.name, config, alertData),
+                    parseDynamicReplacements(this.value, config, alertData),
+                    this.inline
+            );
+        }
     }
 
     public record Footer(
@@ -149,6 +206,13 @@ public class DiscordWebhookWrappers {
     ) {
         public static Footer createDefault() {
             return new Footer("", "");
+        }
+
+        public Footer applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig config) {
+            return new Footer(
+                    parseDynamicReplacements(this.text, config, alertData),
+                    parseDynamicReplacements(this.iconURL, config, alertData)
+            );
         }
     }
 }

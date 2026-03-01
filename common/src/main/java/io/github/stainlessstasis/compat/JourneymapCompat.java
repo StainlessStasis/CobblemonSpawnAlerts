@@ -1,7 +1,6 @@
 package io.github.stainlessstasis.compat;
 
-import io.github.stainlessstasis.alert.AlertHandler;
-import io.github.stainlessstasis.alert.AlertUtils;
+import io.github.stainlessstasis.alert.DynamicReplacements;
 import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
@@ -35,9 +34,9 @@ public class JourneymapCompat {
         }
 
         ResourceKey<Level> dimension = DimensionUtil.getDimension(alertData.spawnData().dimensionKey());
-        String waypointName = alertData.spawnData().translatedPokemonName();
+        String waypointName = alertData.spawnData().pokemonName();
         if (!jmConfig.waypointName().isEmpty()) {
-            waypointName = AlertUtils.applyDynamicReplacements(jmConfig.waypointName(), pokemonConfig, alertData, new StringBuilder());
+            waypointName = DynamicReplacements.applyDynamicReplacements(jmConfig.waypointName(), pokemonConfig, alertData, new StringBuilder());
         }
 
         Waypoint waypoint = WaypointFactory.createClientWaypoint(CobblemonSpawnAlerts.MOD_ID, pos, waypointName, dimension, jmConfig.persistent());

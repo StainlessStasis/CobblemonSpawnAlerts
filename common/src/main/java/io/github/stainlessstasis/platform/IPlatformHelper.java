@@ -60,4 +60,7 @@ public interface IPlatformHelper {
     boolean doesServerHaveMod();
 
     MutableComponent parseMarkup(String markup);
+    default String parseMarkupAsString(String markup) {
+        return parseMarkup(markup).getString();
+    }
 }

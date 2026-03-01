@@ -9,9 +9,9 @@ import org.joml.Vector3f;
 
 import java.util.UUID;
 
-public record PokemonSpawnData(String translatedPokemonName, UUID pokemonUUID, Vector3f position, int dexId, String nearestPlayerName, String biomeKey, String dimensionKey, RarityUtil.Bucket bucket) {
+public record PokemonSpawnData(String pokemonName, UUID pokemonUUID, Vector3f position, int dexId, String nearestPlayerName, String biomeKey, String dimensionKey, RarityUtil.Bucket bucket) {
     public static final StreamCodec<FriendlyByteBuf, PokemonSpawnData> STREAM_CODEC = BigStreamCodecs.composite(
-            ByteBufCodecs.STRING_UTF8, PokemonSpawnData::translatedPokemonName,
+            ByteBufCodecs.STRING_UTF8, PokemonSpawnData::pokemonName,
             UUIDUtil.STREAM_CODEC, PokemonSpawnData::pokemonUUID,
             ByteBufCodecs.VECTOR3F, PokemonSpawnData::position,
             ByteBufCodecs.INT, PokemonSpawnData::dexId,

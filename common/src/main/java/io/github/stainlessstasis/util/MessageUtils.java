@@ -9,10 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class MessageUtils {
-    public static MutableComponent parseMarkup(String markup) {
-        return Services.PLATFORM.parseMarkup(markup);
-    }
-
     public static void sendTranslated(String translationKey, Object... args) {
         sendTranslated(translationKey, null, args);
     }
@@ -23,7 +19,7 @@ public class MessageUtils {
         }
 
         String translated = Component.translatable(translationKey, args).getString();
-        MutableComponent component = MessageUtils.parseMarkup(translated);
+        MutableComponent component = Services.PLATFORM.parseMarkup(translated);
         if (clickEvent != null) {
             component.withStyle(style -> style.withClickEvent(clickEvent));
         }

@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.alert.AlertUtils;
@@ -13,13 +14,19 @@ import kotlin.Unit;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
+import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
+import net.tysontheember.emberstextapi.util.StyleUtil;
 
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -62,7 +69,13 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
+                System.out.println("ALERTED");
             }
+
+            AlertDataPacket alertData = CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket);
+            System.out.println("DATA: "+alertData);
+            System.out.println("WEBHOOK SERVICE: "+CobblemonSpawnAlerts.getWebhookService());
+            CobblemonSpawnAlerts.getWebhookService().sendServersideWebhook(alertData);
 
             if (pokemonEntity.level() instanceof ServerLevel level) {
                 for (ServerPlayer player : level.players()) {
@@ -70,7 +83,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    ServerPlayNetworking.send(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
+                    ServerPlayNetworking.send(player, alertData);
                 }
             }
 
@@ -96,6 +109,16 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public MutableComponent parseMarkup(String markup) {
-        return FabricMarkupParser.parseMarkup(markup);
+        List<TextSpan> spans = MarkupParser.parse(markup);
+        MutableComponent result = Component.empty();
+        for (TextSpan span : spans) {
+            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
+            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
+            if (span.getColor() != null) {
+                style = style.withColor(span.getColor());
+            }
+            result.append(Component.literal(span.getContent()).withStyle(style));
+        }
+        return result;
     }
 }

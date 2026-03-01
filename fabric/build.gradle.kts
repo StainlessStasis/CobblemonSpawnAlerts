@@ -9,6 +9,19 @@ architectury {
     fabric()
 }
 
+loom {
+    runs {
+        named("client") {
+            runDir = "runs/client"
+            client()
+        }
+        named("server") {
+            runDir = "runs/server"
+            server()
+        }
+    }
+}
+
 val shadowCommon = configurations.create("shadowCommon")
 
 repositories {

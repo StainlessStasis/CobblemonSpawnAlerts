@@ -150,7 +150,6 @@ public class CobblemonSpawnAlerts {
         Pokemon pokemon = pokemonEntity.getPokemon();
         String pokemonName = PokemonNameUtil.getTranslationKey(pokemon);
 
-
         String nearestPlayerName = "N/A";
         if (pokemonEntity.level().getNearestPlayer(pokemonEntity, 128d) instanceof Player player) {
             nearestPlayerName = player.getName().getString();
