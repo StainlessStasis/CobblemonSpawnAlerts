@@ -49,18 +49,20 @@ However, it is highly recommended to leave this setting on. The message will go 
 - Made coordinates display as "N/A" when unavilable, instead of just 0.
 - Added configVersion to message_templates, server, and rarities configs
 
-## (WIP) [1.13.0]
+## [1.13.0]
 ### 🚨 BREAKING CHANGES 🚨
-NeoForge dedicated servers now require Ember's Text API. Fabric already required it.
+NeoForge dedicated servers now require Ember's Text API version 2.5.0+. Fabric already required it, so nothing changes there.
 
 Added regex pattern matcher to remove anything within {curly braces} after dynamic replacements are applied.
+- This means that anything you put within {curly braces} will get replaced with an empty String.
 - Necessary change to clean up code a bit.
-- Allows for a more modular system to support custom DRs in the future.
+- Allows for a more modular system to potentially support custom DRs in the future. Also makes adding new ones much faster and easier to manage.
 
 ### New Features
-- Added Discord webhooks! See `webhooks.json`, `server_message_templates.json`, and `pokemon.json` for relevant info.
-- Added `BOTH` option for stat display modes.
-- Added `{dex}`, `{dex_hover}`, and `{dex_unformatted}`.
+- Added Discord webhooks! See `webhooks.json`, `server_message_templates.json`, `pokemon.json`, and `server.json` for relevant info. Webhooks can be enabled by your client (any alert) or by the server (global alerts).
+- Added `BOTH` option for stat display modes. Displays the stat in both the main message and hover.
+- Added `{dex}`, `{dex_hover}`, and `{dex_unformatted}`. Tip: use `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex}.png` to embed a Pokemon's image in your webhooks!
 
 ### Changes & Fixes
 - Journeymap waypoint names now support dynamic replacements. Recommended to use the `unformatted` versions when available. 
+- Discord webhooks required shadowing https://github.com/n1netails/n1netails-discord-webhook-client and its dependencies. As such, the mod's file size has increased to about ~2.8MB, up from ~0.5MB.

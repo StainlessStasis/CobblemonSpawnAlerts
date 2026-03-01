@@ -72,7 +72,9 @@ public class FabricPlatformHelper implements IPlatformHelper {
             }
 
             AlertDataPacket alertData = CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket);
-            CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, null);
+            if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig().sendWebhook()) {
+                CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, null);
+            }
 
             if (pokemonEntity.level() instanceof ServerLevel level) {
                 for (ServerPlayer player : level.players()) {

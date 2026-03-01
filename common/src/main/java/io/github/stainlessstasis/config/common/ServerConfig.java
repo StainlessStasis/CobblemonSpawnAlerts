@@ -22,7 +22,8 @@ public record ServerConfig (
     boolean broadcastIVs,
     boolean broadcastEVs,
     boolean broadcastNature,
-    boolean broadcastAbility
+    boolean broadcastAbility,
+    boolean sendWebhook
 ) {
     public static ServerConfig createDefault() {
         return new ServerConfig(
@@ -36,7 +37,7 @@ public record ServerConfig (
                 },
                 false, true, true, true, true, true, true,
                 false, false, Set.of(RarityUtil.Bucket.ULTRA_RARE), true,
-                true, true, true, true
+                true, true, true, true, false
         );
     }
 }
