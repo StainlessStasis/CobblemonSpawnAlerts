@@ -12,6 +12,7 @@ public class VersionMatcher {
     public static final Map<String, String> MAJOR_CHANGES = new HashMap<>();
     static {
         MAJOR_CHANGES.put("1.12.0", "cobblemon-spawn-alerts.changelog.1_12_0");
+        MAJOR_CHANGES.put("1.13.0", "cobblemon-spawn-alerts.changelog.1_13_0");
     }
 
     /**

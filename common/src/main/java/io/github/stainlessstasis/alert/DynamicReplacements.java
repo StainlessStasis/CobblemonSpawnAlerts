@@ -85,11 +85,16 @@ public class DynamicReplacements {
         return message;
     }
 
-
+    /**
+     * Replaces anything within {curly braces} with an empty String.
+     */
     public static String cleanupDynamicReplacements(String message) {
         return message.replaceAll("\\{[^}]*}", "");
     }
 
+    /**
+     * Create a StatTemplate for the specified tag based on the client status.
+     */
     private static StatTemplate createTemplate(String tag, boolean isClient, AlertDataPacket data, PokemonConfig.PokemonSpecificConfig config) {
         return switch (tag) {
             case "level" -> getSideAwareTemplate("level", isClient, data.stats().level());
@@ -140,10 +145,17 @@ public class DynamicReplacements {
         };
     }
 
+    /**
+     * Gets a StatTemplate for the specified tag dependent on the client status.
+     */
     private static StatTemplate getSideAwareTemplate(String tag, boolean isClient, Object... args) {
         return getSideAwareTemplate(tag, tag, isClient, args);
     }
 
+    /**
+     * Gets a StatTemplate for the specified secondaryTag dependent on the client status. The originalTag is used to ensure the correct tag is replaced.
+     * This is only used for the {legendary} tag, since it needs to have an original tag of "legendary" but a secondary of "mythical" etc.
+     */
     private static StatTemplate getSideAwareTemplate(String originalTag, String secondaryTag, boolean isClient, Object... args) {
         Object templatesConfig = getTemplatesConfig(isClient);
         StatTemplate template = getTemplateByTag(templatesConfig, secondaryTag, isClient);
@@ -163,6 +175,9 @@ public class DynamicReplacements {
         );
     }
 
+    /**
+     * Attempts to format a message with String#format, as a replacement for Component#translatable only being available on clients.
+     */
     private static String tryFormat(String message, Object... args) {
         String result = "N/A";
         try {
@@ -172,6 +187,10 @@ public class DynamicReplacements {
         return result;
     }
 
+    /**
+     * Attempts to invoke methods for MessageTemplates/ServerMessageTemplates to get their main message, hover, and unformatted fields.
+     * The server only uses the main message since that is all that ServerMessageTemplates contains.
+     */
     private static StatTemplate getTemplateByTag(Object templates, String tag, boolean isClient) {
 
         try {
@@ -191,6 +210,9 @@ public class DynamicReplacements {
         }
     }
 
+    /**
+     * Attempts to invoke a method for MessageTemplates/ServerMessageTemplates.
+     */
     private static String tryGetMethod(Object templates, String name) {
         try { return (String) templates.getClass().getMethod(name).invoke(templates); }
         catch (Exception ignored) {return "";}
@@ -198,6 +220,10 @@ public class DynamicReplacements {
 
     private record StatTemplate(String tag, String main, String hover, String unformatted) {}
 
+    /**
+     * Takes a tag and attempts to invoke its method via reflection.
+     * Then the message is translated based on the client status.
+     */
     private static String getSideAwareString(String tag, boolean isClient, Object... args) {
         Object templatesConfig = getTemplatesConfig(isClient);
         if (isClient) {
@@ -210,6 +236,9 @@ public class DynamicReplacements {
         return message;
     }
 
+    /**
+     * Gets either the MessageTemplates or ServerMessageTemplates config based on the client status
+     */
     private static Object getTemplatesConfig(boolean isClient) {
         return isClient ? CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates()
                 :
@@ -306,6 +335,10 @@ public class DynamicReplacements {
         return StringUtil.makeBeautiful(list.get(list.size()-2));
     }
 
+    /**
+     * Checks whether a coordinate is valid.
+     * @return If the coordinate is valid, an int is returned. Otherwise, a String of "N/A" is.
+     */
     private static Object isCoordinateValid(float coord) {
         return (int) coord != Integer.MIN_VALUE ? (int)coord : "N/A";
     }
