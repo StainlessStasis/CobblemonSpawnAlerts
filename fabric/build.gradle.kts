@@ -1,7 +1,7 @@
 plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.3.2"
 }
 
 architectury {
@@ -47,7 +47,9 @@ dependencies {
     modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")
 
     implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
-    include("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    shadowCommon("com.n1netails:n1netails-discord-webhook-client:0.3.0") {
+        isTransitive = true
+    }
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentFabric"(project(":common", configuration = "namedElements"))
@@ -67,7 +69,6 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(rootProject.properties)
     }
-
 }
 
 tasks {
@@ -80,6 +81,7 @@ tasks {
     shadowJar {
         archiveClassifier.set("dev-shadow")
         archiveBaseName.set("${rootProject.property("archives_base_name")}-${project.name}")
+
         configurations = listOf(shadowCommon)
     }
 
