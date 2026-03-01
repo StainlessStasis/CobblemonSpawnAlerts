@@ -39,7 +39,7 @@ modId = "emberstextapi"
 mandatory = true
 versionRange = "[2.5.0,)"
 ordering = "NONE"
-side = "CLIENT"
+side = "BOTH"
 
 [[mixins]]
 config="common.mixins.json"

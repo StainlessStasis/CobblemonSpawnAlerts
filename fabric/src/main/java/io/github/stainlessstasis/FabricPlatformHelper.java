@@ -69,13 +69,10 @@ public class FabricPlatformHelper implements IPlatformHelper {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
-                System.out.println("ALERTED");
             }
 
             AlertDataPacket alertData = CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket);
-            System.out.println("DATA: "+alertData);
-            System.out.println("WEBHOOK SERVICE: "+CobblemonSpawnAlerts.getWebhookService());
-            CobblemonSpawnAlerts.getWebhookService().sendServersideWebhook(alertData);
+            CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, null);
 
             if (pokemonEntity.level() instanceof ServerLevel level) {
                 for (ServerPlayer player : level.players()) {

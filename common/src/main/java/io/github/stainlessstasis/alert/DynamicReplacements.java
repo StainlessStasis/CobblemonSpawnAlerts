@@ -1,18 +1,16 @@
 package io.github.stainlessstasis.alert;
 
 import com.cobblemon.mod.common.api.abilities.Abilities;
-import com.cobblemon.mod.common.api.abilities.AbilityTemplate;
 import com.cobblemon.mod.common.api.pokemon.Natures;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
+import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.Gender;
-import com.cobblemon.mod.common.pokemon.Nature;
-import com.cobblemon.mod.common.util.MiscUtilsKt;
-import io.github.stainlessstasis.config.client.MessageTemplates;
+import com.cobblemon.mod.common.pokemon.IVs;
 import io.github.stainlessstasis.config.client.PokemonConfig;
-import io.github.stainlessstasis.config.common.ServerMessageTemplates;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.network.AlertDataPacket;
+import io.github.stainlessstasis.network.PokemonRarityData;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.HiddenAbilityUtil;
 import io.github.stainlessstasis.util.PokemonNameUtil;
@@ -22,10 +20,10 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.Map;
+import java.util.List;
 
 public class DynamicReplacements {
-    private static final String[] TAGS = {"level", "bucket", "legendary", "ivs", "evs", "nature", "ability", "gender", "coordinates", "biome", "nearestPlayer"};
+    private static final String[] TAGS = {"dex", "level", "bucket", "legendary", "ivs", "evs", "nature", "ability", "gender", "coordinates", "biome", "nearestPlayer"};
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         return process(message, config, alertData, hoverBuilder);
@@ -33,8 +31,6 @@ public class DynamicReplacements {
 
     private static String process(String message, @Nullable PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         final boolean isClient = config != null;
-        MessageTemplates messageTemplates = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates();
-        Map<String, StatDisplayMode> displayModes = config.statDisplayModes();
 
         // Name
         String pokemonName = getPokemonName(alertData.spawnData().pokemonName(), isClient);
@@ -42,185 +38,275 @@ public class DynamicReplacements {
         message = message.replace("{name_lower}", pokemonName.toLowerCase());
         message = message.replace("{name_upper}", pokemonName.toUpperCase());
 
+        // x,y,z
+        Vector3f spawnPos = alertData.spawnData().position();
+        message = message.replace("{x}", getSideAwareString("coords_x", isClient, isCoordinateValid(spawnPos.x())))
+        .replace("{y}", getSideAwareString("coords_y", isClient, isCoordinateValid(spawnPos.y())))
+        .replace("{z}", getSideAwareString("coords_z", isClient, isCoordinateValid(spawnPos.z())));
+
+        // Timestamp
+        message = message.replace("{timestamp}", String.valueOf(System.currentTimeMillis()/1000));
+
         // Shiny
         if (alertData.rarity().isShiny() && (isClient && config.alertShiny())) {
             message = message.replace("{shiny}", getSideAwareString("shiny", isClient));
         }
 
         // HA
-        if (config.alertHiddenAbility() && HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())) {
-            message = message.replace("{HA}", Component.translatable(messageTemplates.hidden_ability()).getString());
+        if (HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())
+            && (isClient && config.alertHiddenAbility())) {
+            message = message.replace("{HA}", getSideAwareString("hidden_ability", isClient));
         }
 
-        // Level
-        int level = alertData.stats().level();
-        message = processStat(message, hoverBuilder, displayModes.get("level"), getTemplateByTag(messageTemplates, "level", level));
+        for (String tag : TAGS) {
+            StatDisplayMode mode = (config != null) ?
+                    config.statDisplayModes().getOrDefault(tag, StatDisplayMode.MAIN_MESSAGE) :
+                    StatDisplayMode.MAIN_MESSAGE;
 
-        // Bucket
-        RarityUtil.Bucket bucket = alertData.spawnData().bucket();
-        if (config.showBucket()) {
-            StatTemplate raw = getTemplateByTag(messageTemplates, "bucket");
+            if (mode == StatDisplayMode.DISABLED) continue;
 
-            String bucketKey = switch (bucket) {
-                case COMMON -> messageTemplates.common();
-                case UNCOMMON -> messageTemplates.uncommon();
-                case RARE -> messageTemplates.rare();
-                case ULTRA_RARE -> messageTemplates.ultra_rare();
-                case NONE -> messageTemplates.bucket_none();
-            };
-
-            String translatedBucket = Component.translatable(bucketKey).getString();
-            String serializedName = StringUtil.capitalizeEachWord(bucket.getSerializedName());
-
-            StatTemplate finalBucket = new StatTemplate(
-                    "bucket",
-                    Component.translatable(raw.main(), translatedBucket).getString(),
-                    raw.hover() != null ? Component.translatable(raw.hover(), translatedBucket).getString() : null,
-                    Component.translatable(raw.unformatted(), serializedName).getString()
-            );
-
-            message = processStat(message, hoverBuilder, StatDisplayMode.MAIN_MESSAGE, finalBucket);
+            StatTemplate template = createTemplate(tag, isClient, alertData, config);
+            message = processStat(message, hoverBuilder, mode, template);
         }
-
-        // Legendary/Rarity
-        if (config.showLegendary()) {
-            int dexId = alertData.spawnData().dexId();
-            String label =
-                    RarityUtil.isLegendary(dexId) ? "legendary" :
-                            RarityUtil.isMythical(dexId) ? "mythical" :
-                                    RarityUtil.isUltraBeast(dexId) ? "ultrabeast" :
-                                            RarityUtil.isParadox(dexId) ? "paradox" : null;
-
-            if (label != null) {
-                StatTemplate StatTemplate = getTemplateByTag(messageTemplates, label);
-                StatTemplate finalLabel = new StatTemplate("legendary",
-                        Component.translatable(StatTemplate.main()).getString(), null,
-                        Component.translatable(StatTemplate.unformatted()).getString());
-                message = processStat(message, hoverBuilder, StatDisplayMode.MAIN_MESSAGE, finalLabel);
-            }
-        }
-
-        // IVs
-        Object[] ivArgs = Services.PLATFORM.doesServerHaveMod() ?
-                new Object[]{alertData.stats().ivs().get(Stats.HP), alertData.stats().ivs().get(Stats.ATTACK), alertData.stats().ivs().get(Stats.DEFENCE),
-                        alertData.stats().ivs().get(Stats.SPECIAL_ATTACK), alertData.stats().ivs().get(Stats.SPECIAL_DEFENCE), alertData.stats().ivs().get(Stats.SPEED)}
-                : new Object[]{"-", "-", "-", "-", "-", "-"};
-        message = processStat(message, hoverBuilder, displayModes.get("ivs"), getTemplateByTag(messageTemplates, "ivs", ivArgs));
-
-        // EVs
-        Object[] evArgs = new Object[]{alertData.stats().evYield().get(Stats.HP), alertData.stats().evYield().get(Stats.ATTACK), alertData.stats().evYield().get(Stats.DEFENCE),
-                alertData.stats().evYield().get(Stats.SPECIAL_ATTACK), alertData.stats().evYield().get(Stats.SPECIAL_DEFENCE), alertData.stats().evYield().get(Stats.SPEED)};
-        message = processStat(message, hoverBuilder, displayModes.get("evs"), getTemplateByTag(messageTemplates, "evs", evArgs));
-
-        // Nature
-        Nature nature = Natures.getNature(alertData.traits().natureID());
-        String natureName = AlertUtils.replaceIfNotAvailable(nature != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(nature.getDisplayName()).getString()) : "N/A");
-        message = processStat(message, hoverBuilder, displayModes.get("nature"), getTemplateByTag(messageTemplates, "nature", natureName));
-
-        // Ability
-        AbilityTemplate ability = Abilities.get(alertData.traits().abilityID());
-        String abilityName = AlertUtils.replaceIfNotAvailable(ability != null ? StringUtil.capitalize(MiscUtilsKt.asTranslated(ability.getDisplayName()).getString()) : "N/A");
-        message = processStat(message, hoverBuilder, displayModes.get("ability"), getTemplateByTag(messageTemplates, "ability", abilityName));
-
-        // Gender
-        Gender gender = Gender.valueOf(alertData.traits().genderID());
-        StatTemplate template = getTemplateByTag(messageTemplates, "gender");
-        String symbolKey = switch (gender) {
-            case MALE -> messageTemplates.male();
-            case FEMALE -> messageTemplates.female();
-            case GENDERLESS -> messageTemplates.genderless();
-        };
-        String genderName = StringUtil.capitalize(gender.toString().toLowerCase());
-        String genderSymbol = Component.translatable(symbolKey, genderName).getString();
-        StatTemplate finalGender = new StatTemplate("gender",
-                Component.translatable(template.main(), genderSymbol).getString(),
-                Component.translatable(template.hover(), genderSymbol).getString(),
-                Component.translatable(template.unformatted(), genderName).getString()
-        );
-        message = processStat(message, hoverBuilder, displayModes.get("gender"), finalGender);
-
-        // Coordinates
-        Vector3f coords = alertData.spawnData().position();
-        String x = coords.x > Integer.MIN_VALUE ? String.valueOf((int)coords.x) : "N/A";
-        String y = coords.y > Integer.MIN_VALUE ? String.valueOf((int)coords.y) : "N/A";
-        String z = coords.z > Integer.MIN_VALUE ? String.valueOf((int)coords.z) : "N/A";
-        message = processStat(message, hoverBuilder, displayModes.get("coordinates"), getTemplateByTag(messageTemplates, "coords", x, y, z));
-
-        message = message.replace("{x}", Component.translatable(messageTemplates.coords_x(), x).getString())
-                .replace("{y}", Component.translatable(messageTemplates.coords_y(), y).getString())
-                .replace("{z}", Component.translatable(messageTemplates.coords_z(), z).getString());
-
-        // Biome
-        String biomeName = StringUtil.makeBeautiful(Component.translatable(alertData.spawnData().biomeKey()).getString());
-        message = processStat(message, hoverBuilder, displayModes.get("biome"), getTemplateByTag(messageTemplates, "biome", biomeName));
-
-        // Nearest Player
-        message = processStat(message, hoverBuilder, displayModes.get("nearestPlayer"), getTemplateByTag(messageTemplates, "nearest_player", alertData.spawnData().nearestPlayerName()));
 
         return cleanupDynamicReplacements(message);
     }
 
-    private static String processStat(String message, StringBuilder hover, StatDisplayMode mode, StatTemplate template) {
-        if (mode == StatDisplayMode.DISABLED) return message;
-
-        if (mode == StatDisplayMode.HOVER || mode == StatDisplayMode.BOTH) {
-            hover.append(template.hover()).append("\n");
+    private static String processStat(String message, StringBuilder hoverBuilder, StatDisplayMode mode, StatTemplate template) {
+        if (hoverBuilder != null && (mode == StatDisplayMode.HOVER || mode == StatDisplayMode.BOTH)) {
+            if (template.hover() != null) hoverBuilder.append(template.hover()).append("\n");
         }
 
         if (mode == StatDisplayMode.MAIN_MESSAGE || mode == StatDisplayMode.BOTH) {
             message = message.replace("{" + template.tag() + "}", template.main());
         }
 
-        return message.replace("{" + template.tag() + "_unformatted}", template.unformatted());
+        message = message.replace("{" + template.tag() + "_unformatted}", template.unformatted());
+        return message;
     }
+
 
     public static String cleanupDynamicReplacements(String message) {
         return message.replaceAll("\\{[^}]*}", "");
     }
 
-    private static StatTemplate getTemplateByTag(MessageTemplates templates, String tag, Object... args) {
-        StatTemplate raw = getTemplateByTag(templates, tag);
+    private static StatTemplate createTemplate(String tag, boolean isClient, AlertDataPacket data, PokemonConfig.PokemonSpecificConfig config) {
+        return switch (tag) {
+            case "level" -> getSideAwareTemplate("level", isClient, data.stats().level());
+            case "dex" -> getSideAwareTemplate("dex", isClient, data.spawnData().dexId());
+            case "nature" -> {
+                var nature = Natures.getNature(data.traits().natureID());
+                String name = (nature != null) ? nature.getDisplayName() : "N/A";
+                name = getNatureAbilityName(name, isClient);
+                yield getSideAwareTemplate("nature", isClient, name);
+            }
+            case "ability" -> {
+                var ability = Abilities.get(data.traits().abilityID());
+                String name = (ability != null) ? ability.getDisplayName() : "N/A";
+                name = getNatureAbilityName(name, isClient);
+                yield getSideAwareTemplate("ability", isClient, name);
+            }
+            case "ivs" -> {
+                Object[] ivs = getIVs(data.stats().ivs(), isClient);
+                yield getSideAwareTemplate("ivs", isClient, ivs);
+            }
+            case "evs" -> {
+                Object[] evs = getEVs(data.stats().evYield());
+                yield getSideAwareTemplate("evs", isClient, evs);
+            }
+            case "bucket" -> {
+                String bucket = getBucket(data.spawnData().bucket(), isClient, config);
+                yield getSideAwareTemplate("bucket", isClient, bucket);
+            }
+            case "legendary" -> {
+                String rarity = getLegendary(data.rarity(), data.spawnData().dexId(), isClient, config);
+                yield getSideAwareTemplate("legendary", rarity, isClient);
+            }
+            case "coordinates" -> {
+                var pos = data.spawnData().position();
+                yield getSideAwareTemplate("coords", isClient, isCoordinateValid(pos.x()), isCoordinateValid(pos.y()), isCoordinateValid(pos.z()));
+            }
+            case "biome" -> {
+                String biome = getBiome(data.spawnData().biomeKey(), isClient);
+                yield getSideAwareTemplate("biome", isClient, biome);
+            }
+            case "nearest_player" -> getSideAwareTemplate("nearest_player", isClient, data.spawnData().nearestPlayerName());
+            case "gender" -> {
+                Gender gender = Gender.valueOf(data.traits().genderID());
+                String genderString = getGender(gender, isClient);
+                yield getSideAwareTemplate("gender", isClient, genderString);
+            }
+            default -> getSideAwareTemplate(tag, isClient);
+        };
+    }
 
+    private static StatTemplate getSideAwareTemplate(String tag, boolean isClient, Object... args) {
+        return getSideAwareTemplate(tag, tag, isClient, args);
+    }
+
+    private static StatTemplate getSideAwareTemplate(String originalTag, String secondaryTag, boolean isClient, Object... args) {
+        Object templatesConfig = getTemplatesConfig(isClient);
+        StatTemplate template = getTemplateByTag(templatesConfig, secondaryTag, isClient);
+        if (isClient) {
+            return new StatTemplate(
+                    originalTag,
+                    Component.translatable(template.main(), args).getString(),
+                    Component.translatable(template.hover(), args).getString(),
+                    Component.translatable(template.unformatted(), args).getString()
+            );
+        }
         return new StatTemplate(
-                tag,
-                Component.translatable(raw.main(), args).getString(),
-                Component.translatable(raw.hover(), args).getString(),
-                Component.translatable(raw.unformatted(), args).getString()
+                originalTag,
+                tryFormat(template.main(), args),
+                tryFormat(template.hover(), args),
+                tryFormat(template.unformatted(), args)
         );
     }
 
-    private static StatTemplate getTemplateByTag(MessageTemplates templates, String tag) {
+    private static String tryFormat(String message, Object... args) {
+        String result = "N/A";
+        try {
+            result = String.format(message, args);
+        } catch (Exception ignored) {}
+
+        return result;
+    }
+
+    private static StatTemplate getTemplateByTag(Object templates, String tag, boolean isClient) {
+
         try {
             String main = tryGetMethod(templates, tag);
-            String hover = tryGetMethod(templates, tag + "_hover");
-            String unformatted = tryGetMethod(templates, tag + "_unformatted");
+            if (isClient) {
+                String hover = tryGetMethod(templates, tag + "_hover");
+                String unformatted = tryGetMethod(templates, tag + "_unformatted");
+                return new StatTemplate(tag, main, hover, unformatted);
+            }
 
-            return new StatTemplate(tag, main, hover, unformatted);
+            // The server_message_templates.json config only has main messages, not unformatted or hover
+            return new StatTemplate(tag, main, main, main);
+
         } catch (Exception e) {
             CobblemonSpawnAlerts.LOGGER.error("Failed to find templates for tag: {}", tag, e);
-            return new StatTemplate(tag, "U/D", "U/D", "U/D");
+            return new StatTemplate(tag, "N/A", "N/A", "N/A");
         }
     }
 
     private static String tryGetMethod(Object templates, String name) {
         try { return (String) templates.getClass().getMethod(name).invoke(templates); }
-        catch (Exception ignored) {return "U/D";}
+        catch (Exception ignored) {return "";}
     }
 
     private record StatTemplate(String tag, String main, String hover, String unformatted) {}
 
     private static String getSideAwareString(String tag, boolean isClient, Object... args) {
+        Object templatesConfig = getTemplatesConfig(isClient);
         if (isClient) {
-            String message = tryGetMethod(CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates(), tag);
+            String message = tryGetMethod(templatesConfig, tag);
             return Component.translatable(message, args).getString();
         }
-        return tryGetMethod(CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerMessageTemplates(), tag);
+
+        String message = tryGetMethod(templatesConfig, tag);
+        message = tryFormat(message, args);
+        return message;
+    }
+
+    private static Object getTemplatesConfig(boolean isClient) {
+        return isClient ? CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMessageTemplates()
+                :
+                CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerMessageTemplates();
+    }
+
+    private static String getGender(Gender gender, boolean isClient) {
+        Object templates = getTemplatesConfig(isClient);
+        String key = switch (gender) {
+            case MALE -> tryGetMethod(templates, "male");
+            case FEMALE -> tryGetMethod(templates, "female");
+            default -> tryGetMethod(templates, "genderless");
+        };
+
+        if (isClient) {
+            return Component.translatable(key, StringUtil.capitalize(gender.getSerializedName().toLowerCase())).getString();
+        }
+
+        return key;
+    }
+
+    private static String getBiome(String biomeKey, boolean isClient) {
+        if (isClient) {
+            return StringUtil.makeBeautiful(Component.translatable(biomeKey).getString());
+        }
+
+        List<String> split = StringUtil.splitTranslationKey(biomeKey);
+        return StringUtil.makeBeautiful(split.getLast());
+    }
+
+    private static String getLegendary(PokemonRarityData data, int dexID, boolean isClient, PokemonConfig.PokemonSpecificConfig config) {
+            if (isClient && !config.showLegendary()) return "";
+
+            if (isClient) {
+                return  RarityUtil.isLegendary(dexID) ? "legendary" :
+                        RarityUtil.isMythical(dexID) ? "mythical" :
+                        RarityUtil.isUltraBeast(dexID) ? "ultrabeast" :
+                        RarityUtil.isParadox(dexID) ? "paradox" : "";
+            }
+
+            return  data.isLegendary() ? "legendary" :
+                    data.isMythical() ? "mythical" :
+                    data.isUltraBeast() ? "ultrabeast" :
+                    data.isParadox() ? "paradox" : "";
+    }
+
+    private static String getBucket(RarityUtil.Bucket bucket, boolean isClient, PokemonConfig.PokemonSpecificConfig config) {
+        if (isClient && !config.showBucket()) return "";
+
+        Object templates = getTemplatesConfig(isClient);
+        String bucketKey = switch (bucket) {
+            case COMMON -> tryGetMethod(templates, "common");
+            case UNCOMMON -> tryGetMethod(templates, "uncommon");
+            case RARE -> tryGetMethod(templates, "rare");
+            case ULTRA_RARE -> tryGetMethod(templates, "ultra_rare");
+            case NONE -> tryGetMethod(templates, "none");
+        };
+        if (!isClient) {
+            return bucketKey;
+        }
+
+        return Component.translatable(bucketKey).getString();
+    }
+
+    private static Object[] getEVs(EVs evs) {
+        return new Object[]{evs.get(Stats.HP), evs.get(Stats.ATTACK), evs.get(Stats.DEFENCE),
+                evs.get(Stats.SPECIAL_ATTACK), evs.get(Stats.SPECIAL_DEFENCE), evs.get(Stats.SPEED)};
+    }
+
+    private static Object[] getIVs(IVs ivs, boolean isClient) {
+        return (!isClient || Services.PLATFORM.doesServerHaveMod()) ?
+        new Object[]{ivs.get(Stats.HP), ivs.get(Stats.ATTACK), ivs.get(Stats.DEFENCE),
+                ivs.get(Stats.SPECIAL_ATTACK), ivs.get(Stats.SPECIAL_DEFENCE), ivs.get(Stats.SPEED)}
+        : new Object[]{"?", "?", "?", "?", "?", "?"};
+    }
+
+    private static String getNatureAbilityName(String name, boolean isClient) {
+        if (isClient) {
+            return Component.translatable(name).getString();
+        }
+
+        List<String> list = StringUtil.splitTranslationKey(name);
+        // nature/ability translation keys are cobblemon.nature.naturename, so we want to get the last index
+        return StringUtil.makeBeautiful(list.getLast());
     }
 
     private static String getPokemonName(String name, boolean isClient) {
         if (isClient) {
             return PokemonNameUtil.getTranslatedName(name);
         }
-        return StringUtil.capitalize(name);
+
+        List<String> list = StringUtil.splitTranslationKey(name);
+        // name translation keys are cobblemon.species.speciesname.name, so we want to get the 2nd to last index
+        return StringUtil.makeBeautiful(list.get(list.size()-2));
+    }
+
+    private static Object isCoordinateValid(float coord) {
+        return (int) coord != Integer.MIN_VALUE ? (int)coord : "N/A";
     }
 }

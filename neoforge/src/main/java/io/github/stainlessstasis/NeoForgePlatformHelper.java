@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
 import io.github.stainlessstasis.alert.AlertUtils;
@@ -73,13 +74,16 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
             }
 
+            AlertDataPacket alertData = CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket);
+            CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, null);
+
             if (pokemonEntity.level() instanceof ServerLevel level) {
                 for (ServerPlayer player : level.players()) {
                     if (alreadyAlerted.contains(player.getUUID())) {
                         continue;
                     }
 
-                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
+                    PacketDistributor.sendToPlayer(player, alertData);
                 }
             }
 

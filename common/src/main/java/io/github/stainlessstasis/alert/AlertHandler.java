@@ -361,7 +361,7 @@ public class AlertHandler {
 
         // webhooks
         if (pokemonConfig.sendWebhook()) {
-            CobblemonSpawnAlerts.getWebhookService().sendClientsideWebhook(alertData, pokemonConfig);
+            CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, pokemonConfig);
         }
 
         // journeymap compat

@@ -29,8 +29,9 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
         public static PokemonSpecificConfig createDefault() {
             Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
             statDisplayModes.put("level", StatDisplayMode.MAIN_MESSAGE);
+            statDisplayModes.put("dex", StatDisplayMode.HOVER);
             statDisplayModes.put("ivs", StatDisplayMode.DISABLED);
-            statDisplayModes.put("evs", StatDisplayMode.DISABLED);
+            statDisplayModes.put("evs", StatDisplayMode.HOVER);
             statDisplayModes.put("nature", StatDisplayMode.DISABLED);
             statDisplayModes.put("ability", StatDisplayMode.DISABLED);
             statDisplayModes.put("gender", StatDisplayMode.HOVER);

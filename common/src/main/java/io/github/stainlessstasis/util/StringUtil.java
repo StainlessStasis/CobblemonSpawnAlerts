@@ -1,5 +1,8 @@
 package io.github.stainlessstasis.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class StringUtil {
     public static String capitalize(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
@@ -38,5 +41,10 @@ public class StringUtil {
         String namespace = identifier.substring(0, i);
         String path = identifier.substring(i+1);
         return new String[]{namespace, path};
+    }
+
+    public static List<String> splitTranslationKey(String key) {
+        String[] split = key.split("\\.");
+        return Arrays.stream(split).toList();
     }
 }

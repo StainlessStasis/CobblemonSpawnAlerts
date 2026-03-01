@@ -49,14 +49,18 @@ However, it is highly recommended to leave this setting on. The message will go 
 - Made coordinates display as "N/A" when unavilable, instead of just 0.
 - Added configVersion to message_templates, server, and rarities configs
 
-## (WIP) [1.12.4]
+## (WIP) [1.13.0]
 ### 🚨 BREAKING CHANGES 🚨
+NeoForge dedicated servers now require Ember's Text API. Fabric already required it.
+
 Added regex pattern matcher to remove anything within {curly braces} after dynamic replacements are applied.
 - Necessary change to clean up code a bit.
 - Allows for a more modular system to support custom DRs in the future.
 
 ### New Features
+- Added Discord webhooks! See `webhooks.json`, `server_message_templates.json`, and `pokemon.json` for relevant info.
 - Added `BOTH` option for stat display modes.
+- Added `{dex}`, `{dex_hover}`, and `{dex_unformatted}`.
 
 ### Changes & Fixes
-- Journeymap waypoint names now support dynamic replacements. Use the `unformatted` versions when available - most DRs will not work if the stat mode is set to `HOVER`.
+- Journeymap waypoint names now support dynamic replacements. Recommended to use the `unformatted` versions when available. 

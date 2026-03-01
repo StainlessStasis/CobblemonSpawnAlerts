@@ -32,10 +32,6 @@ public class DiscordWebhookWrappers {
             );
         }
 
-        public WebhookContent applyDynamicReplacements(AlertDataPacket alertData) {
-            return applyDynamicReplacements(alertData, null);
-        }
-
         public WebhookContent applyDynamicReplacements(AlertDataPacket alertData, @Nullable PokemonConfig.PokemonSpecificConfig pokemonConfig) {
             String newContent = parseDynamicReplacements(this.content, pokemonConfig, alertData);
             String newUsername = parseDynamicReplacements(this.username, pokemonConfig, alertData);
@@ -120,8 +116,10 @@ public class DiscordWebhookWrappers {
             return builder.build();
         }
 
+        // TODO: remove
         private static String addTimestamp(String string) {
-            return string.replace("{timestamp}", String.valueOf(System.currentTimeMillis()/1000));
+//            return string.replace("{timestamp}", String.valueOf(System.currentTimeMillis()/1000));
+            return string;
         }
     }
 

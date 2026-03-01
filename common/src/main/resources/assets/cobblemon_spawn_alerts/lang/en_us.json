@@ -12,7 +12,7 @@
   "cobblemon-spawn-alerts.outdated_sound": "<color value=#55FF55>[CSA]</color> <color value=#FF5555>ERROR!</color> <color value=#FFFFFF>Attempted to play a sound without a namespace. You can fix this by adding 'minecraft:' to the beginning of your sound if it is a vanilla sound (including resource packs).",
   "cobblemon-spawn-alerts.debug_alert_condition": "<color value=#55FF55>[CSA] </color><color value=#FFFFFF>Attempting to create alert for {name} \n </color><color value=#55FF55>Cause: </color><color value=#FFFFFF>%s</color>",
 
-  "cobblemon-spawn-alerts.default_spawn_message": "<color value=#55FF55>A wild {legendary}{shiny}{bucket}{HA}{gender}<color value=#FFFFFF>{name}</color> {level}{ivs}{evs}{nature}{ability}has appeared{nearest_player}{coords}{biome}!</color>",
+  "cobblemon-spawn-alerts.default_spawn_message": "<color value=#55FF55>A wild {legendary}{shiny}{bucket}{HA}{gender}<color value=#FFFFFF>{name}</color> {dex}{level}{ivs}{evs}{nature}{ability}has appeared{nearest_player}{coords}{biome}!</color>",
   "cobblemon-spawn-alerts.default_despawn_message": "<color value=#55FF55>A {legendary}{shiny}{HA}<color value=#FFFFFF>{name}</color> {despawned}.",
   "cobblemon-spawn-alerts.despawn_reason_despawned": "despawned",
   "cobblemon-spawn-alerts.despawn_reason_captured": "was captured by %s",
@@ -28,6 +28,10 @@
   "cobblemon-spawn-alerts.level": "<color value=#AAAAAA>(Lvl. %s) </color>",
   "cobblemon-spawn-alerts.level_hover": "Level: <color value=#AAAAAA>%s</color>",
   "cobblemon-spawn-alerts.level_unformatted": "%s",
+
+  "cobblemon-spawn-alerts.dex": "<color value=#AAAAAA>(#%s) </color>",
+  "cobblemon-spawn-alerts.dex_hover": "Pokedex Number: <color value=#AAAAAA>%s</color>",
+  "cobblemon-spawn-alerts.dex_unformatted": "%s",
 
   "cobblemon-spawn-alerts.ivs": "with IVs: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
   "cobblemon-spawn-alerts.ivs_hover": "IVs: <color value=#AAAAAA>(%s/%s/%s/%s/%s/%s)</color> ",
