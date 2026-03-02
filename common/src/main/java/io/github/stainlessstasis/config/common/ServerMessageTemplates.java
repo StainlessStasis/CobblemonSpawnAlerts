@@ -42,7 +42,7 @@ public record ServerMessageTemplates (
                         "For details on using the config, please see the docs.",
                         "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
-                "Shiny",
+                "Shiny ",
                 "%s",
                 "%s",
                 "(%s/%s/%s/%s/%s/%s)",
@@ -59,17 +59,17 @@ public record ServerMessageTemplates (
                 "%s",
                 "%s",
                 "%s",
-                "Legendary",
-                "Mythical",
-                "Ultra Beast",
-                "Paradox",
-                "Hidden Ability",
+                "Legendary ",
+                "Mythical ",
+                "Ultra Beast ",
+                "Paradox ",
+                "Hidden Ability ",
                 "%s",
-                "Common",
-                "Uncommon",
-                "Rare",
-                "Ultra Rare",
-                ""
+                "Common ",
+                "Uncommon ",
+                "Rare ",
+                "Ultra Rare ",
+                "N/A "
         );
     }
 }

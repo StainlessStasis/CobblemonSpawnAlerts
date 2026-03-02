@@ -35,9 +35,9 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             statDisplayModes.put("nature", StatDisplayMode.DISABLED);
             statDisplayModes.put("ability", StatDisplayMode.DISABLED);
             statDisplayModes.put("gender", StatDisplayMode.HOVER);
-            statDisplayModes.put("coordinates", StatDisplayMode.HOVER);
-            statDisplayModes.put("biome", StatDisplayMode.MAIN_MESSAGE);
-            statDisplayModes.put("nearestPlayer", StatDisplayMode.DISABLED);
+            statDisplayModes.put("coords", StatDisplayMode.HOVER);
+            statDisplayModes.put("biome", StatDisplayMode.BOTH);
+            statDisplayModes.put("nearest_player", StatDisplayMode.DISABLED);
 
             Map<String, String> sounds = new LinkedHashMap<>();
             sounds.put("shiny", "");

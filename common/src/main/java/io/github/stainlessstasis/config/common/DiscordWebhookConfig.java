@@ -19,7 +19,7 @@ public record DiscordWebhookConfig(
                     "For details on using the config, please see the docs.",
                     "https://stainlessstasis.github.io/CSA-Docs/config/"
             },
-            "",
+            "YOUR WEBHOOK URL HERE",
             DiscordWebhookWrappers.WebhookContent.createDefault()
         );
     }

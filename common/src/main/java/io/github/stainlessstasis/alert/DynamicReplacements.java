@@ -21,9 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DynamicReplacements {
-    private static final String[] TAGS = {"dex", "level", "bucket", "legendary", "ivs", "evs", "nature", "ability", "gender", "coordinates", "biome", "nearestPlayer"};
+
 
     public static String applyDynamicReplacements(String message, PokemonConfig.PokemonSpecificConfig config, AlertDataPacket alertData, StringBuilder hoverBuilder) {
         return process(message, config, alertData, hoverBuilder);
@@ -47,42 +49,52 @@ public class DynamicReplacements {
         // Timestamp
         message = message.replace("{timestamp}", String.valueOf(System.currentTimeMillis()/1000));
 
-        // Shiny
-        if (alertData.rarity().isShiny() && (isClient && config.alertShiny())) {
-            message = message.replace("{shiny}", getSideAwareString("shiny", isClient));
+        // match anything inside {curly braces}
+        Pattern pattern = Pattern.compile("\\{([^}]+)}");
+        Matcher matcher = pattern.matcher(message);
+        StringBuilder sb = new StringBuilder();
+
+        while (matcher.find()) {
+            String foundTag = matcher.group(1);
+            Tag tag = Tag.fromString(foundTag);
+
+            if (tag != null) {
+
+                StatDisplayMode mode = StatDisplayMode.MAIN_MESSAGE;
+                if (config != null) {
+                    mode = config.statDisplayModes().getOrDefault(tag.getKey(), StatDisplayMode.MAIN_MESSAGE);
+                }
+
+                if (mode == StatDisplayMode.DISABLED) {
+                    matcher.appendReplacement(sb, "");
+                    continue;
+                }
+
+                StatTemplate template = createTemplate(tag, isClient, alertData, config);
+                String replacement = getReplacementForTag(tag, foundTag, mode, template, hoverBuilder);
+                matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
+            }
         }
-
-        // HA
-        if (HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())
-            && (isClient && config.alertHiddenAbility())) {
-            message = message.replace("{HA}", getSideAwareString("hidden_ability", isClient));
-        }
-
-        for (String tag : TAGS) {
-            StatDisplayMode mode = (config != null) ?
-                    config.statDisplayModes().getOrDefault(tag, StatDisplayMode.MAIN_MESSAGE) :
-                    StatDisplayMode.MAIN_MESSAGE;
-
-            if (mode == StatDisplayMode.DISABLED) continue;
-
-            StatTemplate template = createTemplate(tag, isClient, alertData, config);
-            message = processStat(message, hoverBuilder, mode, template);
-        }
+        matcher.appendTail(sb);
+        message = sb.toString();
 
         return cleanupDynamicReplacements(message);
     }
 
-    private static String processStat(String message, StringBuilder hoverBuilder, StatDisplayMode mode, StatTemplate template) {
+    private static String getReplacementForTag(Tag tag, String fullTagContent, StatDisplayMode mode, StatTemplate template, StringBuilder hoverBuilder) {
+        if (fullTagContent.endsWith("_unformatted")) {
+            return template.unformatted();
+        }
+
         if (hoverBuilder != null && (mode == StatDisplayMode.HOVER || mode == StatDisplayMode.BOTH)) {
             if (template.hover() != null) hoverBuilder.append(template.hover()).append("\n");
         }
 
         if (mode == StatDisplayMode.MAIN_MESSAGE || mode == StatDisplayMode.BOTH) {
-            message = message.replace("{" + template.tag() + "}", template.main());
+            return template.main();
         }
 
-        message = message.replace("{" + template.tag() + "_unformatted}", template.unformatted());
-        return message;
+        return "";
     }
 
     /**
@@ -93,82 +105,80 @@ public class DynamicReplacements {
     }
 
     /**
-     * Create a StatTemplate for the specified tag based on the client status.
+     * Creates a side-aware StatTemplate for the given tag.
      */
-    private static StatTemplate createTemplate(String tag, boolean isClient, AlertDataPacket data, PokemonConfig.PokemonSpecificConfig config) {
+    private static StatTemplate createTemplate(Tag tag, boolean isClient, AlertDataPacket data, PokemonConfig.PokemonSpecificConfig config) {
         return switch (tag) {
-            case "level" -> getSideAwareTemplate("level", isClient, data.stats().level());
-            case "dex" -> getSideAwareTemplate("dex", isClient, data.spawnData().dexId());
-            case "nature" -> {
+            case LEVEL -> getSideAwareTemplate(tag, isClient, data.stats().level());
+            case DEX -> getSideAwareTemplate(tag, isClient, data.spawnData().dexId());
+            case NATURE -> {
                 var nature = Natures.getNature(data.traits().natureID());
-                String name = (nature != null) ? nature.getDisplayName() : "N/A";
-                name = getNatureAbilityName(name, isClient);
-                yield getSideAwareTemplate("nature", isClient, name);
+                String name = getNatureAbilityName(nature != null ? nature.getDisplayName() : "N/A", isClient);
+                yield getSideAwareTemplate(tag, isClient, name);
             }
-            case "ability" -> {
+            case ABILITY -> {
                 var ability = Abilities.get(data.traits().abilityID());
-                String name = (ability != null) ? ability.getDisplayName() : "N/A";
-                name = getNatureAbilityName(name, isClient);
-                yield getSideAwareTemplate("ability", isClient, name);
+                String name = getNatureAbilityName(ability != null ? ability.getDisplayName() : "N/A", isClient);
+                yield getSideAwareTemplate(tag, isClient, name);
             }
-            case "ivs" -> {
-                Object[] ivs = getIVs(data.stats().ivs(), isClient);
-                yield getSideAwareTemplate("ivs", isClient, ivs);
-            }
-            case "evs" -> {
-                Object[] evs = getEVs(data.stats().evYield());
-                yield getSideAwareTemplate("evs", isClient, evs);
-            }
-            case "bucket" -> {
-                String bucket = getBucket(data.spawnData().bucket(), isClient, config);
-                yield getSideAwareTemplate("bucket", isClient, bucket);
-            }
-            case "legendary" -> {
+            case IVS -> getSideAwareTemplate(tag, isClient, getIVs(data.stats().ivs(), isClient));
+            case EVS -> getSideAwareTemplate(tag, isClient, getEVs(data.stats().evYield()));
+            case BUCKET -> getSideAwareTemplate(tag, isClient, getBucket(data.spawnData().bucket(), isClient, config));
+            case LEGENDARY -> {
                 String rarity = getLegendary(data.rarity(), data.spawnData().dexId(), isClient, config);
-                yield getSideAwareTemplate("legendary", rarity, isClient);
+                yield getSideAwareTemplate(tag, rarity, isClient);
             }
-            case "coordinates" -> {
+            case SHINY -> {
+                boolean shouldAlert = data.rarity().isShiny() && (!isClient || config.alertShiny());
+                String methodLookup = shouldAlert ? tag.getKey() : "";
+                yield getSideAwareTemplate(tag, methodLookup, isClient);
+            }
+            case HIDDEN_ABILITY -> {
+                boolean shouldAlert =
+                        HiddenAbilityUtil.hasHiddenAbility(data.spawnData().dexId(), data.traits().formID(), data.traits().abilityID())
+                        &&
+                        (!isClient || config.alertHiddenAbility());
+                String methodLookup = shouldAlert ? tag.getKey() : "";
+                yield getSideAwareTemplate(tag, methodLookup, isClient);
+            }
+            case COORDINATES -> {
                 var pos = data.spawnData().position();
-                yield getSideAwareTemplate("coords", isClient, isCoordinateValid(pos.x()), isCoordinateValid(pos.y()), isCoordinateValid(pos.z()));
+                yield getSideAwareTemplate(tag, isClient, isCoordinateValid(pos.x()), isCoordinateValid(pos.y()), isCoordinateValid(pos.z()));
             }
-            case "biome" -> {
-                String biome = getBiome(data.spawnData().biomeKey(), isClient);
-                yield getSideAwareTemplate("biome", isClient, biome);
-            }
-            case "nearest_player" -> getSideAwareTemplate("nearest_player", isClient, data.spawnData().nearestPlayerName());
-            case "gender" -> {
-                Gender gender = Gender.valueOf(data.traits().genderID());
-                String genderString = getGender(gender, isClient);
-                yield getSideAwareTemplate("gender", isClient, genderString);
-            }
-            default -> getSideAwareTemplate(tag, isClient);
+            case BIOME -> getSideAwareTemplate(tag, isClient, getBiome(data.spawnData().biomeKey(), isClient));
+            case NEAREST_PLAYER -> getSideAwareTemplate(tag, isClient, data.spawnData().nearestPlayerName());
+            case GENDER -> getSideAwareTemplate(tag, isClient, getGender(Gender.valueOf(data.traits().genderID()), isClient));
         };
     }
 
+
     /**
-     * Gets a StatTemplate for the specified tag dependent on the client status.
+     * Gets a side-aware StatTemplate for the given tag and method lookup.
+     * The tag's key is used here as the method lookup.
      */
-    private static StatTemplate getSideAwareTemplate(String tag, boolean isClient, Object... args) {
-        return getSideAwareTemplate(tag, tag, isClient, args);
+    private static StatTemplate getSideAwareTemplate(Tag tag, boolean isClient, Object... args) {
+        return getSideAwareTemplate(tag, tag.getKey(), isClient, args);
     }
 
     /**
-     * Gets a StatTemplate for the specified secondaryTag dependent on the client status. The originalTag is used to ensure the correct tag is replaced.
-     * This is only used for the {legendary} tag, since it needs to have an original tag of "legendary" but a secondary of "mythical" etc.
+     * Gets a side-aware StatTemplate for the given tag and method lookup.
+     * @param methodLookup The name of the method to lookup in MessageTemplates/ServerMessageTemplates
      */
-    private static StatTemplate getSideAwareTemplate(String originalTag, String secondaryTag, boolean isClient, Object... args) {
+    private static StatTemplate getSideAwareTemplate(Tag tag, String methodLookup, boolean isClient, Object... args) {
         Object templatesConfig = getTemplatesConfig(isClient);
-        StatTemplate template = getTemplateByTag(templatesConfig, secondaryTag, isClient);
+        StatTemplate template = getTemplateByTag(templatesConfig, methodLookup, isClient);
+
+        String key = tag.getKey();
         if (isClient) {
             return new StatTemplate(
-                    originalTag,
+                    key,
                     Component.translatable(template.main(), args).getString(),
                     Component.translatable(template.hover(), args).getString(),
                     Component.translatable(template.unformatted(), args).getString()
             );
         }
         return new StatTemplate(
-                originalTag,
+                key,
                 tryFormat(template.main(), args),
                 tryFormat(template.hover(), args),
                 tryFormat(template.unformatted(), args)

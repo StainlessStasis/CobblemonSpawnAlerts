@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiscordWebhookWrappers {
-    private static final String DEFAULT_CONTENT = "No message provided. This cannot be blank, unless your webhook has an embed(s).";
-
     private static String parseDynamicReplacements(String message, @Nullable PokemonConfig.PokemonSpecificConfig pokemonSpecificConfig, AlertDataPacket alertData) {
         return Services.PLATFORM.parseMarkupAsString(DynamicReplacements.applyDynamicReplacements(message, pokemonSpecificConfig, alertData, new StringBuilder()));
     }
@@ -28,7 +26,8 @@ public class DiscordWebhookWrappers {
     ) {
         public static WebhookContent createDefault() {
             return new WebhookContent(
-                    DEFAULT_CONTENT, "", "", false, List.of(Embed.createDefault())
+                    "No message provided. This cannot be blank, unless your webhook has an embed(s).",
+                    "", "", false, List.of(Embed.createDefault())
             );
         }
 
@@ -51,19 +50,19 @@ public class DiscordWebhookWrappers {
                 if (!embed.enabled) continue;
 
                 var embedBuilder = new EmbedBuilder()
-                        .withTitle(embed.title().isEmpty() ? null : addTimestamp(embed.title()))
-                        .withDescription(embed.description().isEmpty() ? null : addTimestamp(embed.description()))
-                        .withUrl(embed.url().isEmpty() ? null : addTimestamp(embed.url()));
+                        .withTitle(embed.title().isEmpty() ? null : embed.title())
+                        .withDescription(embed.description().isEmpty() ? null : embed.description())
+                        .withUrl(embed.url().isEmpty() ? null : embed.url());
 
                 if (!embed.imageURL().isEmpty()) {
                     var img = new com.n1netails.n1netails.discord.model.Embed.Image();
-                    img.setUrl(addTimestamp(embed.imageURL()));
+                    img.setUrl(embed.imageURL());
                     embedBuilder.withImage(img);
                 }
 
                 if (!embed.thumbnailURL().isEmpty()) {
                     var thumbnail = new com.n1netails.n1netails.discord.model.Embed.Thumbnail();
-                    thumbnail.setUrl(addTimestamp(embed.thumbnailURL()));
+                    thumbnail.setUrl(embed.thumbnailURL());
                     embedBuilder.withThumbnail(thumbnail);
                 }
 
@@ -73,9 +72,9 @@ public class DiscordWebhookWrappers {
 
                 if (!embed.author().name().isEmpty()) {
                     var author = new com.n1netails.n1netails.discord.model.Embed.Author();
-                    author.setName(addTimestamp(embed.author().name()));
-                    author.setUrl(embed.author().url().isEmpty() ? null : addTimestamp(embed.author().url()));
-                    author.setIcon_url(embed.author().iconURL().isEmpty() ? null : addTimestamp(embed.author().iconURL()));
+                    author.setName(embed.author().name());
+                    author.setUrl(embed.author().url().isEmpty() ? null : embed.author().url());
+                    author.setIcon_url(embed.author().iconURL().isEmpty() ? null : embed.author().iconURL());
                     embedBuilder.withAuthor(author);
                 }
 
@@ -84,8 +83,8 @@ public class DiscordWebhookWrappers {
                     if (f.name().isEmpty() || f.value().isEmpty()) continue;
 
                     var field = new com.n1netails.n1netails.discord.model.Embed.EmbedField();
-                    field.setName(addTimestamp(f.name()));
-                    field.setValue(addTimestamp(f.value()));
+                    field.setName(f.name());
+                    field.setValue(f.value());
                     field.setInline(f.inline());
                     fields.add(field);
                 }
@@ -93,8 +92,8 @@ public class DiscordWebhookWrappers {
 
                 if (!embed.footer().text().isEmpty()) {
                     var footer = new com.n1netails.n1netails.discord.model.Embed.Footer();
-                    footer.setText(addTimestamp(embed.footer().text()));
-                    footer.setIcon_url(embed.footer().iconURL().isEmpty() ? null : addTimestamp(embed.footer().iconURL()));
+                    footer.setText(embed.footer().text());
+                    footer.setIcon_url(embed.footer().iconURL().isEmpty() ? null : embed.footer().iconURL());
                     embedBuilder.withFooter(footer);
                 }
 
@@ -106,21 +105,16 @@ public class DiscordWebhookWrappers {
             }
 
             var builder = new WebhookMessageBuilder()
-                    .withContent(this.content().isEmpty() ? null : addTimestamp(this.content()))
-                    .withAvatarUrl(this.avatarURL().isEmpty() ? null : addTimestamp(this.avatarURL()))
+                    .withContent(this.content().isEmpty() ? null : this.content())
+                    .withAvatarUrl(this.avatarURL().isEmpty() ? null : this.avatarURL())
                     .withTts(this.tts());
 
-            if (!this.username().isEmpty()) builder.withUsername(addTimestamp(this.username()));
+            if (!this.username().isEmpty()) builder.withUsername(this.username());
             if (!embeds.isEmpty()) builder.withEmbeds(embeds);
 
             return builder.build();
         }
 
-        // TODO: remove
-        private static String addTimestamp(String string) {
-//            return string.replace("{timestamp}", String.valueOf(System.currentTimeMillis()/1000));
-            return string;
-        }
     }
 
     public record Embed(
@@ -138,7 +132,11 @@ public class DiscordWebhookWrappers {
     ) {
         public static Embed createDefault() {
             return new Embed(
-                false, "", "", "", "", "", "", false,
+                true, "**A {shiny}{legendary}{HA}{bucket}{name} spawned in a {biome} biome!**",
+                    "**Dex Number**: #{dex}\\n**Level**: {level}\\n**IVs**: {ivs}\\n**EVs**: {evs}\\n**Nature**: {nature}\\n**Ability**: {ability}\\n**Gender**: {gender}\\n**Coordinates**: {coords}\\n**Nearest Player**: {nearest_player}",
+                    "", "", "",
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex}.png",
+                    false,
                 Author.createDefault(),
                 List.of(EmbedField.createDefault()),
                 Footer.createDefault()

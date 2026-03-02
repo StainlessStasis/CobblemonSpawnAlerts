@@ -62,7 +62,18 @@ Added regex pattern matcher to remove anything within {curly braces} after dynam
 - Added Discord webhooks! See `webhooks.json`, `server_message_templates.json`, `pokemon.json`, and `server.json` for relevant info. Webhooks can be enabled by your client (any alert) or by the server (global alerts).
 - Added `BOTH` option for stat display modes. Displays the stat in both the main message and hover.
 - Added `{dex}`, `{dex_hover}`, and `{dex_unformatted}`. Tip: use `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex}.png` to embed a Pokemon's image in your webhooks!
+- Added `{timestamp}`
 
 ### Changes & Fixes
 - Journeymap waypoint names now support dynamic replacements. Recommended to use the `unformatted` versions when available. 
 - Discord webhooks required shadowing https://github.com/n1netails/n1netails-discord-webhook-client and its dependencies. As such, the mod's file size has increased to about ~2.8MB, up from ~0.5MB.
+
+## [1.13.1]
+### New Features
+- Added proper webhook example to default `webhooks.json` config.
+
+### Changes & Fixes
+- Fixed `{nearest_player}` not working as a side effect of 1.13.0.
+- Fixed `{shiny}` and `{HA}` not working for serverside webhooks.
+- Fixed `{bucket}` incorrect spacing in lang file.
+- Renamed `nearestPlayer` to `nearest_player` and `coordinates` to `coords` in `pokemon.json`. Automatically fixes itself.
