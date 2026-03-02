@@ -71,6 +71,13 @@ Added regex pattern matcher to remove anything within {curly braces} after dynam
 ## [1.13.1]
 ### New Features
 - Added proper webhook example to default `webhooks.json` config.
+- Added aliases for some dynamic replacements:
+  * `{rarity}` for `{bucket}`
+  * `{hidden_ability}` for `{HA}`
+  * `{mythical}`, `{ultrabeast}`, and `{paradox}` for `{legendary}`
+  * `{coordinates}` for `{coords}`
+  * `{player}` for `{nearest}`
+ - Forgot to mention addition of `{timestamp}` in previous changelog
 
 ### Changes & Fixes
 - Fixed `{nearest_player}` not working as a side effect of 1.13.0.
