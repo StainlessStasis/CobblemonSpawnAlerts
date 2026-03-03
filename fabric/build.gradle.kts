@@ -26,6 +26,7 @@ val shadowCommon = configurations.create("shadowCommon")
 
 repositories {
     maven("https://maven.blamejared.com") // Journeymap API
+    maven("https://maven.isxander.dev/releases") // YACL
     maven("https://www.cursemaven.com")
 }
 
@@ -45,6 +46,8 @@ dependencies {
     modImplementation("info.journeymap", "journeymap-api-fabric", property("journeymap_api_version") as String?)
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")
+
+    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}-fabric")
 
     implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
     shadowCommon("com.n1netails:n1netails-discord-webhook-client:0.3.0") {

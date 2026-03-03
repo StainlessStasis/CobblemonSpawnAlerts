@@ -34,6 +34,7 @@ repositories {
     maven("https://maven.neoforged.net")
     maven("https://maven.blamejared.com") // Journeymap API
     maven("https://www.cursemaven.com")
+    maven("https://maven.isxander.dev/releases") // YACL
 }
 
 val shadowBundle = configurations.create("shadowBundle") {
@@ -57,8 +58,13 @@ dependencies {
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_neo_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-neoforge:${property("common_networking_version")}")
 
+    implementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}-neoforge") {
+        exclude(group = "thedarkcolour", module = "kotlinforforge-neoforge")
+    }
+
     implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
     shadowBundle("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    // needed to add standard java libs to classpath on (neo)forge
     forgeRuntimeLibrary("com.n1netails:n1netails-discord-webhook-client:0.3.0")
 
     implementation(project(":common", configuration = "namedElements"))

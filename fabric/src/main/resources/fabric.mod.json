@@ -30,5 +30,8 @@
     "minecraft": "1.21.1",
     "cobblemon": ">=1.7.0",
     "emberstextapi": ">=2.5.0"
+  },
+  "suggests": {
+    "yet_another_config_lib_v3": ">=3.6.1"
   }
 }

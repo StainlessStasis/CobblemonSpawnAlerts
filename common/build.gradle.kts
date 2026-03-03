@@ -13,6 +13,7 @@ loom {
 
 repositories {
     maven("https://maven.blamejared.com") // Journeymap API
+    maven("https://maven.isxander.dev/releases") // YACL
 }
 
 dependencies {
@@ -24,6 +25,10 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${property("fabric_loader_version")}")
 
     compileOnly("info.journeymap", "journeymap-api-common", property("journeymap_api_version") as String?)
+
+    // Depend on fabric version here since no common version of YACL is available
+    // (recommended to do this for an archloom setup on their docs)
+    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}-fabric")
 
     implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
 

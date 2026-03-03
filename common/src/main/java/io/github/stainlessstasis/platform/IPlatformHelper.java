@@ -27,6 +27,10 @@ public interface IPlatformHelper {
      */
     boolean isModLoaded(String modId);
 
+    default boolean isYaclLoaded() {
+        return isModLoaded("yet_another_config_lib_v3");
+    }
+
     /**
      * Check if the game is currently in a development environment.
      *

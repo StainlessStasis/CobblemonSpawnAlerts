@@ -3,26 +3,52 @@ package io.github.stainlessstasis;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
+import io.github.stainlessstasis.compat.YACLTest;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
+import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.EvsUtil;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 
 @Mod(value = CobblemonSpawnAlerts.MOD_ID, dist = Dist.CLIENT)
 public class CSANeoClient {
     public static boolean doesServerHaveMod = false;
+
+    public CSANeoClient(ModContainer container) {
+        if (ModList.get().isLoaded("yet_another_config_lib_v3")) {
+            registerYacl(container);
+        }
+    }
+
+    private void registerYacl(ModContainer container) {
+        System.out.println("REGISTERING YACL EXTENTION POINT");
+        container.registerExtensionPoint(
+                IConfigScreenFactory.class,
+                (client, parent) -> {
+                    System.out.println("TESTNG TESTING 123");
+                    return YACLTest.createScreen(parent);
+                }
+        );
+
+        System.out.println("FINISHED REGISTERING YACL EXTENSION POINT");
+    }
 
     @EventBusSubscriber(value = Dist.CLIENT)
     public static class ModBusEvents {
