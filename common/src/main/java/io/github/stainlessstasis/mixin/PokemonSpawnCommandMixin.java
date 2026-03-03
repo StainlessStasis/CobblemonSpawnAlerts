@@ -14,7 +14,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import io.github.stainlessstasis.config.ServerConfig;
+import io.github.stainlessstasis.config.common.ServerConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;

@@ -5,12 +5,15 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import io.github.stainlessstasis.alert.DespawnReason;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
+import io.github.stainlessstasis.network.AlertDataPacket;
 import io.github.stainlessstasis.platform.IPlatformHelper;
 import io.github.stainlessstasis.platform.Platform;
-import io.github.stainlessstasis.util.AlertUtil;
+import io.github.stainlessstasis.alert.AlertUtils;
 import io.github.stainlessstasis.util.RarityUtil;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,6 +22,9 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.tysontheember.emberstextapi.immersivemessages.api.MarkupParser;
+import net.tysontheember.emberstextapi.immersivemessages.api.TextSpan;
+import net.tysontheember.emberstextapi.util.StyleUtil;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -55,17 +61,22 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                  players = chunkCache.chunkMap.getPlayersCloseForSpawning(pokemonEntity.chunkPosition());
             }
 
-            // Send EVERY Pokemon to clients that have the entity loaded for IV/EV hunting, etc.
+            // Send EVERY PokemonEntity to clients that have the entity loaded for IV/EV hunting, etc.
             for (ServerPlayer player : players) {
                 PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createPokemonData(pokemonEntity, bucket));
                 alreadyAlerted.add(player.getUUID());
             }
 
             // Only send RARE Pokemon (e.g. legendaries) to all clients, so we dont overload the network
-            if (!AlertUtil.shouldGlobalAlert(pokemonEntity, bucket)) {
+            if (!AlertUtils.shouldGlobalAlert(pokemonEntity, bucket)) {
                 return Unit.INSTANCE;
             } else {
                 CobblemonSpawnAlerts.globallyAlerted.add(pokemonEntity.getPokemon().getUuid());
+            }
+
+            AlertDataPacket alertData = CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket);
+            if (CobblemonSpawnAlerts.COMMON_CONFIG_MANAGER.getServerConfig().sendWebhook()) {
+                CobblemonSpawnAlerts.getWebhookService().sendWebhook(alertData, null);
             }
 
             if (pokemonEntity.level() instanceof ServerLevel level) {
@@ -74,7 +85,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
                         continue;
                     }
 
-                    PacketDistributor.sendToPlayer(player, CobblemonSpawnAlerts.createAlertData(pokemonEntity, bucket));
+                    PacketDistributor.sendToPlayer(player, alertData);
                 }
             }
 
@@ -96,7 +107,17 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     }
 
     @Override
-    public Component parseMarkup(String markup) {
-        return NeoForgeMarkupParser.parseMarkup(markup);
+    public MutableComponent parseMarkup(String markup) {
+        List<TextSpan> spans = MarkupParser.parse(markup);
+        MutableComponent result = Component.empty();
+        for (TextSpan span : spans) {
+            // applyTextSpanFormatting handles bold/italic/effects but intentionally skips color
+            Style style = StyleUtil.applyTextSpanFormatting(Style.EMPTY, span);
+            if (span.getColor() != null) {
+                style = style.withColor(span.getColor());
+            }
+            result.append(Component.literal(span.getContent()).withStyle(style));
+        }
+        return result;
     }
 }

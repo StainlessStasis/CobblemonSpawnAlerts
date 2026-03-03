@@ -1,12 +1,25 @@
 plugins {
     id("dev.architectury.loom")
     id("architectury-plugin")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.gradleup.shadow") version "9.3.2"
 }
 
 architectury {
     platformSetupLoomIde()
     fabric()
+}
+
+loom {
+    runs {
+        named("client") {
+            runDir = "runs/client"
+            client()
+        }
+        named("server") {
+            runDir = "runs/server"
+            server()
+        }
+    }
 }
 
 val shadowCommon = configurations.create("shadowCommon")
@@ -33,6 +46,11 @@ dependencies {
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_fabric_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-fabric:${property("common_networking_version")}")
 
+    implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    shadowCommon("com.n1netails:n1netails-discord-webhook-client:0.3.0") {
+        isTransitive = true
+    }
+
     implementation(project(":common", configuration = "namedElements"))
     "developmentFabric"(project(":common", configuration = "namedElements"))
     shadowCommon(project(":common", configuration = "transformProductionFabric"))
@@ -51,7 +69,6 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(rootProject.properties)
     }
-
 }
 
 tasks {
@@ -64,6 +81,7 @@ tasks {
     shadowJar {
         archiveClassifier.set("dev-shadow")
         archiveBaseName.set("${rootProject.property("archives_base_name")}-${project.name}")
+
         configurations = listOf(shadowCommon)
     }
 

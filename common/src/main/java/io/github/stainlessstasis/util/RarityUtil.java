@@ -6,7 +6,7 @@ import com.cobblemon.mod.common.api.spawning.detail.SpawnDetail;
 import com.cobblemon.mod.common.api.spawning.position.SpawnablePosition;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.serialization.Codec;
-import io.github.stainlessstasis.config.RaritiesConfig;
+import io.github.stainlessstasis.config.common.RaritiesConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -15,10 +15,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.IntFunction;
 
 public class RarityUtil {
@@ -26,7 +23,7 @@ public class RarityUtil {
         COMMON("common", 0),
         UNCOMMON("uncommon", 1),
         RARE("rare", 2),
-        ULTRA_RARE("ultra_rare", 3),
+        ULTRA_RARE("ultra-rare", 3),
         NONE("none", 4);
 
         private final String name;
@@ -59,7 +56,8 @@ public class RarityUtil {
         }
 
         public static Bucket fromString(String name) {
-            return StringRepresentable.fromEnum(Bucket::values).byName(name.toLowerCase());
+            Bucket bucket = StringRepresentable.fromEnum(Bucket::values).byName(name.toLowerCase());
+            return bucket != null ? bucket : Bucket.NONE;
         }
     }
 
@@ -69,14 +67,21 @@ public class RarityUtil {
                 .filter(
                         detail -> detail instanceof PokemonSpawnDetail pokemonSpawnDetail
                                 &&
-                                pokemonSpawnDetail.getPokemon().getSpecies().equals(speciesName)
+                                pokemonSpawnDetail.getPokemon().getSpecies() instanceof String string &&
+                                string.equals(speciesName)
                 )
                 .filter(detail -> detail.isSatisfiedBy(spawnablePosition))
                 .toList();
 
-        Bucket bucket = Bucket.COMMON;
+        Bucket bucket = Bucket.NONE;
         if (!matchingSpawns.isEmpty()) {
-            bucket = Bucket.fromString(matchingSpawns.getFirst().getBucket().getName());
+            String bucketName = matchingSpawns.getFirst().getBucket().getName();
+            bucket = Bucket.fromString(bucketName);
+            if (bucket == Bucket.NONE) {
+                CobblemonSpawnAlerts.LOGGER.error("Cannot get rarity bucket for Pokemon `{}`with UUID `{}` - bucket with name `{}` is null. Defaulting to use NONE.", entity.getName().getString(), entity.getUUID(), bucketName);
+            }
+        } else {
+            CobblemonSpawnAlerts.LOGGER.warn("Cannot get rarity bucket for Pokemon `{}`with UUID `{}` - no matching spawns found for spawnable position {}. Defaulting to use NONE.", entity.getName().getString(), entity.getUUID(), spawnablePosition.toString());
         }
 
         return bucket;

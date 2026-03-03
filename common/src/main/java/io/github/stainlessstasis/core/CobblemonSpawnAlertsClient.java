@@ -2,8 +2,13 @@ package io.github.stainlessstasis.core;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import io.github.stainlessstasis.compat.JourneymapCompat;
-import io.github.stainlessstasis.config.ClientConfigManager;
+import io.github.stainlessstasis.config.client.MainConfig;
+import io.github.stainlessstasis.config.manager.ClientConfigManager;
+import io.github.stainlessstasis.config.manager.VersionMatcher;
 import io.github.stainlessstasis.platform.Services;
+import io.github.stainlessstasis.util.MessageUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.slf4j.Logger;
@@ -31,6 +36,29 @@ public class CobblemonSpawnAlertsClient {
         glowing.remove(uuid);
         if (Services.PLATFORM.isModLoaded("journeymap")) {
             JourneymapCompat.removeWaypoint(uuid);
+        }
+    }
+
+    public static ClickEvent getChangelogClickEvent() {
+        return new ClickEvent(
+                ClickEvent.Action.OPEN_URL,
+                "https://stainlessstasis.github.io/CSA-Docs/other/changelog"
+        );
+    }
+
+    public static void sendMultiplayerWarning() {
+        final MainConfig mainConfig = CobblemonSpawnAlertsClient.CLIENT_CONFIG_MANAGER.getMainConfig();
+        if (mainConfig.multiplayerWarning() && !Minecraft.getInstance().isSingleplayer()) {
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.multiplayer_warning");
+        }
+
+        if (mainConfig.versionChangeWarning() && VersionMatcher.hasVersionChanged()) {
+            MessageUtils.sendTranslated("cobblemon-spawn-alerts.version_change_detected", getChangelogClickEvent());
+
+            List<String> changelog = VersionMatcher.getMajorChanges();
+            for (String message : changelog) {
+                MessageUtils.sendTranslated(message, getChangelogClickEvent());
+            }
         }
     }
 }

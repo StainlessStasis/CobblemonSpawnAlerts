@@ -25,6 +25,8 @@ dependencies {
 
     compileOnly("info.journeymap", "journeymap-api-common", property("journeymap_api_version") as String?)
 
+    implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit_version")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit_version")}")
 }

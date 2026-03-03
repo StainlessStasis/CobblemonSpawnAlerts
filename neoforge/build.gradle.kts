@@ -12,6 +12,17 @@ architectury {
 loom {
     enableTransitiveAccessWideners.set(true)
     silentMojangMappingsLicense()
+
+    runs {
+        named("client") {
+            runDir = "runs/client"
+            client()
+        }
+        named("server") {
+            runDir = "runs/server"
+            server()
+        }
+    }
 }
 
 repositories {
@@ -46,11 +57,15 @@ dependencies {
     modRuntimeOnly("curse.maven:journeymap-${property("journeymap_project_id")}:${property("journeymap_neo_file_id")}")
     modRuntimeOnly("mysticdrew:common-networking-neoforge:${property("common_networking_version")}")
 
+    implementation("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    shadowBundle("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+    forgeRuntimeLibrary("com.n1netails:n1netails-discord-webhook-client:0.3.0")
+
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {
         isTransitive = false
     }
-    shadowBundle(project(":common", configuration = "transformProductionFabric"))
+    shadowBundle(project(":common", configuration = "transformProductionNeoForge"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${property("junit_version")}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${property("junit_version")}")

@@ -1,7 +1,7 @@
 package io.github.stainlessstasis.core;
 
 import com.mojang.brigadier.CommandDispatcher;
-import io.github.stainlessstasis.config.ClientConfigManager;
+import io.github.stainlessstasis.config.manager.ClientConfigManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;

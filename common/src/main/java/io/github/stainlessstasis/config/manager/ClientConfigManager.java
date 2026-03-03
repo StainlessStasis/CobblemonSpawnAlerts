@@ -1,5 +1,8 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.manager;
 
+import io.github.stainlessstasis.config.client.MainConfig;
+import io.github.stainlessstasis.config.client.MessageTemplates;
+import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.util.MessageUtils;
 import net.minecraft.client.Minecraft;
 

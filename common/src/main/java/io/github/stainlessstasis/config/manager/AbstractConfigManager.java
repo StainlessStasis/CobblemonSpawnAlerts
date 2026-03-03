@@ -1,6 +1,8 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.manager;
 
 import com.google.gson.*;
+import io.github.stainlessstasis.alert.Tag;
+import io.github.stainlessstasis.config.client.PokemonConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.MessageUtils;
@@ -86,6 +88,7 @@ public abstract class AbstractConfigManager {
             // Auto update config version
             if (mergedJson.has("configVersion")) {
                 String currentVersion = mergedJson.get("configVersion").getAsString();
+                VersionMatcher.setLastKnownModVersion(currentVersion);
                 if (!currentVersion.equals(CobblemonSpawnAlerts.MOD_VERSION)) {
                     mergedJson.add("configVersion", new JsonPrimitive(CobblemonSpawnAlerts.MOD_VERSION));
                 }
@@ -158,6 +161,7 @@ public abstract class AbstractConfigManager {
 
                     mergeJsonObjects(specificPokemonDefault, userSpecificConfig);
                     fixHexColor(specificPokemonDefault);
+                    fixOutdatedNaming(specificPokemonDefault);
                     mergedPokemonConfigs.add(pokemonName, specificPokemonDefault);
                 } else {
                     CobblemonSpawnAlerts.LOGGER.warn("Invalid entry for Pokemon '"+pokemonName+"' in config file `"+fileName+"`. Skipping.");
@@ -180,6 +184,22 @@ public abstract class AbstractConfigManager {
             String hex = configObject.get("glowColor").getAsString();
             if (!hex.isEmpty() && !hex.startsWith("#")) {
                 configObject.addProperty("glowColor", "#" + hex);
+            }
+        }
+    }
+
+    private void fixOutdatedNaming(JsonObject configObject) {
+        if (configObject.has("statDisplayModes") && configObject.get("statDisplayModes").isJsonObject()) {
+            JsonObject modes = configObject.getAsJsonObject("statDisplayModes");
+
+            if (modes.has("nearestPlayer")) {
+                modes.add(Tag.NEAREST_PLAYER.getKey(), modes.get("nearestPlayer"));
+                modes.remove("nearestPlayer");
+            }
+
+            if (modes.has("coordinates")) {
+                modes.add(Tag.COORDINATES.getKey(), modes.get("coordinates"));
+                modes.remove("coordinates");
             }
         }
     }

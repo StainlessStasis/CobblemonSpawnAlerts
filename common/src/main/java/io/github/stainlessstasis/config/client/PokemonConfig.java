@@ -1,4 +1,4 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.client;
 
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.alert.StatDisplayMode;
@@ -23,19 +23,21 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             String customAlertSound,
             boolean autoGlow,
             String glowColor,
-            JourneymapConfig journeyMap
+            JourneymapConfig journeyMap,
+            boolean sendWebhook
     ) {
         public static PokemonSpecificConfig createDefault() {
             Map<String, StatDisplayMode> statDisplayModes = new LinkedHashMap<>();
             statDisplayModes.put("level", StatDisplayMode.MAIN_MESSAGE);
+            statDisplayModes.put("dex", StatDisplayMode.HOVER);
             statDisplayModes.put("ivs", StatDisplayMode.DISABLED);
-            statDisplayModes.put("evs", StatDisplayMode.DISABLED);
+            statDisplayModes.put("evs", StatDisplayMode.HOVER);
             statDisplayModes.put("nature", StatDisplayMode.DISABLED);
             statDisplayModes.put("ability", StatDisplayMode.DISABLED);
             statDisplayModes.put("gender", StatDisplayMode.HOVER);
-            statDisplayModes.put("coordinates", StatDisplayMode.HOVER);
-            statDisplayModes.put("biome", StatDisplayMode.MAIN_MESSAGE);
-            statDisplayModes.put("nearestPlayer", StatDisplayMode.DISABLED);
+            statDisplayModes.put("coords", StatDisplayMode.HOVER);
+            statDisplayModes.put("biome", StatDisplayMode.BOTH);
+            statDisplayModes.put("nearest_player", StatDisplayMode.DISABLED);
 
             Map<String, String> sounds = new LinkedHashMap<>();
             sounds.put("shiny", "");
@@ -54,7 +56,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
             return new PokemonSpecificConfig(
                     true, true, true, true, true, true, true,
                     statDisplayModes, "", "", "", sounds, "", false, "#FFFFFFFF",
-                    new JourneymapConfig(false, "", "", false)
+                    new JourneymapConfig(false, "", "#FFFFFF", false),
+                    false
             );
         }
     }
@@ -66,9 +69,8 @@ public record PokemonConfig (String configVersion, String[] comment, Map<String,
                 CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only on your client. It determines which Pokemon are alerted, and how that alert is displayed.",
-                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
-                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
-                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                        "For details on using the config, please see the docs.",
+                        "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
                 defaults
         );

@@ -28,7 +28,7 @@ public class CSANeo {
 
         @SubscribeEvent
         public static void onPacketRegistration(RegisterPayloadHandlersEvent event) {
-            PayloadRegistrar registrar = event.registrar("1").optional();
+            PayloadRegistrar registrar = event.registrar("2").optional();
             registrar.playToClient(PokemonDataPacket.ID, PokemonDataPacket.STREAM_CODEC,
                     new DirectionalPayloadHandler<>(
                             PokemonDataPacketHandler::handleClient,

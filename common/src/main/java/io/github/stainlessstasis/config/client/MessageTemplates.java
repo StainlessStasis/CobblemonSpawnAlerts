@@ -1,6 +1,9 @@
-package io.github.stainlessstasis.config;
+package io.github.stainlessstasis.config.client;
+
+import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 
 public record MessageTemplates (
+        String configVersion,
         String[] comment,
         String fullSpawnMessage,
         String despawnMessage,
@@ -13,6 +16,9 @@ public record MessageTemplates (
         String level,
         String level_hover,
         String level_unformatted,
+        String dex,
+        String dex_hover,
+        String dex_unformatted,
         String ivs,
         String ivs_hover,
         String ivs_unformatted,
@@ -34,6 +40,9 @@ public record MessageTemplates (
         String coords,
         String coords_hover,
         String coords_unformatted,
+        String coords_x,
+        String coords_y,
+        String coords_z,
         String biome,
         String biome_hover,
         String biome_unformatted,
@@ -55,15 +64,16 @@ public record MessageTemplates (
         String common,
         String uncommon,
         String rare,
-        String ultra_rare
+        String ultra_rare,
+        String bucket_none
 ) {
     public static MessageTemplates createDefault() {
         return new MessageTemplates(
+                CobblemonSpawnAlerts.MOD_VERSION,
                 new String[]{
                         "This config is only on your client. It determines how each piece of an alert is displayed, giving you full control over displaying them.",
-                        "For documentation on using the config, please see the Modrinth or GitHub for the mod.",
-                        "https://modrinth.com/mod/cobblemon-spawn-alerts",
-                        "https://github.com/StainlessStasis/CobblemonSpawnAlerts"
+                        "For details on using the config, please see the docs.",
+                        "https://stainlessstasis.github.io/CSA-Docs/config/"
                 },
                 "cobblemon-spawn-alerts.default_spawn_message",
                 "cobblemon-spawn-alerts.default_despawn_message",
@@ -76,6 +86,9 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.level",
                 "cobblemon-spawn-alerts.level_hover",
                 "cobblemon-spawn-alerts.level_unformatted",
+                "cobblemon-spawn-alerts.dex",
+                "cobblemon-spawn-alerts.dex_hover",
+                "cobblemon-spawn-alerts.dex_unformatted",
                 "cobblemon-spawn-alerts.ivs",
                 "cobblemon-spawn-alerts.ivs_hover",
                 "cobblemon-spawn-alerts.ivs_unformatted",
@@ -97,6 +110,9 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.coords",
                 "cobblemon-spawn-alerts.coords_hover",
                 "cobblemon-spawn-alerts.coords_unformatted",
+                "cobblemon-spawn-alerts.coords_x",
+                "cobblemon-spawn-alerts.coords_y",
+                "cobblemon-spawn-alerts.coords_z",
                 "cobblemon-spawn-alerts.biome",
                 "cobblemon-spawn-alerts.biome_hover",
                 "cobblemon-spawn-alerts.biome_unformatted",
@@ -118,7 +134,8 @@ public record MessageTemplates (
                 "cobblemon-spawn-alerts.common",
                 "cobblemon-spawn-alerts.uncommon",
                 "cobblemon-spawn-alerts.rare",
-                "cobblemon-spawn-alerts.ultra_rare"
+                "cobblemon-spawn-alerts.ultra_rare",
+                "cobblemon-spawn-alerts.bucket_none"
         );
     }
 }
