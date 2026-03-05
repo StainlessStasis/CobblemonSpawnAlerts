@@ -132,11 +132,11 @@ public class DiscordWebhookWrappers {
     ) {
         public static Embed createDefault() {
             return new Embed(
-                true, "**A {shiny}{legendary}{HA}{bucket}{name} spawned in a {biome} biome!**",
-                    "**Dex Number**: #{dex}\\n**Level**: {level}\\n**IVs**: {ivs}\\n**EVs**: {evs}\\n**Nature**: {nature}\\n**Ability**: {ability}\\n**Gender**: {gender}\\n**Coordinates**: {coords}\\n**Nearest Player**: {nearest_player}",
+                true, "**A {shiny_unformatted}{legendary_unformatted}{HA_unformatted}{bucket_unformatted}{name} spawned in a {biome_unformatted} biome!**",
+                    "**Dex Number**: #{dex_unformatted}\n**Level**: {level_unformatted}\n**IVs**: {ivs_unformatted}\n**EVs**: {evs_unformatted}\n**Nature**: {nature_unformatted}\n**Ability**: {ability_unformatted}\n**Gender**: {gender_unformatted}\n**Coordinates**: {coords_unformatted}\n**Nearest Player**: {nearest_player_unformatted}",
                     "", "", "",
-                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex}.png",
-                    false,
+                    "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex_unformatted}.png",
+                    true,
                 Author.createDefault(),
                 List.of(EmbedField.createDefault()),
                 Footer.createDefault()
