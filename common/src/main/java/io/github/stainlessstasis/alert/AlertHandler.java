@@ -149,7 +149,7 @@ public class AlertHandler {
         // Check if should alert for HA
         boolean shouldAlertHA =
                 HiddenAbilityUtil.hasHiddenAbility(alertData.spawnData().dexId(), alertData.traits().formID(), alertData.traits().abilityID())
-        && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHA());
+        && (pokemonConfig.alertHiddenAbility() || mainConfig.alertAllHiddenAbility());
 
         // Check if should alert for IV and EV hunting
         MainConfig.IVHunting ivHunting = mainConfig.ivHunting();
@@ -255,7 +255,7 @@ public class AlertHandler {
                 }
             }
             if (shouldAlertHA) {
-                if (mainConfig.alertAllHA()) {
+                if (mainConfig.alertAllHiddenAbility()) {
                     alertCondition = DebugAlertCondition.ALERT_ALL_HIDDEN_ABILITY;
                 } else {
                     alertCondition = DebugAlertCondition.ALERT_HIDDEN_ABILITY;

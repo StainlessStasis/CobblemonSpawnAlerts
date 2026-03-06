@@ -15,7 +15,7 @@ public record MainConfig (
     boolean enableDespawnAlerts,
     boolean enableSounds,
     boolean alertAllShinies,
-    boolean alertAllHA,
+    boolean alertAllHiddenAbility,
     boolean alertAllLegendaries,
     boolean alertAllMythicals,
     boolean alertAllUltraBeasts,

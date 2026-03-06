@@ -3,21 +3,16 @@ package io.github.stainlessstasis;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.stainlessstasis.alert.AlertHandler;
-import io.github.stainlessstasis.compat.YACLTest;
+import io.github.stainlessstasis.compat.yacl.YACLMainConfig;
 import io.github.stainlessstasis.core.CobblemonSpawnAlerts;
 import io.github.stainlessstasis.core.CobblemonSpawnAlertsClient;
 import io.github.stainlessstasis.core.CommandRegistry;
-import io.github.stainlessstasis.platform.Services;
 import io.github.stainlessstasis.util.EvsUtil;
-import io.github.stainlessstasis.util.MessageUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -38,16 +33,11 @@ public class CSANeoClient {
     }
 
     private void registerYacl(ModContainer container) {
-        System.out.println("REGISTERING YACL EXTENTION POINT");
         container.registerExtensionPoint(
                 IConfigScreenFactory.class,
-                (client, parent) -> {
-                    System.out.println("TESTNG TESTING 123");
-                    return YACLTest.createScreen(parent);
-                }
+                (client, parent) -> YACLMainConfig.createScreen(parent)
         );
 
-        System.out.println("FINISHED REGISTERING YACL EXTENSION POINT");
     }
 
     @EventBusSubscriber(value = Dist.CLIENT)

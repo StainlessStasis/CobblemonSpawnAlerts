@@ -38,16 +38,17 @@ public class ClientConfigManager extends AbstractConfigManager {
     }
 
     public void reload() {
-        if (Minecraft.getInstance().player == null) {
-            return;
-        }
-
         MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reloading");
         if (loadConfig()) {
             MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reloaded");
         } else {
             MessageUtils.sendTranslated("cobblemon-spawn-alerts.client_config_reload_failed");
         }
+    }
+
+    public void reloadMainConfig(MainConfig config) {
+        saveConfigFile(MAIN_CONFIG_FILE, config);
+        reload();
     }
 
     public MainConfig getMainConfig() {

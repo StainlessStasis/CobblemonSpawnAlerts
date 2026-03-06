@@ -202,6 +202,11 @@ public abstract class AbstractConfigManager {
                 modes.remove("coordinates");
             }
         }
+
+        if (configObject.has("alertAllHA")) {
+            configObject.add("alertAllHiddenAbility", configObject.get("alertAllHA"));
+            configObject.remove("alertAllHA");
+        }
     }
 
     public <T> void saveConfigFile(File file, T config) {
