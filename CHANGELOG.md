@@ -84,3 +84,6 @@ Added regex pattern matcher to remove anything within {curly braces} after dynam
 - Fixed `{shiny}` and `{HA}` not working for serverside webhooks.
 - Fixed `{bucket}` incorrect spacing in lang file.
 - Renamed `nearestPlayer` to `nearest_player` and `coordinates` to `coords` in `pokemon.json`. Automatically fixes itself.
+
+## [1.13.2]
+Fixed crash on fresh install due to version being empty.

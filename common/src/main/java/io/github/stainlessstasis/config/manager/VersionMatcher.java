@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class VersionMatcher {
-    private static String LAST_KNOWN_MOD_VERSION = "";
+    private static String LAST_KNOWN_MOD_VERSION = CobblemonSpawnAlerts.MOD_VERSION;
     public static final Map<String, String> MAJOR_CHANGES = new HashMap<>();
     static {
         MAJOR_CHANGES.put("1.12.0", "cobblemon-spawn-alerts.changelog.1_12_0");
