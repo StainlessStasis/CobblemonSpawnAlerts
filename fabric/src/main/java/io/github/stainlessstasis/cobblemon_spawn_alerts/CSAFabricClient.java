@@ -1,0 +1,118 @@
+package io.github.stainlessstasis.cobblemon_spawn_alerts;
+
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.stainlessstasis.cobblemon_spawn_alerts.alert.AlertHandler;
+import io.github.stainlessstasis.cobblemon_spawn_alerts.core.CobblemonSpawnAlertsClient;
+import io.github.stainlessstasis.cobblemon_spawn_alerts.core.CommandRegistry;
+import io.github.stainlessstasis.cobblemon_spawn_alerts.network.*;
+import io.github.stainlessstasis.cobblemon_spawn_alerts.util.EvsUtil;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.world.entity.Entity;
+
+@Environment(EnvType.CLIENT)
+public class CSAFabricClient implements ClientModInitializer {
+    public static boolean doesServerHaveMod = false;
+
+    @Override
+    public void onInitializeClient() {
+        CobblemonSpawnAlertsClient.initClient();
+
+        ClientPlayConnectionEvents.DISCONNECT.register(this::onDisconnect);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(this::onClientStop);
+        ClientPlayConnectionEvents.JOIN.register(this::onJoin);
+        ClientEntityEvents.ENTITY_LOAD.register(this::onEntityLoad);
+        ClientEntityEvents.ENTITY_UNLOAD.register(this::onEntityUnload);
+
+       ClientCommandRegistrationCallback.EVENT.register((dispatcher, context) -> {
+           dispatcher.register(
+                   ClientCommandManager.literal("csa")
+                           .then(ClientCommandManager.literal("reload")
+                                   .executes(ctx -> {
+                                       return CommandRegistry.handleReloadCommand();
+                                   }))
+
+                           .then(ClientCommandManager.literal("openconfig")
+                                   .executes(ctx -> {
+                                       return CommandRegistry.handleOpenConfigCommand();
+                                   }))
+
+                           .then(ClientCommandManager.literal("glow")
+                               .then(ClientCommandManager.argument("uuid", StringArgumentType.string())
+                                       .executes(ctx -> {
+                                           String uuidString = ctx.getArgument("uuid", String.class);
+                                           return CommandRegistry.handleGlowCommand(uuidString);
+                                       }))
+                               .then(ClientCommandManager.literal("clear")
+                                       .executes(ctx -> {
+                                           return CommandRegistry.handleGlowClearCommand();
+                                       })
+                               )
+                           ));
+       });
+
+
+       // Packets
+        ClientPlayNetworking.registerGlobalReceiver(PokemonDataPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                PacketHandlers.handlePokemonDataPacket(payload.pokemonNetworkID(), payload.ivs(), payload.evYield(), payload.nature(), payload.ability(), payload.bucket());
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(AlertDataPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                PacketHandlers.handleAlertDataPacket(payload);
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(DespawnDataPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                PacketHandlers.handleDespawnDataPacket(payload);
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ModLoadedPacket.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                doesServerHaveMod = true;
+            });
+        });
+    }
+
+    private void onJoin(ClientPacketListener clientPacketListener, PacketSender packetSender, Minecraft minecraft) {
+        CobblemonSpawnAlertsClient.sendMultiplayerWarning();
+    }
+
+    private void onClientStop(Minecraft minecraft) {
+        AlertHandler.clearCache();
+        EvsUtil.clearCache();
+        doesServerHaveMod = false;
+    }
+
+    private void onDisconnect(ClientPacketListener clientPacketListener, Minecraft minecraft) {
+        AlertHandler.clearCache();
+        EvsUtil.clearCache();
+        doesServerHaveMod = false;
+    }
+
+    private void onEntityLoad(Entity entity, ClientLevel clientLevel) {
+        if (entity instanceof PokemonEntity pe && !doesServerHaveMod) {
+            AlertHandler.alertClientside(pe);
+        }
+    }
+
+    private void onEntityUnload(Entity entity, ClientLevel clientLevel) {
+        CobblemonSpawnAlertsClient.onUnload(entity, clientLevel);
+    }
+}

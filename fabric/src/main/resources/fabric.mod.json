@@ -17,13 +17,13 @@
   "accessWidener": "cobblemon-spawn-alerts.accesswidener",
   "entrypoints": {
     "main": [
-      "io.github.stainlessstasis.CSAFabric"
+      "io.github.stainlessstasis.cobblemon_spawn_alerts.CSAFabric"
     ],
     "client": [
-      "io.github.stainlessstasis.CSAFabricClient"
+      "io.github.stainlessstasis.cobblemon_spawn_alerts.CSAFabricClient"
     ],
     "journeymap": [
-      "io.github.stainlessstasis.JourneymapFabricPlugin"
+      "io.github.stainlessstasis.cobblemon_spawn_alerts.JourneymapFabricPlugin"
     ]
   },
   "depends": {
