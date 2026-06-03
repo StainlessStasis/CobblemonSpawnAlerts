@@ -82,7 +82,7 @@ public class AlertUtils {
             if (!hoverText.isEmpty() && !hoverText.endsWith("\n")) {
                 hoverText += "\n";
             }
-            finalHoverText = hoverText + "<color value=#55FF55>Click to toggle glow</color>";
+            finalHoverText = hoverText + Component.translatable("cobblemon-spawn-alerts.click_to_toggle_glow").getString();
         }
 
         ClickEvent clickEvent = AlertUtils.getDefaultGlowClickEvent(alertData);
