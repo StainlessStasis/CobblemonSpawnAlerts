@@ -1,6 +1,9 @@
 # Cobblemon Spawn Alerts
 A highly customizable Cobblemon sidemod to alert you when a certain Pokemon spawns
 
+## This mod is no longer being maintained.
+No updates. No patches. For more details, see the bottom of the page. Thanks for everything.
+
 ## IMPORTANT:<br>
 #### Some Pokemon info may not display properly if you are on a server!
 Servers can optionally install this mod to broadcast this info to clients if they desire, also with a config of its own. If a server does not have this mod installed, then things will not display correctly.<br>
@@ -27,37 +30,43 @@ But can be modified to look like this, or however you want!
 ## Global Alerts!
 Inspired by [Cobblemon Spawn Notification](https://modrinth.com/mod/cobblemon-spawn-notification), all players will be alerted when a rare Pokemon (such as a shiny or legendary) spawns. This can be disabled in the server's `server.json` config for the mod. The server simply sends a packet to all clients, so that each player can individually customize their messages.
 
+## Discord Webhooks!
+Both the server *and* clients can send Discord webhooks, fully customizable with embeds and everything. You can even embed an image of the spawned Pokemon! (Using `"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{dex}.png"`)
+
+Servers can enable webhooks for global alerts, while clients can enable webhooks for every single alert they receive.
+
+![discord webhook integration](https://cdn.modrinth.com/data/cached_images/2e0bb5a7223ae56cf9913b79fcbffeff5fd40e7f_0.webp)
+
 ## FAQ:
+### How do I do x? How does y work?
+Please [read the docs](https://stainlessstasis.github.io/CSA-Docs/config) before you go on asking me how the configs work. If you still can't figure it out that's fine, just at least *attempt* it on your own first.
 ### My alerts don't work when using commands?
 This is intended behavior, which I still need to find a better solution for (if one exists). You *can* use `enableSpawnCommandAlerts` in `server.json`, but **use this at your own risk**. This can break spawning of some Pokemon, such as in Cobblemon: Path to Legends.<br>
 *Technical details: This mixins to SpawnPokemon#execute and uses the player spawner system to forcibly post a spawn event.*
 ### Support for Xaero's Minimap waypoints?
-Unfortunately, no. While it is technically already possible via modifying templates and using custom MiniMessage scripts in your alerts, I will not be adding direct compatibility to the mod. Xaero's is completely closed source, offering no API, no wiki, and no Discord server. I am not going to go through the effort of trying to figure out how to integrate someone's mod when they provide no resources for doing such. However, if someone wants to PR this, I'd love to make compatibility possible.
+See the bottom of the page.
 ### When will you...
-Unless it's a genuine issue with the mod, I add features at my own pace. If you get upset with a feature taking too long, feel free to PR it.
-### In-game editable config?
-See above.
+See the bottom of the page.
 
 ## Known Issues:
+- Some modpacks make changes to the default configs, causing some things to not work by default. If CSA was part of the modpack and some alerts (e.g. shinies) arent' working, try this:<br>
+1) /csa openconfig - Backup these files if you have anything important<br>
+2) Delete main.json, pokemon.json, and message_templates.json on your client, and/or server.json if you're in singleplayer or are hosting a server<br>
+3) /csa reload - This creates new config files with default settings
 - Cobblemon Academy 2.0 uses a resource pack which entirely overrides CSA's lang file, breaking the new formatting in 1.12.0. You have the option to either edit the `message_templates.json`, or, if you want to use the default lang file of CSA, go to `resourcepacks -> Academy -> assets` and delete the `cobblemon_spawn_alerts` directory entirely.
-- Cobblemon Academy 2.0 makes some changes to the configs, causing shinies not to alert by default. In the CSA `main.json` config (use `/csa openconfig` to open the directory), set `alertAllShinies` to true. Then run `/csa reload`. Now, if you are the owner of the server, go  to `server.json` and set `alertShinies` to true. Then run `/csa-server reload` (or `/csa-common reload` on 1.12.0+). Shiny alerts should work now.
 
 ## Config:
-To get started with editing the config, [read the docs](https://stainlessstasis.github.io/CSA-Docs/).
+To get started with editing the config, [read the docs]([https://stainlessstasis.github.io/CSA-Docs/](https://stainlessstasis.github.io/CSA-Docs/config)).
 
-## TODO:
-* In-game editable config
-* More dynamic replacements, possibly conditionals
-* Spawn history/AFK logging mode
-* Alert simulation for testing
-* Discord server
-* And more...
+## Support
+I'll still help people even though I no longer will be maintaining the mod. For support, go to the [Cobblemon discord](https://discord.com/invite/cobblemon), then in #content-zone-help, search for Cobblemon Spawn Alerts.
 
-If you have any other ideas, feel free to share them with me!
+## Why I'm not maintaining the mod anymore, and notes for other developers
+#### Why?
+1) I don't have the time, energy, motivation, or passion for this project anymore. I have other things I would much rather spend my time on, to be completely honest.
+2) The mod was never supposed to be this big. I made it for my own use, and it grew to something much larger than I was capable of handling alone as someone who's still relatively new to modding.
+3) The codebase is a complete mess. To add new features or fix other things would require massive refactors. Honestly, the entire mod needs to be rewritten with things like addons or the new Cobblemon systems in mind.
+#### For developers:
+This mod and the docs site are licensed as MIT. You may freely modify and/or redistribute any of the code. Feel free to use any of the same ideas or concepts. Do whatever you want. You don't have to credit me for anything.
 
-## Feedback | Contact me
-
-If you wish to provide in-depth feedback, I've set up a [Google forms survey](https://docs.google.com/forms/d/e/1FAIpQLSek3U1Df_Ycwb_h5R1DPQKedsTzK9eTD2jPayqD3zw7oAJXkg/viewform).
-
-For direct feedback or support, you can find me in the [Cobblemon discord](https://discord.com/invite/cobblemon) in #content-zone-help and search for Cobblemon Spawn Alerts. My username is `stasis_the_shattered`. Feel free to ping so I see your message.<br>
-*Note: Please do not send a friend request or DM, I will ignore it. Only reason I'm choosing to do this now is so future problems can be solved by searching in that channel.*
+I will NOT merge PRs or resolve issues.
